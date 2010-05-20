@@ -92,11 +92,6 @@ ${VISIT_SOURCE_DIR}/avt/Math
 ${VISIT_SOURCE_DIR}/avt/VisWindow/VisWindow
 ${VISIT_SOURCE_DIR}/avt/DBAtts/MetaData
 ${VISIT_SOURCE_DIR}/avt/DBAtts/SIL
-${VISIT_SOURCE_DIR}/avt/MIR/Base
-${VISIT_SOURCE_DIR}/avt/MIR/Tet
-${VISIT_SOURCE_DIR}/avt/MIR/Youngs
-${VISIT_SOURCE_DIR}/avt/MIR/Zoo
-${VISIT_SOURCE_DIR}/avt/MIR/Discrete/
 ${VISIT_SOURCE_DIR}/avt/Pipeline/AbstractFilters
 ${VISIT_SOURCE_DIR}/avt/Pipeline/Data
 ${VISIT_SOURCE_DIR}/avt/Pipeline/Pipeline
@@ -110,11 +105,6 @@ ${VTK_INCLUDE_DIRS}
 # Add link directories
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS} ${MESA_LIBRARY_DIR} ${GLEW_LIBRARY_DIR})
 
-# Unless we're doing a VISIT_DBIO_ONLY build then we need avtmir
-IF(NOT VISIT_DBIO_ONLY)
-    SET(AVTMIR_SER avtmir_ser)
-    SET(AVTMIR_PAR avtmir_par)
-ENDIF(NOT VISIT_DBIO_ONLY)
 
 #********************************* SERIAL ************************************
 ADD_LIBRARY(avtdatabase_ser ${AVTDATABASE_SOURCES})
