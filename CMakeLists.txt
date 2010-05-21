@@ -2,24 +2,24 @@ cmake_minimum_required(VERSION 2.6)
 
 project(VisItBridgePlugin)
 FIND_PACKAGE(ParaView REQUIRED)
-  
+
+set(BUILD_SHARED_LIBS ${PARAVIEW_BUILD_SHARED_LIBS})
+
  IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 
+#lower warning level since this project has to many warnings
+set(OLD_CMAKE_CXX_WARNING_LEVEL ${CMAKE_CXX_WARNING_LEVEL})
+set(CMAKE_CXX_WARNING_LEVEL 1)
 
-# Tell the CMake makefile generator to not have rules depend on
-# themselves.  This causes extra rebuilds when the include path
-# changes from turning a kit on or off.
-SET(CMAKE_SKIP_RULE_DEPENDENCY 1)
-  
-# -----------------------------------------------------------------------------
-# Include CTest for testing
-# -----------------------------------------------------------------------------
+
 include(CTest)
 include(VisItCommon.cmake)
 
 set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+
 set(VISIT_DBIO_ONLY ON) #Build only visitconvert and engine plugins
 if(VISIT_DBIO_ONLY)
     add_definitions(-DDBIO_ONLY)
@@ -36,7 +36,8 @@ set(VISIT_COMMON_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/common/comm
     ${CMAKE_CURRENT_SOURCE_DIR}/common/expr
     ${CMAKE_CURRENT_SOURCE_DIR}/common/icons
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/misc    
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/misc  
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/parser
     ${CMAKE_CURRENT_SOURCE_DIR}/common/plugin
     ${CMAKE_CURRENT_SOURCE_DIR}/common/proxybase
     ${CMAKE_CURRENT_SOURCE_DIR}/common/state
@@ -95,7 +96,7 @@ SET(SIZEOF_UNSIGNED_LONG        ${CMAKE_SIZEOF_UNSIGNED_LONG})
 SET(SIZEOF_UNSIGNED_LONG_LONG   ${CMAKE_SIZEOF_UNSIGNED_LONG_LONG})
 SET(SIZEOF_UNSIGNED_SHORT       ${CMAKE_SIZEOF_UNSIGNED_SHORT})
 SET(SIZEOF_VOID_P               ${CMAKE_SIZEOF_VOID_P})
-SET(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE)
+#SET(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE)
 CHECK_TYPE_SIZE("off64_t" SIZEOF_OFF64_T)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
@@ -107,4 +108,7 @@ add_subdirectory(common)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(VisItReader)
+
+
+SET(CMAKE_CXX_WARNING_LEVEL ${OLD_CMAKE_CXX_WARNING_LEVEL})
 
