@@ -39,6 +39,7 @@
 #ifndef EXPRGRAMMAR_H
 #define EXPRGRAMMAR_H
 #include <expr_exports.h>
+#include <stdio.h>
 
 #include "Grammar.h"
 
