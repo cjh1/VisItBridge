@@ -19,39 +19,26 @@ include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
 set(OLD_CMAKE_CXX_WARNING_LEVEL ${CMAKE_CXX_WARNING_LEVEL})
 set(CMAKE_CXX_WARNING_LEVEL 1)
 
+#-----------------------------------------------------------------------------
+# Setup Vars for visit-config.h
+#-----------------------------------------------------------------------------
 
 set(VISIT_DBIO_ONLY ON) #Build only visitconvert and engine plugins
 if(VISIT_DBIO_ONLY)
-    add_definitions(-DDBIO_ONLY)
-endif(VISIT_DBIO_ONLY)    
+    add_definitions(-DDBIO_ONLY)    
+endif(VISIT_DBIO_ONLY)   
 
+#Check to see if ofstreams rdbuf is public. If it is NOT public set NO_SETBUF
+TRY_COMPILE(VISIT_COMPILER_FSTREAM_WORKAROUND
+        ${CMAKE_CURRENT_BINARY_DIR}/CMakeTmp
+        ${VISIT_CMAKE_DIR}/testFStream.cxx)
+IF (NOT VISIT_COMPILER_FSTREAM_WORKAROUND)
+   set(NO_SETBUF 1)
+ENDIF (NOT VISIT_COMPILER_FSTREAM_WORKAROUND)  
+
+#Setup the version since some files need this
 SET(VISIT_VERSION "2.0.0")
-
-# Set up easy to use includes for the common directory
-set(VISIT_COMMON_INCLUDES
-    ${CMAKE_CURRENT_BINARY_DIR}  
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Database
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Pipeline
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Plotter
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/comm
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/expr
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/icons
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/misc  
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/parser
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/plugin
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/proxybase
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/state
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/utility
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/misc
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/plugin
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/state
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/utility
-    )
     
-#-----------------------------------------------------------------------------
-# Create visit-config.h
-#-----------------------------------------------------------------------------
-
 # Set the slash characters based on the platform
 IF(WIN32)
     SET(VISIT_SLASH_CHAR   "'\\\\'")
@@ -100,10 +87,35 @@ SET(SIZEOF_VOID_P               ${CMAKE_SIZEOF_VOID_P})
 CHECK_TYPE_SIZE("off64_t" SIZEOF_OFF64_T)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
+#-----------------------------------------------------------------------------
+# Create visit-config.h
+#-----------------------------------------------------------------------------
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)    
-     
+
+
+# Set up easy to use includes for the common directory
+set(VISIT_COMMON_INCLUDES
+    ${CMAKE_CURRENT_BINARY_DIR}  
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Database
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Pipeline
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Plotter
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/comm
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/expr
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/icons
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/misc  
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/plugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/proxybase
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/state
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/utility
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/misc
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/plugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/state
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/utility
+    )
+    
 add_subdirectory(common)
 
 #now that common is configured we can include vtk
