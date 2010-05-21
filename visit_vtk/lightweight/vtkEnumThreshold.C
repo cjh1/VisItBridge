@@ -105,7 +105,6 @@ ComboDigitsFromId(double id, int n, int maxr, const vector<vector<int> > &ptMap,
 }
 
 
-vtkCxxRevisionMacro(vtkEnumThreshold, "$Revision: 1.68 $");
 vtkStandardNewMacro(vtkEnumThreshold);
 
 //  Modifications:  

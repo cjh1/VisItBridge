@@ -34,7 +34,6 @@
 #include <vtkVisItMesaPolyDataMapper.h>
 #endif
 
-vtkCxxRevisionMacro(vtkVisItDataSetMapper, "$Revision: 1.70 $");
 vtkStandardNewMacro(vtkVisItDataSetMapper);
 
 // ****************************************************************************

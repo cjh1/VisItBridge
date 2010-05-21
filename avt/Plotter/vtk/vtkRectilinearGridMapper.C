@@ -27,7 +27,6 @@
 #endif
 #include "vtkOpenGLRectilinearGridMapper.h"
 
-vtkCxxRevisionMacro(vtkRectilinearGridMapper, "$Revision: 1.38 $");
 
 //----------------------------------------------------------------------------
 // Needed when we don't use the vtkStandardNewMacro.

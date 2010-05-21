@@ -31,7 +31,7 @@ class vtkVisItOpenGLTexture : public vtkTexture
 {
 public:
   static vtkVisItOpenGLTexture *New();
-  vtkTypeRevisionMacro(vtkVisItOpenGLTexture,vtkTexture);
+  vtkTypeMacro(vtkVisItOpenGLTexture,vtkTexture);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

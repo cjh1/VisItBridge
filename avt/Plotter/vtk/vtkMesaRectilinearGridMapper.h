@@ -36,7 +36,7 @@ class PLOTTER_API vtkMesaRectilinearGridMapper : public vtkRectilinearGridMapper
 {
 public:
   static vtkMesaRectilinearGridMapper *New();
-  vtkTypeRevisionMacro(vtkMesaRectilinearGridMapper,vtkRectilinearGridMapper);
+  vtkTypeMacro(vtkMesaRectilinearGridMapper,vtkRectilinearGridMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

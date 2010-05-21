@@ -27,7 +27,6 @@
 #include <math.h>
 
 #ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkVisItOpenGLTexture, "$Revision: 1.56 $");
 vtkStandardNewMacro(vtkVisItOpenGLTexture);
 #endif
 

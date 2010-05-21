@@ -64,7 +64,6 @@
 #include <FixedLengthBitField.h>
 #include <TimingsManager.h>
 
-vtkCxxRevisionMacro(vtkVisItSplitter, "$Revision: 1.00 $");
 vtkStandardNewMacro(vtkVisItSplitter);
 
 //

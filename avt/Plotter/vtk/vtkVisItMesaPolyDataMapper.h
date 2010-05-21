@@ -50,7 +50,7 @@ class PLOTTER_API vtkVisItMesaPolyDataMapper : public vtkPolyDataMapper
 {
 public:
   static vtkVisItMesaPolyDataMapper *New();
-  vtkTypeRevisionMacro(vtkVisItMesaPolyDataMapper,vtkPolyDataMapper);
+  vtkTypeMacro(vtkVisItMesaPolyDataMapper,vtkPolyDataMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

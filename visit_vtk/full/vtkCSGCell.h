@@ -50,13 +50,14 @@
 
 #include "vtkCell.h"
 
+class vtkPointLocator;
 #define VTK_CSG_CELL 50
 
 class VISIT_VTK_API vtkCSGCell : public vtkCell
 {
 public:
   static vtkCSGCell *New();
-  vtkTypeRevisionMacro(vtkCSGCell,vtkCell);
+  vtkTypeMacro(vtkCSGCell,vtkCell);
 
   // Description:
   // See the vtkCell API for descriptions of these methods.
@@ -68,26 +69,26 @@ public:
   vtkCell *GetEdge(int) {return 0;};
   vtkCell *GetFace(int) {return 0;};
   int CellBoundary(int subId, double pcoords[3], vtkIdList *pts);
-  void Contour(double value, vtkDataArray *cellScalars, 
-               vtkPointLocator *locator, vtkCellArray *verts1, 
-               vtkCellArray *lines, vtkCellArray *verts2, 
+  void Contour(double value, vtkDataArray *cellScalars,
+               vtkPointLocator *locator, vtkCellArray *verts1,
+               vtkCellArray *lines, vtkCellArray *verts2,
                vtkPointData *inPd, vtkPointData *outPd,
                vtkCellData *inCd, vtkIdType cellId, vtkCellData *outCd);
-  void Clip(double value, vtkDataArray *cellScalars, 
+  void Clip(double value, vtkDataArray *cellScalars,
             vtkPointLocator *locator, vtkCellArray *pts,
             vtkPointData *inPd, vtkPointData *outPd,
             vtkCellData *inCd, vtkIdType cellId, vtkCellData *outCd,
             int insideOut);
 
-  int EvaluatePosition(double x[3], double* closestPoint, 
-                       int& subId, double pcoords[3], 
+  int EvaluatePosition(double x[3], double* closestPoint,
+                       int& subId, double pcoords[3],
                        double& dist2, double *weights);
   void EvaluateLocation(int& subId, double pcoords[3], double x[3],
                         double *weights);
   int IntersectWithLine(double p1[3], double p2[3], double tol, double& t,
                         double x[3], double pcoords[3], int& subId);
   int Triangulate(int index, vtkIdList *ptIds, vtkPoints *pts);
-  void Derivatives(int subId, double pcoords[3], double *values, 
+  void Derivatives(int subId, double pcoords[3], double *values,
                    int dim, double *derivs);
 
 protected:

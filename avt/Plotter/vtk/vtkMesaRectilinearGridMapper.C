@@ -43,6 +43,5 @@
 #undef vtkOpenGLRectilinearGridMapper
 #undef VTK_IMPLEMENT_MESA_CXX
 
-vtkCxxRevisionMacro(vtkMesaRectilinearGridMapper, "$Revision: 1.12 $");
 vtkStandardNewMacro(vtkMesaRectilinearGridMapper);
 

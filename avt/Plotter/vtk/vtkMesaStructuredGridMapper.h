@@ -36,7 +36,7 @@ class PLOTTER_API vtkMesaStructuredGridMapper : public vtkStructuredGridMapper
 {
 public:
   static vtkMesaStructuredGridMapper *New();
-  vtkTypeRevisionMacro(vtkMesaStructuredGridMapper,vtkStructuredGridMapper);
+  vtkTypeMacro(vtkMesaStructuredGridMapper,vtkStructuredGridMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

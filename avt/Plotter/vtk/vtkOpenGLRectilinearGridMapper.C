@@ -63,7 +63,6 @@ static const int dlSize = 8192;
 #include <math.h>
 
 #ifndef VTK_IMPLEMENT_MESA_CXX
-vtkCxxRevisionMacro(vtkOpenGLRectilinearGridMapper, "$Revision: 1.78 $");
 vtkStandardNewMacro(vtkOpenGLRectilinearGridMapper);
 #endif
 

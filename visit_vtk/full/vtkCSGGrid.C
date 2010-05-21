@@ -153,7 +153,6 @@ using std::vector;
 
 #define NUM_QCOEFFS 10 // # coefficients in a quadric rep
 
-vtkCxxRevisionMacro(vtkCSGGrid, "$Revision: 1.53 $");
 vtkStandardNewMacro(vtkCSGGrid);
 
 // internal type used only for implementation

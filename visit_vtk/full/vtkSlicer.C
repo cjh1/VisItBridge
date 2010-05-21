@@ -36,7 +36,6 @@
 #include <vector>
 
 
-vtkCxxRevisionMacro(vtkSlicer, "$Revision: 1.00 $");
 vtkStandardNewMacro(vtkSlicer);
 
 vtkSlicer::vtkSlicer()

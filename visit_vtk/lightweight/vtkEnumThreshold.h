@@ -62,7 +62,7 @@ class VISIT_VTK_LIGHT_API vtkEnumThreshold : public vtkUnstructuredGridAlgorithm
 {
   public:
     static vtkEnumThreshold *New();
-    vtkTypeRevisionMacro(vtkEnumThreshold,vtkUnstructuredGridAlgorithm);
+    vtkTypeMacro(vtkEnumThreshold,vtkUnstructuredGridAlgorithm);
     void PrintSelf(ostream& os, vtkIndent indent);
 
     void SetEnumerationRanges(const vector<double>&);

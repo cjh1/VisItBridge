@@ -54,7 +54,7 @@ class PLOTTER_API vtkVisItOpenGLPolyDataMapper : public vtkPolyDataMapper
 {
 public:
   static vtkVisItOpenGLPolyDataMapper *New();
-  vtkTypeRevisionMacro(vtkVisItOpenGLPolyDataMapper,vtkPolyDataMapper);
+  vtkTypeMacro(vtkVisItOpenGLPolyDataMapper,vtkPolyDataMapper);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
