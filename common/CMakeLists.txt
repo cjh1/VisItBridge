@@ -125,20 +125,6 @@ misc/VisItException.C
 misc/VisItInit.C
 )
 
-SET(PARSER_SOURCES
-parser/ConfiguratingItem.C
-parser/ConfiguratingSet.C
-parser/Dictionary.C
-parser/Grammar.C
-parser/Parser.C
-parser/ParseTreeNode.C
-parser/Rule.C
-parser/Scanner.C
-parser/Sequence.C
-parser/Symbol.C
-parser/Token.C
-)
-
 SET(PLUGIN_SOURCES
 plugin/DatabasePluginInfo.C
 plugin/DatabasePluginManager.C
@@ -291,8 +277,7 @@ ADD_LIBRARY(visitcommon
     ${COMM_SOURCES} ${COMM_WIN32_SOURCES}
     ${EXCEPTION_SOURCES}
     ${EXPRESSION_SOURCES}
-    ${MISC_SOURCES}
-    ${PARSER_SOURCES}
+    ${MISC_SOURCES}    
     ${PLUGIN_SOURCES}
     ${PROXYBASE_SOURCES}
     ${STATE_SOURCES}

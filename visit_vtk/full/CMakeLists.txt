@@ -94,6 +94,7 @@ vtkVolumeFromVolume.C
 
 
 INCLUDE_DIRECTORIES(
+${VISIT_BINARY_DIR}
 ${VISIT_BINARY_DIR}/include
 ${VISIT_SOURCE_DIR}/include
 ${VISIT_SOURCE_DIR}/visit_vtk/full

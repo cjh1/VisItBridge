@@ -54,7 +54,7 @@
 // Creation:   omitted
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 class STATE_API SILMatrixAttributes : public AttributeSubject

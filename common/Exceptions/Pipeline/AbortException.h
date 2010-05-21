@@ -57,7 +57,7 @@
 //  Programmer: Hank Childs
 //  Creation:   June 20, 2001
 //
-// **************************************************************************** 
+// ****************************************************************************
 
 class AVTEXCEPTION_API AbortException : public PipelineException
 {
