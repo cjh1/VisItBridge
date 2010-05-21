@@ -19,7 +19,6 @@ include(VisItCommon.cmake)
 
 set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-
 set(VISIT_DBIO_ONLY ON) #Build only visitconvert and engine plugins
 if(VISIT_DBIO_ONLY)
     add_definitions(-DDBIO_ONLY)
@@ -105,8 +104,19 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)    
      
 add_subdirectory(common)
+
+#now that common is configured we can include vtk
+#or we will try to include pythons grammar.h instead of visit parser grammar.h
+INCLUDE(${PARAVIEW_USE_FILE})
+INCLUDE_DIRECTORIES(
+  ${VTK_INCLUDE_DIRS}
+  )
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
+INCLUDE_DIRECTORIES( 
+  ${PARAVIEW_INCLUDE_DIRS}
+  ${PARAVIEW_GUI_INCLUDE_DIRS}   
+  )
 add_subdirectory(VisItReader)
 
 
