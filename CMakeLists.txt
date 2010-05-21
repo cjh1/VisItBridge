@@ -3,21 +3,22 @@ cmake_minimum_required(VERSION 2.6)
 project(VisItBridgePlugin)
 FIND_PACKAGE(ParaView REQUIRED)
 
-set(BUILD_SHARED_LIBS ${PARAVIEW_BUILD_SHARED_LIBS})
-
- IF (COMMAND cmake_policy)
+IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
+
+#set up some vars we need to compile
+set(BUILD_SHARED_LIBS ${PARAVIEW_BUILD_SHARED_LIBS})
+set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(VISIT_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake )
+
+include(CTest)
+include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
 
 #lower warning level since this project has to many warnings
 set(OLD_CMAKE_CXX_WARNING_LEVEL ${CMAKE_CXX_WARNING_LEVEL})
 set(CMAKE_CXX_WARNING_LEVEL 1)
 
-
-include(CTest)
-include(VisItCommon.cmake)
-
-set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(VISIT_DBIO_ONLY ON) #Build only visitconvert and engine plugins
 if(VISIT_DBIO_ONLY)
