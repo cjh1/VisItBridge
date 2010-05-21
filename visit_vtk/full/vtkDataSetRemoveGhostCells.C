@@ -7,7 +7,7 @@
   Version:   $Revision: 1.1 $
 
 
-Copyright (c) 1993-2001 Ken Martin, Will Schroeder, Bill Lorensen 
+Copyright (c) 1993-2001 Ken Martin, Will Schroeder, Bill Lorensen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -111,11 +111,11 @@ void vtkDataSetRemoveGhostCells::Execute()
           StructuredGridExecute();
           break;
 
-      default: 
+      default:
           vtkDebugMacro(<<"vtkDataSetRemoveGhostCells not set up to "
                           "operate on this data type" );
           vtkDataSet *output = this->GetOutput();
-          output->DeepCopy(input); 
+          output->DeepCopy(input);
           break;
   }
 }
@@ -159,14 +159,14 @@ void vtkDataSetRemoveGhostCells::GenericExecute()
         GetOutput()->ShallowCopy(ds);
         return;
     }
-     
+
     vtkPoints *ptsObj = vtkVisItUtility::GetPoints(ds);
     vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::New();
     ugrid->SetPoints(ptsObj);
     ptsObj->Delete();
     ugrid->GetPointData()->ShallowCopy(ds->GetPointData());
     ugrid->Allocate(8*nOut);
-   
+
     int cellId = 0;
     vtkCellData *inCD  = ds->GetCellData();
     vtkCellData *outCD = ugrid->GetCellData();
@@ -176,7 +176,7 @@ void vtkDataSetRemoveGhostCells::GenericExecute()
     {
         if (arr->GetTuple1(i) != 0)
             continue;
-   
+
         ds->GetCellPoints(i, ptList);
         int type = ds->GetCellType(i);
         ugrid->InsertNextCell(type, ptList);
@@ -202,8 +202,8 @@ void vtkDataSetRemoveGhostCells::GenericExecute()
 //    Hank Childs, Sat Jun 29 16:27:41 PDT 2002
 //    Copy over field data.
 //
-//    Kathleen Bonnell, Wed Jul 10 16:02:56 PDT 2002 
-//    Reworked code to utilize vtk RemoveGhostCells method. 
+//    Kathleen Bonnell, Wed Jul 10 16:02:56 PDT 2002
+//    Reworked code to utilize vtk RemoveGhostCells method.
 //
 //    Hank Childs, Thu Aug 26 10:53:28 PDT 2004
 //    Renamed ghost arrays.  Added logic to remove cells that are ghosted,
@@ -224,10 +224,10 @@ void vtkDataSetRemoveGhostCells::UnstructuredGridExecute()
   vtkIdType i;
 
   vtkDebugMacro(<< "Executing remove ghost cells filter for unstructured grid");
- 
+
   vtkUnstructuredGrid *input  = (vtkUnstructuredGrid*)this->GetInput();
   vtkUnstructuredGrid *output = (vtkUnstructuredGrid*)this->GetOutput();
- 
+
   output->vtkPointSet::ShallowCopy(input);
   output->SetPoints(input->GetPoints());
   output->GetPointData()->ShallowCopy(input->GetPointData());
@@ -261,7 +261,7 @@ void vtkDataSetRemoveGhostCells::UnstructuredGridExecute()
 
   vtkIdTypeArray *cellLocations = vtkIdTypeArray::New();
   cellLocations->SetNumberOfValues(ncells);
-  int *cl = cellLocations->GetPointer(0);
+  vtkIdType *cl = cellLocations->GetPointer(0);
 
   vtkCellData *inCD = input->GetCellData();
   vtkCellData *outCD = output->GetCellData();
@@ -291,7 +291,7 @@ void vtkDataSetRemoveGhostCells::UnstructuredGridExecute()
   vtkIdTypeArray *nlist = vtkIdTypeArray::New();
   nlist->SetNumberOfValues(currentIndex);
   vtkIdType *nl = nlist->GetPointer(0);
-  for (i = 0 ; i < currentIndex ; i++) 
+  for (i = 0 ; i < currentIndex ; i++)
       nl[i] = buff[i];
   delete [] buff;
 
@@ -314,14 +314,14 @@ void vtkDataSetRemoveGhostCells::UnstructuredGridExecute()
 //  Modifications:
 //
 //    Kathleen Bonnell, Fri Aug 31 08:50:30 PDT 2001
-//    Removed check of field data, as it is no longer necessary with VTK 4.0 
+//    Removed check of field data, as it is no longer necessary with VTK 4.0
 //    Made pts of type vtkIdType to match VTK 4.0 API.
 //
 //    Hank Childs, Sat Jun 29 16:27:41 PDT 2002
 //    Copy over field data.
 //
-//    Kathleen Bonnell, Wed Jul 10 16:02:56 PDT 2002 
-//    Reworked code to utilize vtk RemoveGhostCells method. 
+//    Kathleen Bonnell, Wed Jul 10 16:02:56 PDT 2002
+//    Reworked code to utilize vtk RemoveGhostCells method.
 //
 //    Hank Childs, Fri Sep 13 20:19:52 PDT 2002
 //    Reverted back to removing ghost zones by hand since the VTK
@@ -383,7 +383,7 @@ void vtkDataSetRemoveGhostCells::PolyDataExecute()
   vtkCellData *inCD  = input->GetCellData();
   vtkCellData *outCD = output->GetCellData();
   outCD->CopyAllocate(inCD);
- 
+
   bool usingGhostZones = (ghost_zones != NULL);
   bool usingGhostNodes = (ghost_nodes != NULL);
   unsigned char *zone_ptr = NULL;
@@ -442,15 +442,15 @@ void vtkDataSetRemoveGhostCells::PolyDataExecute()
 //  Modifications:
 //
 //    Kathleen Bonnell, Fri Aug 31 08:50:30 PDT 2001
-//    VTK 4.0 compatibility issues: Removed check of field data.  
+//    VTK 4.0 compatibility issues: Removed check of field data.
 //    Use vtkDataArray for rectilinear grid coordinates instead of vtkScalars,
 //    use correct access methods for this array.
 //
 //    Hank Childs, Sat Jun 29 16:27:41 PDT 2002
 //    Copy over field data and set the dimensions.
 //
-//    Kathleen Bonnell, Wed Jul 10 16:02:56 PDT 2002 
-//    Reworked code to utilize vtk ExtractRectilinearGrid filter. 
+//    Kathleen Bonnell, Wed Jul 10 16:02:56 PDT 2002
+//    Reworked code to utilize vtk ExtractRectilinearGrid filter.
 //    Use new avtRealDims array.
 //
 //    Hank Childs, Sun Nov  9 13:19:45 PST 2003
@@ -527,12 +527,12 @@ void vtkDataSetRemoveGhostCells::RectilinearGridExecute()
     // It will modify the voi if necessary.
     ConfirmRegion(ghosts, dims, voi);
   }
- 
+
   vtkVisItExtractRectilinearGrid *extractor = vtkVisItExtractRectilinearGrid::New();
   extractor->SetInput(input);
   extractor->SetVOI(voi);
   extractor->GetOutput()->Update();
- 
+
   output->ShallowCopy(extractor->GetOutput());
   extractor->Delete();
   output->GetFieldData()->PassData(input->GetFieldData());
@@ -576,7 +576,7 @@ void vtkDataSetRemoveGhostCells::StructuredGridExecute()
 {
   vtkStructuredGrid *input  = (vtkStructuredGrid*)this->GetInput();
   vtkStructuredGrid *output = (vtkStructuredGrid*)this->GetOutput();
- 
+
   vtkDataArray *realDims = input->GetFieldData()->GetArray("avtRealDims");
   if (!realDims || (realDims->GetDataType() != VTK_INT)
     || (realDims->GetNumberOfComponents() != 1))
@@ -586,13 +586,13 @@ void vtkDataSetRemoveGhostCells::StructuredGridExecute()
     }
 
   vtkDebugMacro(<< "Executing remove ghost cells filter for structured grid");
- 
+
    int i, voi[6];
    for (i = 0; i < 6; i++)
      {
      voi[i] = (int) realDims->GetComponent(i, 0);
      }
- 
+
   vtkUnsignedCharArray *arr = (vtkUnsignedCharArray *)
                                input->GetCellData()->GetArray("avtGhostZones");
   if (GhostZoneTypesToRemove != 255 && arr != NULL)
@@ -606,12 +606,12 @@ void vtkDataSetRemoveGhostCells::StructuredGridExecute()
     // It will modify the voi if necessary.
     ConfirmRegion(ghosts, dims, voi);
   }
- 
+
   vtkVisItExtractGrid *extractor = vtkVisItExtractGrid::New();
   extractor->SetInput(input);
   extractor->SetVOI(voi);
   extractor->GetOutput()->Update();
- 
+
   output->ShallowCopy(extractor->GetOutput());
   extractor->Delete();
   output->GetFieldData()->PassData(input->GetFieldData());

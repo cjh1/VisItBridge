@@ -63,7 +63,7 @@ using std::vector;
 //  Modifications:
 //
 //    Hank Childs, Sun Oct 24 21:05:03 PDT 2004
-//    Change ordering of shapes back to the way it was before all of the 
+//    Change ordering of shapes back to the way it was before all of the
 //    shapes were put in a vector.  This way we won't have to update baseline
 //    images.
 //
@@ -89,17 +89,17 @@ vtkVolumeFromVolume::CentroidPointList::CentroidPointList()
 {
     listSize = 4096;
     pointsPerList = 1024;
- 
+
     list = new CentroidPointEntry*[listSize];
     list[0] = new CentroidPointEntry[pointsPerList];
     for (int i = 1 ; i < listSize ; i++)
         list[i] = NULL;
- 
+
     currentList = 0;
     currentPoint = 0;
 }
- 
- 
+
+
 vtkVolumeFromVolume::CentroidPointList::~CentroidPointList()
 {
     for (int i = 0 ; i < listSize ; i++)
@@ -122,25 +122,25 @@ vtkVolumeFromVolume::CentroidPointList::GetList(int listId,
         outlist = NULL;
         return 0;
     }
- 
+
     outlist = list[listId];
     return (listId == currentList ? currentPoint : pointsPerList);
 }
- 
- 
+
+
 int
 vtkVolumeFromVolume::CentroidPointList::GetNumberOfLists(void) const
 {
     return currentList+1;
 }
- 
- 
+
+
 int
 vtkVolumeFromVolume::CentroidPointList::GetTotalNumberOfPoints(void) const
 {
     int numFullLists = currentList;  // actually currentList-1+1
     int numExtra = currentPoint;  // again, currentPoint-1+1
- 
+
     return numFullLists*pointsPerList + numExtra;
 }
 
@@ -169,19 +169,19 @@ vtkVolumeFromVolume::CentroidPointList::AddPoint(int npts, int *pts)
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new CentroidPointEntry[pointsPerList];
         currentPoint = 0;
     }
- 
+
     list[currentList][currentPoint].nPts = npts;
     for (int i = 0 ; i < npts ; i++)
     {
         list[currentList][currentPoint].ptIds[i] = pts[i];
     }
     currentPoint++;
- 
+
     return (GetTotalNumberOfPoints()-1);
 }
 
@@ -191,17 +191,17 @@ vtkVolumeFromVolume::ShapeList::ShapeList(int size)
     shapeSize = size;
     listSize = 4096;
     shapesPerList = 1024;
- 
+
     list = new int*[listSize];
     list[0] = new int[(shapeSize+1)*shapesPerList];
     for (int i = 1 ; i < listSize ; i++)
         list[i] = NULL;
- 
+
     currentList = 0;
     currentShape = 0;
 }
- 
- 
+
+
 vtkVolumeFromVolume::ShapeList::~ShapeList()
 {
     for (int i = 0 ; i < listSize ; i++)
@@ -213,8 +213,8 @@ vtkVolumeFromVolume::ShapeList::~ShapeList()
     }
     delete [] list;
 }
- 
- 
+
+
 int
 vtkVolumeFromVolume::ShapeList::GetList(int listId, const int *&outlist)
     const
@@ -224,12 +224,12 @@ vtkVolumeFromVolume::ShapeList::GetList(int listId, const int *&outlist)
         outlist = NULL;
         return 0;
     }
- 
+
     outlist = list[listId];
     return (listId == currentList ? currentShape : shapesPerList);
 }
- 
- 
+
+
 int
 vtkVolumeFromVolume::ShapeList::GetNumberOfLists(void) const
 {
@@ -242,7 +242,7 @@ vtkVolumeFromVolume::ShapeList::GetTotalNumberOfShapes(void) const
 {
     int numFullLists = currentList;  // actually currentList-1+1
     int numExtra = currentShape;  // again, currentShape-1+1
- 
+
     return numFullLists*shapesPerList + numExtra;
 }
 
@@ -250,12 +250,12 @@ vtkVolumeFromVolume::HexList::HexList()
     : vtkVolumeFromVolume::ShapeList(8)
 {
 }
- 
+
 
 vtkVolumeFromVolume::HexList::~HexList()
 {
 }
- 
+
 // ****************************************************************************
 //  Modifications:
 //
@@ -264,7 +264,7 @@ vtkVolumeFromVolume::HexList::~HexList()
 //
 //    Mark C. Miller, Sun Dec  3 12:20:11 PST 2006
 //    Fixed off-by-one error in test to resize list
-//    
+//
 //    Sean Ahern, Mon Mar  5 15:43:19 EST 2007
 //    Fixed test for resizing list.  You really do need the +1.
 //    Initialized new entries.
@@ -290,12 +290,12 @@ vtkVolumeFromVolume::HexList::AddHex(int cellId,
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -313,12 +313,12 @@ vtkVolumeFromVolume::WedgeList::WedgeList()
     : vtkVolumeFromVolume::ShapeList(6)
 {
 }
- 
+
 
 vtkVolumeFromVolume::WedgeList::~WedgeList()
 {
 }
- 
+
 // ****************************************************************************
 //  Modifications:
 //
@@ -352,12 +352,12 @@ vtkVolumeFromVolume::WedgeList::AddWedge(int cellId,
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -373,12 +373,12 @@ vtkVolumeFromVolume::PyramidList::PyramidList()
     : vtkVolumeFromVolume::ShapeList(5)
 {
 }
- 
+
 
 vtkVolumeFromVolume::PyramidList::~PyramidList()
 {
 }
- 
+
 // ****************************************************************************
 //  Modifications:
 //
@@ -411,12 +411,12 @@ vtkVolumeFromVolume::PyramidList::AddPyramid(int cellId, int v1, int v2,
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -431,12 +431,12 @@ vtkVolumeFromVolume::TetList::TetList()
     : vtkVolumeFromVolume::ShapeList(4)
 {
 }
- 
+
 
 vtkVolumeFromVolume::TetList::~TetList()
 {
 }
- 
+
 // ****************************************************************************
 //  Modifications:
 //
@@ -468,12 +468,12 @@ vtkVolumeFromVolume::TetList::AddTet(int cellId, int v1,int v2,int v3,int v4)
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -487,12 +487,12 @@ vtkVolumeFromVolume::QuadList::QuadList()
     : vtkVolumeFromVolume::ShapeList(4)
 {
 }
- 
+
 
 vtkVolumeFromVolume::QuadList::~QuadList()
 {
 }
- 
+
 // ****************************************************************************
 //  Modifications:
 //
@@ -524,12 +524,12 @@ vtkVolumeFromVolume::QuadList::AddQuad(int cellId, int v1,int v2,int v3,int v4)
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -543,12 +543,12 @@ vtkVolumeFromVolume::TriList::TriList()
     : vtkVolumeFromVolume::ShapeList(3)
 {
 }
- 
+
 
 vtkVolumeFromVolume::TriList::~TriList()
 {
 }
- 
+
 // ****************************************************************************
 //  Modifications:
 //
@@ -580,12 +580,12 @@ vtkVolumeFromVolume::TriList::AddTri(int cellId, int v1,int v2,int v3)
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -599,12 +599,12 @@ vtkVolumeFromVolume::LineList::LineList()
     : vtkVolumeFromVolume::ShapeList(2)
 {
 }
- 
+
 
 vtkVolumeFromVolume::LineList::~LineList()
 {
 }
- 
+
 //
 //    Mark C. Miller, Sun Dec  3 12:20:11 PST 2006
 //    Fixed off-by-one error in test to resize list
@@ -629,12 +629,12 @@ vtkVolumeFromVolume::LineList::AddLine(int cellId, int v1,int v2)
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -647,12 +647,12 @@ vtkVolumeFromVolume::VertexList::VertexList()
     : vtkVolumeFromVolume::ShapeList(1)
 {
 }
- 
+
 
 vtkVolumeFromVolume::VertexList::~VertexList()
 {
 }
- 
+
 //
 //    Mark C. Miller, Sun Dec  3 12:20:11 PST 2006
 //    Fixed off-by-one error in test to resize list
@@ -677,12 +677,12 @@ vtkVolumeFromVolume::VertexList::AddVertex(int cellId, int v1)
             delete [] list;
             list = tmpList;
         }
- 
+
         currentList++;
         list[currentList] = new int[(shapeSize+1)*shapesPerList];
         currentShape = 0;
     }
- 
+
     int idx = (shapeSize+1)*currentShape;
     list[currentList][idx+0] = cellId;
     list[currentList][idx+1] = v1;
@@ -697,7 +697,7 @@ vtkVolumeFromVolume::VertexList::AddVertex(int cellId, int v1)
 //
 //    Hank Childs, Thu Oct 21 07:52:31 PDT 2004
 //    Instead of duplicating code, just call a common function.
-//    (Moved whole routine to new ConstructDataSet method with 
+//    (Moved whole routine to new ConstructDataSet method with
 //     CommonPointsStructure in signature).
 //
 // ****************************************************************************
@@ -720,7 +720,7 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
 //
 //    Hank Childs, Thu Oct 21 07:52:31 PDT 2004
 //    Instead of duplicating code, just call a common function.
-//    (Moved whole routine to new ConstructDataSet method with 
+//    (Moved whole routine to new ConstructDataSet method with
 //     CommonPointsStructure in signature).
 //
 // ****************************************************************************
@@ -758,9 +758,9 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
 //    Only create points in the output that will actually be referenced.  Also
 //    generalized the shape list to reduce code.
 //
-//    Kathleen Bonnell, Mon May  1 08:50:46 PDT 2006 
+//    Kathleen Bonnell, Mon May  1 08:50:46 PDT 2006
 //    Don't interpolate avtOriginalNodeNumbers, use value from closest node
-//    instead. 
+//    instead.
 //
 //    Mark C. Miller, Tue Nov  7 20:35:07 PST 2006
 //    Through emperical analysis running the code and printing values, I
@@ -774,10 +774,10 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
 //    even after making this change, I have encountered some cases where I
 //    still see the too large by 1 problem but with very low probablility of
 //    occurance.
-//    
+//
 //    Mark C. Miller, Tue Dec  5 18:14:58 PST 2006
-//    Undid above change 
-//    
+//    Undid above change
+//
 // ****************************************************************************
 
 void
@@ -867,7 +867,7 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
     int ptIdx = numUsed;
 
     //
-    // Now construct all the points that are along edges and new and add 
+    // Now construct all the points that are along edges and new and add
     // them to the points list.
     //
     int nLists = pt_list.GetNumberOfLists();
@@ -928,7 +928,7 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
         }
     }
 
-    // 
+    //
     // Now construct the new "centroid" points and add them to the points list.
     //
     nLists = centroid_list.GetNumberOfLists();
@@ -987,7 +987,7 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
 
     if (newOrigNodes)
     {
-        // AddArray will overwrite an already existing array with 
+        // AddArray will overwrite an already existing array with
         // the same name, exactly what we want here.
         outPD->AddArray(newOrigNodes);
         newOrigNodes->Delete();
@@ -1020,7 +1020,7 @@ vtkVolumeFromVolume::ConstructDataSet(vtkPointData *inPD, vtkCellData *inCD,
 
     vtkIdTypeArray *cellLocations = vtkIdTypeArray::New();
     cellLocations->SetNumberOfValues(ncells);
-    int *cl = cellLocations->GetPointer(0);
+    vtkIdType *cl = cellLocations->GetPointer(0);
 
     vtkIdType ids[1024]; // 8 (for hex) should be max, but...
     int current_index = 0;

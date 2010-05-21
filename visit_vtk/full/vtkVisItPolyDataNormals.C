@@ -160,7 +160,7 @@ vtkVisItPolyDataNormals::RequestData(vtkInformation *vtkNotUsed(request),
 //    Hank Childs, Fri Jul 30 09:00:51 PDT 2004
 //    Copy along cell data from verts and lines as well.
 //
-//    Kathleen Bonnell, Fri Feb 24 09:43:20 PST 2006 
+//    Kathleen Bonnell, Fri Feb 24 09:43:20 PST 2006
 //    Avoid divide-by-zero errors.
 //
 //    Kathleen Bonnell, Wed Mar 29 10:52:43 PST 2006
@@ -187,7 +187,7 @@ vtkVisItPolyDataNormals::ExecutePointWithoutSplitting(
     vtkPoints    *inPts = input->GetPoints();
 
     int nCells  = inCA->GetNumberOfCells();
-    int nOtherCells = input->GetVerts()->GetNumberOfCells() + 
+    int nOtherCells = input->GetVerts()->GetNumberOfCells() +
                       input->GetLines()->GetNumberOfCells();
     int nTotalCells = nCells + nOtherCells;
 
@@ -348,7 +348,7 @@ struct NormalEntry
 //
 //  Programmer:  Jeremy Meredith
 //  Creation:    August 13, 2003
-//  
+//
 //  Modifications:
 //      Sean Ahern, Mon Mar  5 14:47:42 EST 2007
 //      Removed fixed length on normal lists.
@@ -440,7 +440,7 @@ protected:
 
 
 // ****************************************************************************
-//  Method: vtkVisItPolyDataNormals::ExecutePointWithSplitting 
+//  Method: vtkVisItPolyDataNormals::ExecutePointWithSplitting
 //
 //  Purpose:
 //    Create normals at the points, and duplicate nodes along
@@ -455,7 +455,7 @@ protected:
 //  Modifications:
 //    Kathleen Bonnell, Fri Aug 22 16:48:20 PDT 2003
 //    Pass along Verts and Lines.  Added test for ne->oldId < 0 when
-//    adding original points and normals. 
+//    adding original points and normals.
 //
 //    Hank Childs, Fri Jan 30 09:35:46 PST 2004
 //    Use pointer arithmetic to avoid VTK calls.
@@ -466,10 +466,10 @@ protected:
 //    Hank Childs, Fri Jul 30 09:00:51 PDT 2004
 //    Account for cell data in verts and lines.
 //
-//    Kathleen Bonnell, Tue Nov 16 10:29:25 PST 2004 
-//    Make nOtherCells be the count of verts and lines (not polys and lines). 
+//    Kathleen Bonnell, Tue Nov 16 10:29:25 PST 2004
+//    Make nOtherCells be the count of verts and lines (not polys and lines).
 //
-//    Kathleen Bonnell, Fri Feb 24 09:43:20 PST 2006 
+//    Kathleen Bonnell, Fri Feb 24 09:43:20 PST 2006
 //    Avoid divide-by-zero errors.
 //
 //    Hank Childs, Thu Jun  5 15:00:05 PDT 2008
@@ -551,9 +551,9 @@ vtkVisItPolyDataNormals::ExecutePointWithSplitting(vtkPolyData *input,
             // Accumulate the normals calculated from every adjacent edge pair.
             inPts->GetPoint(cell[0],v1);
             inPts->GetPoint(cell[1],v2);
-            
+
             double ax, ay, az, bx, by, bz;
-            for (j = 0 ; j < nVerts ; j++) 
+            for (j = 0 ; j < nVerts ; j++)
             {
                 v0[0] = v1[0]; v0[1] = v1[1]; v0[2] = v1[2];
                 v1[0] = v2[0]; v1[1] = v2[1]; v1[2] = v2[2];
@@ -698,7 +698,7 @@ vtkVisItPolyDataNormals::ExecutePointWithSplitting(vtkPolyData *input,
             newNormalPtr[3*i+1] = 0;
             newNormalPtr[3*i+2] = 1;
         }
-        else 
+        else
         {
             outPts->SetPoint(i, inPts->GetPoint(ne->oldId));
             outPD->CopyData(inPD, ne->oldId, i);
@@ -812,7 +812,7 @@ vtkVisItPolyDataNormals::ExecuteCell(vtkPolyData *input, vtkPolyData *output)
         // vtkPolygon::ComputeNormal, but changed to make it work better.
         //
         int nVerts = *connPtr++;
-        int *cell = connPtr;
+        vtkIdType *cell = connPtr;
 
         double v0[3], v1[3], v2[3];
         double normal[3] = {0, 0, 0};
@@ -828,9 +828,9 @@ vtkVisItPolyDataNormals::ExecuteCell(vtkPolyData *input, vtkPolyData *output)
             // Accumulate the normals calculated from every adjacent edge pair.
             inPts->GetPoint(cell[0],v1);
             inPts->GetPoint(cell[1],v2);
-            
+
             double ax, ay, az, bx, by, bz;
-            for (int j = 0 ; j < nVerts ; j++) 
+            for (int j = 0 ; j < nVerts ; j++)
             {
                 v0[0] = v1[0]; v0[1] = v1[1]; v0[2] = v1[2];
                 v1[0] = v2[0]; v1[1] = v2[1]; v1[2] = v2[2];
@@ -873,7 +873,7 @@ vtkVisItPolyDataNormals::ExecuteCell(vtkPolyData *input, vtkPolyData *output)
         //
         connPtr += nVerts;
     }
-        
+
     // The triangle strips come after the polys.  So add normals for them.
     numPrimitivesWithoutNormals = 0;
     numPrimitivesWithoutNormals += input->GetStrips()->GetNumberOfCells();

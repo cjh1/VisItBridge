@@ -6,12 +6,12 @@
   Date:      $Date: 2002/02/22 21:16:54 $
   Version:   $Revision: 1.66 $
 
-  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen 
+  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
@@ -106,7 +106,7 @@ vtkVisItScalarTree::BuildTree()
 
     if ( tree != NULL && BuildTime > MTime && BuildTime > DataSet->GetMTime() )
         return;
-    
+
     float *scalars = (float *)(DataSet->GetPointData()->GetScalars()
                                     ->GetVoidPointer(0));
 
@@ -115,7 +115,7 @@ vtkVisItScalarTree::BuildTree()
     // Based on code in vtkVisItContourFilter.
     //
     int meshType = DataSet->GetDataObjectType();
-    
+
     int pt_dims[3] = { 1, 1, 1 };
     if (meshType == VTK_RECTILINEAR_GRID)
         ((vtkRectilinearGrid *)DataSet)->GetDimensions(pt_dims);
@@ -125,7 +125,7 @@ vtkVisItScalarTree::BuildTree()
     //
     // Just to ensure we don't crash, 2D structured datasets
     // not in the XY plane we'll not optimize for.
-    // 
+    //
     if ((meshType == VTK_RECTILINEAR_GRID ||
          meshType == VTK_STRUCTURED_GRID ) &&
         (pt_dims[0] == 1 || pt_dims[1] == 1))
@@ -151,14 +151,14 @@ vtkVisItScalarTree::BuildTree()
 
     if (tree)
         delete[] tree;
-    
+
     int numLeafs = (int)ceil(double (nCells) / BranchingFactor);
     int count = 1;
     for (levels = 0; count < numLeafs ; ++levels)
     {
         count *= BranchingFactor;
     }
-   
+
     // If levels is too high, adjust appropriately.
     if (levels > MaxLevel)
     {
@@ -168,7 +168,7 @@ vtkVisItScalarTree::BuildTree()
     }
     else
         bucketSize = BranchingFactor;
-    
+
     // Size of a full tree is a geometric series: (b^(n+1)-1) / (b-1)
     treeSize = (int)((pow((double)BranchingFactor, levels + 1) - 1)
                         / (BranchingFactor - 1));
@@ -190,10 +190,10 @@ vtkVisItScalarTree::BuildTree()
     // Now find the min/max for each bucket.
     for (int cellId = 0 ; cellId < nCells ; cellId++)
     {
-        int *pts;
+        vtkIdType *pts;
         int npts;
         int arr8[8];
-        
+
         // Get the points
         if (meshType==VTK_RECTILINEAR_GRID || meshType==VTK_STRUCTURED_GRID)
         {
@@ -206,8 +206,8 @@ vtkVisItScalarTree::BuildTree()
                 for (j = 0 ; j < 4 ; ++j)
                 {
                     arr8[j] = (cellI + X_val[j]) +
-                              (cellJ + Y_val[j]) * ptstrideY; 
-                } 
+                              (cellJ + Y_val[j]) * ptstrideY;
+                }
 
                 pts = arr8;
                 npts = 4;
@@ -221,20 +221,20 @@ vtkVisItScalarTree::BuildTree()
                 for (j = 0 ; j < 8 ; ++j)
                 {
                     arr8[j] = (cellI + X_val[j]) +
-                              (cellJ + Y_val[j])*ptstrideY 
+                              (cellJ + Y_val[j])*ptstrideY
                                 + (cellK + Z_val[j])*ptstrideZ;
                 }
                 pts = arr8;
                 npts = 8;
             }
-        } 
+        }
         else
-        { 
+        {
             DataSet->GetCellPoints(cellId, lst);
             npts = lst->GetNumberOfIds();
             pts = lst->GetPointer(0);
         }
-            
+
         ScalarRange &leaf = tree[leafOffset + (cellId / bucketSize)];
         for (int p = 0; p < npts; ++p)
         {
@@ -267,7 +267,7 @@ vtkVisItScalarTree::BuildTree()
         int cRow;
         cRow = (int)((pow((double)BranchingFactor, lev + 1) - 1)
                          / (BranchingFactor - 1));
-        
+
         int i;
         for (i = 0; i < len; ++i)
         {
@@ -290,13 +290,13 @@ void
 vtkVisItScalarTree::GetCellList(float scalarValue, std::vector<int> &v)
 {
     BuildTree();
-    
+
     if (!tree)
         return;
-    
+
     searchValue = scalarValue;
     if (searchValue >= tree->min && searchValue <= tree->max)
-        RecursiveSearch(v, 0, 0); 
+        RecursiveSearch(v, 0, 0);
 }
 
 void
@@ -308,7 +308,7 @@ vtkVisItScalarTree::RecursiveSearch(std::vector<int> &v, int index, int lev)
         int cId = (index - leafOffset) * bucketSize;
         int i;
         for (i = 0; i < bucketSize && cId < nCells; ++i)
-            v.push_back(cId++); 
+            v.push_back(cId++);
         return;
     }
 
