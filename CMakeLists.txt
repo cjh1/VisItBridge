@@ -2,13 +2,6 @@ cmake_minimum_required(VERSION 2.6)
 
 project(VisItBridgePlugin)
 FIND_PACKAGE(ParaView REQUIRED)
-INCLUDE(${PARAVIEW_USE_FILE})
-
-INCLUDE_DIRECTORIES(
-  ${VTK_INCLUDE_DIRS}
-  ${PARAVIEW_INCLUDE_DIRS}
-  ${PARAVIEW_GUI_INCLUDE_DIRS} 
-  )
   
  IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
