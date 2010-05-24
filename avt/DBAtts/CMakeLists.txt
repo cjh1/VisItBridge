@@ -37,6 +37,7 @@
 # Modifications:
 #
 #****************************************************************************/
+PROJECT(AVT_DBATTS)
 
 SET(METADATA_SOURCES
 MetaData/avtArrayMetaData.C

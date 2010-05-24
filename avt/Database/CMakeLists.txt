@@ -37,6 +37,7 @@
 # Modifications:
 #
 #****************************************************************************/
+PROJECT(AVT_DATABASE)
 
 SET(DATABASE_SOURCES
 Database/avtDatabase.C

@@ -37,6 +37,7 @@
 # Modifications:
 #
 #****************************************************************************/
+PROJECT(AVT_MATH)
 
 SET(AVTMATH_SOURCES
 avtFactorial.C

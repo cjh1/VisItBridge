@@ -37,6 +37,7 @@
 # Modifications:
 #
 #****************************************************************************/
+PROJECT(AVT_PIPELINE)
 
 SET(DATA_SOURCES
 Data/avtAverageValueRF.C
