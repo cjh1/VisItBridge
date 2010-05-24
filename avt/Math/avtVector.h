@@ -44,15 +44,9 @@
 #include <visitstream.h>
 #include <ImproperUseException.h>
 
-#ifdef DBIO_ONLY 
-#define STUB_VOID {}
-#define STUB_OSTR {return ostr;}
-#define STUB_STR {return "";}
-#else
 #define STUB_VOID
 #define STUB_OSTR
 #define STUB_STR
-#endif
 
 // ****************************************************************************
 //  Class:  avtVector
@@ -71,7 +65,7 @@
 //    Dave Pugmire, Mon Nov 17 12:05:04 EST 2008
 //    Added operators == != and methods dot, cross, length2 and length.
 //
-//    Kathleen Bonnell, Mon Apr 20 10:38:22 MST 2009 
+//    Kathleen Bonnell, Mon Apr 20 10:38:22 MST 2009
 //    Added MATH_API in front of operator<< for compilation on windows when
 //    other classes attempt to use the method.
 //
@@ -149,37 +143,37 @@ class MATH_API avtVector
 #undef STUB_OSTR
 #undef STUB_STR
 
-inline 
+inline
 avtVector::avtVector()
     : x(0), y(0), z(0)
 {
 }
 
-inline 
+inline
 avtVector::avtVector(double x_,double y_)
     : x(x_), y(y_), z(0)
 {
 }
 
-inline 
+inline
 avtVector::avtVector(double x_,double y_,double z_)
     : x(x_), y(y_), z(z_)
 {
 }
 
-inline 
+inline
 avtVector::avtVector(const double *p)
     : x(p[0]), y(p[1]), z(p[2])
 {
 }
 
-inline 
+inline
 avtVector::avtVector(const float *p)
     : x(p[0]), y(p[1]), z(p[2])
 {
 }
 
-inline 
+inline
 avtVector::avtVector(const avtVector &r)
 {
     x=r.x;
