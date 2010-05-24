@@ -25,9 +25,8 @@ ENDIF(VTK_USE_MPI)
 include(CTest)
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
 
-#lower warning level since this project has to many warnings
-set(OLD_CMAKE_CXX_WARNING_LEVEL ${CMAKE_CXX_WARNING_LEVEL})
-set(CMAKE_CXX_WARNING_LEVEL 0)
+#block out most of the warnings in visit
+add_definitions( "/wd4267 /wd4996" )
 
 #-----------------------------------------------------------------------------
 # Setup Vars for visit-config.h
@@ -142,7 +141,3 @@ add_subdirectory(common)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(VisItReader)
-
-
-SET(CMAKE_CXX_WARNING_LEVEL ${OLD_CMAKE_CXX_WARNING_LEVEL})
-
