@@ -117,20 +117,19 @@ set(VISIT_COMMON_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/common/common/utility
     )
     
-add_subdirectory(common)
+#watch out, you need to make sure common/parser is always in front of
+# python2.X includes
 
-#now that common is configured we can include vtk
-#or we will try to include pythons grammar.h instead of visit parser grammar.h
 INCLUDE(${PARAVIEW_USE_FILE})
 INCLUDE_DIRECTORIES(
+  ${VISIT_COMMON_INCLUDES}
   ${VTK_INCLUDE_DIRS}
-  )
-add_subdirectory(visit_vtk)
-add_subdirectory(avt)
-INCLUDE_DIRECTORIES( 
   ${PARAVIEW_INCLUDE_DIRS}
   ${PARAVIEW_GUI_INCLUDE_DIRS}   
-  )
+  )    
+add_subdirectory(common)
+add_subdirectory(visit_vtk)
+add_subdirectory(avt)
 add_subdirectory(VisItReader)
 
 
