@@ -197,7 +197,7 @@ class Quad
   public:
                    Quad() { ordering_case = 255; };
 
-    int            AssignNodes(const int *);
+    vtkIdType      AssignNodes(const vtkIdType *);
     bool           Equals(Quad *);
     bool           Equals(Tri *);
     void           AddInRemainingTriangle(Tri *, int);
@@ -239,7 +239,7 @@ typedef enum
     Q3012, Q3021, Q3102, Q3120, Q3201, Q3210
 }  QUAD_ORDERING_CASES;
 
-static int quad_reorder_list[24][4] = 
+static vtkIdType quad_reorder_list[24][4] =
     { { -1, 0, 1, 2 }, { -1, 0, 2, 1 }, { -1, 1, 0, 2 }, { -1, 2, 0, 1 },
       { -1, 1, 2, 0 }, { -1, 2, 1, 0 },
       { 0, -1, 1, 2 }, { 0, -1, 2, 1 }, { 1, -1, 0, 2 }, { 2, -1, 0, 1 },
@@ -247,10 +247,10 @@ static int quad_reorder_list[24][4] =
       { 0, 1, -1, 2 }, { 0, 2, -1, 1 }, { 1, 0, -1, 2 }, { 2, 0, -1, 1 },
       { 1, 2, -1, 0 }, { 2, 1, -1, 0 },
       { 0, 1, 2, -1 }, { 0, 2, 1, -1 }, { 1, 0, 2, -1 }, { 2, 0, 1, -1 },
-      { 1, 2, 0, -1 }, { 2, 1, 0, -1 } 
+      { 1, 2, 0, -1 }, { 2, 1, 0, -1 }
     };
 
-static int quad_map_back_list[24][3] =
+static vtkIdType quad_map_back_list[24][3] =
     {
          { 1, 2, 3 }, { 1, 3, 2 }, { 2, 1, 3 },
          { 2, 3, 1 }, { 3, 1, 2 }, { 3, 2, 1 },
@@ -283,7 +283,7 @@ class Tri
   public:
                    Tri() { ordering_case = 255; };
 
-    int            AssignNodes(const int *);
+    vtkIdType      AssignNodes(const vtkIdType *);
     inline bool    Equals(Tri *&t)
                    {
                       if (t->nodes[0] == nodes[0] && t->nodes[1] == nodes[1])
@@ -311,7 +311,7 @@ class Tri
 
   protected:
     unsigned char ordering_case;
-    int           nodes[2];
+    vtkIdType     nodes[2];
     int           orig_zone;
 
     static TriMemoryManager *MemoryManager;
@@ -329,9 +329,9 @@ typedef enum
     T201, T210
 }  TRI_ORDERING_CASES;
 
-static int tri_reorder_list[6][3] = 
-    { 
-        { -1, 0, 1 }, { -1, 1, 0 }, 
+static int tri_reorder_list[6][3] =
+    {
+        { -1, 0, 1 }, { -1, 1, 0 },
         { 0, -1, 1 }, { 0, 1, -1 },
         { 1, -1, 0 }, { 1, 0, -1 }
     };
@@ -380,7 +380,7 @@ class HashEntry
     unsigned char  last_good_entry;
     unsigned char  face_type;
     HashEntry     *extension;
-   
+
     static HashEntryMemoryManager *MemoryManager;
     static HashEntryList          *list;
 
@@ -436,7 +436,7 @@ class HashEntryMemoryManager
 //
 //  Purpose:
 //      This effectively works as the hash.  It hashes each faces by its lowest
-//      numbered index. 
+//      numbered index.
 //
 //  Programmer: Hank Childs
 //  Creation:   October 21, 2002
@@ -449,8 +449,8 @@ class HashEntryList
                 HashEntryList(int npts);
     virtual    ~HashEntryList();
 
-    void        AddTri(const int *, int orig_zone);
-    void        AddQuad(const int *, int orig_zone);
+    void        AddTri(const vtkIdType *, int orig_zone);
+    void        AddQuad(const vtkIdType *, int orig_zone);
 
     inline void RemoveFace(void) { nfaces--; };
     int         GetNumberOfFaces(void) { return nfaces; };
@@ -558,15 +558,15 @@ Quad::RegisterMemoryManager(QuadMemoryManager *mm)
 //
 //  Modifications:
 //    Jeremy Meredith, Tue Nov 16 14:54:09 PST 2004
-//    Make more robust for degenerate input data.  Specifically, quads with 
+//    Make more robust for degenerate input data.  Specifically, quads with
 //    all four corners at the same node.  See '5659.
 //
 // ****************************************************************************
 
-int
-Quad::AssignNodes(const int *n)
+vtkIdType
+Quad::AssignNodes(const vtkIdType *n)
 {
-    int smallest = 0;
+    vtkIdType smallest = 0;
     if (n[1] < n[smallest])
        smallest = 1;
     if (n[2] < n[smallest])
@@ -591,7 +591,7 @@ Quad::AssignNodes(const int *n)
         nodes[2] = n[3];
     }
     else if (biggest == 3)
-    { 
+    {
         if (smallest == 0)
         {
             if (n[1] < n[2])
@@ -806,7 +806,7 @@ Quad::AssignNodes(const int *n)
             }
         }
     }
-    
+
 /*** There was an effort to play with additional hashing functions.  It was
  *** determined that the functions to calculate the key was just too expensive.
  *** The only function that could be used for a single pass hash was one that
@@ -841,7 +841,7 @@ Quad::OutputCell(int node0, vtkPolyData *pd, vtkCellData *in_cd,
                  vtkCellData *out_cd)
 {
     vtkIdType n[4];
-    int *list = quad_reorder_list[ordering_case];
+    vtkIdType *list = quad_reorder_list[ordering_case];
     n[0] = (list[0] == -1 ? node0 : nodes[list[0]]);
     n[1] = (list[1] == -1 ? node0 : nodes[list[1]]);
     n[2] = (list[2] == -1 ? node0 : nodes[list[2]]);
@@ -965,14 +965,14 @@ Quad::AddInRemainingTriangle(Tri *t, int node_0)
 void
 Quad::AddInRemainingTriangle(int n, int node_0)
 {
-    int orig_quad_index = quad_map_back_list[ordering_case][n];
-    int *neighbors = quad_reorder_list[ordering_case];
+    vtkIdType orig_quad_index = quad_map_back_list[ordering_case][n];
+    vtkIdType *neighbors = quad_reorder_list[ordering_case];
 
-    int n_list[3];
+    vtkIdType n_list[3];
     n_list[0] = neighbors[(orig_quad_index+3)%4];
     n_list[1] = neighbors[orig_quad_index];
     n_list[2] = neighbors[(orig_quad_index+1)%4];
-    int tmp_nodes[3];
+    vtkIdType tmp_nodes[3];
     for (int i = 0 ; i < 3 ; i++)
     {
         tmp_nodes[i] = (n_list[i] == -1 ? node_0 : nodes[n_list[i]]);
@@ -1015,10 +1015,10 @@ Tri::RegisterMemoryManager(TriMemoryManager *mm)
 //
 // ****************************************************************************
 
-int
-Tri::AssignNodes(const int *n)
+vtkIdType
+Tri::AssignNodes(const vtkIdType *n)
 {
-    int smallest = 0;
+    vtkIdType smallest = 0;
     if (n[0] < n[1])
     {
         if (n[1] < n[2])
@@ -1188,7 +1188,7 @@ HashEntry::AddTri(Tri *f)
         ActuallyAddTri(f);
     }
 }
-        
+
 
 // ****************************************************************************
 //  Method: HashEntry::AddQuad
@@ -1211,7 +1211,7 @@ HashEntry::AddQuad(Quad *f)
         ActuallyAddQuad(f);
     }
 }
-        
+
 
 // ****************************************************************************
 //  Method: HashEntry::RemoveEntry
@@ -1241,7 +1241,7 @@ HashEntry::RemoveEntry(int ind)
 
 // ****************************************************************************
 //  Method: HashEntry::LocateAndRemoveQuad
-// 
+//
 //  Purpose:
 //      Locates a quad in the hash entry and removes it if it exists.
 //
@@ -1294,7 +1294,7 @@ HashEntry::LocateAndRemoveQuad(Quad *f)
 
 // ****************************************************************************
 //  Method: HashEntry::LocateAndRemoveQuad
-// 
+//
 //  Purpose:
 //      Locates a triangle in the hash entry and removes it if it exists.
 //
@@ -1381,7 +1381,7 @@ HashEntry::ActuallyAddQuad(Quad *f)
 //  Method: HashEntry::ActuallyAddTri
 //
 //  Purpose:
-//      After determining that this triangle is unique, this actually adds it 
+//      After determining that this triangle is unique, this actually adds it
 //      to the hash entry.
 //
 //  Programmer: Hank Childs
@@ -1643,11 +1643,11 @@ HashEntryList::~HashEntryList()
 // ****************************************************************************
 
 void
-HashEntryList::AddTri(const int *node_list, int orig_zone)
+HashEntryList::AddTri(const vtkIdType *node_list, int orig_zone)
 {
     nfaces++;
     Tri *tri = tmm.GetFreeTri();
-    int hash_index = tri->AssignNodes(node_list);
+    vtkIdType hash_index = tri->AssignNodes(node_list);
     tri->SetOriginalZone(orig_zone);
     if (list[hash_index] == NULL)
     {
@@ -1673,11 +1673,11 @@ HashEntryList::AddTri(const int *node_list, int orig_zone)
 // ****************************************************************************
 
 void
-HashEntryList::AddQuad(const int *node_list, int orig_zone)
+HashEntryList::AddQuad(const vtkIdType *node_list, int orig_zone)
 {
     nfaces++;
     Quad *quad = qmm.GetFreeQuad();
-    int hash_index = quad->AssignNodes(node_list);
+    vtkIdType hash_index = quad->AssignNodes(node_list);
     quad->SetOriginalZone(orig_zone);
     if (list[hash_index] == NULL)
     {
@@ -1718,7 +1718,7 @@ HashEntryList::CreateOutputCells(vtkPolyData *output, vtkCellData *in_cd,
 //  Method: HashEntry::CreateOutputCells
 //
 //  Purpose:
-//      Goes through each of the faces and has them output themselves as VTK 
+//      Goes through each of the faces and has them output themselves as VTK
 //      objects.
 //
 //  Programmer: Hank Childs
@@ -1751,7 +1751,7 @@ HashEntry::CreateOutputCells(vtkPolyData *output, vtkCellData *in_cd,
 }
 
 
-vtkStandardNewMacro(vtkUnstructuredGridFacelistFilter); 
+vtkStandardNewMacro(vtkUnstructuredGridFacelistFilter);
 
 void
 vtkUnstructuredGridFacelistFilter::PrintSelf(ostream& os, vtkIndent indent)
@@ -1786,7 +1786,7 @@ vtkUnstructuredGridFacelistFilter::Execute()
     vtkCellData *cd = input->GetCellData();
     vtkPolyData *output = this->GetOutput();
     vtkCellData *outputCD = output->GetCellData();
- 
+
     //
     // We won't be doing anything to the points, so they can be passed right
     // through.
@@ -1947,7 +1947,7 @@ LoopOverAllCells(vtkUnstructuredGrid *input, HashEntryList &list)
          cellId++)
     {
         int cellType = input->GetCellType(cellId);
- 
+
         switch (cellType)
         {
           case VTK_VERTEX:
@@ -1962,7 +1962,7 @@ LoopOverAllCells(vtkUnstructuredGrid *input, HashEntryList &list)
           case VTK_QUADRATIC_EDGE:
             numPolygonalCells++;
             break;
- 
+
           case VTK_TETRA:
             AddTetrahedron(pts, cellId, list);
             break;
@@ -2227,7 +2227,7 @@ AddPyramid(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddQuadraticTriangle
 //
-// Purpose: 
+// Purpose:
 //   Breaks up the quadratic triangle into linear triangles and adds them
 //   to the hash entry list.
 //
@@ -2235,7 +2235,7 @@ AddPyramid(vtkIdType *pts, int cellId, HashEntryList &list)
 // Creation:   Mon May 8 14:52:30 PST 2006
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2263,7 +2263,7 @@ AddQuadraticTriangle(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddQuadraticQuad
 //
-// Purpose: 
+// Purpose:
 //   Breaks up the quadratic quad into linear triangles and adds them
 //   to the hash entry list.
 //
@@ -2271,7 +2271,7 @@ AddQuadraticTriangle(vtkIdType *pts, int cellId, HashEntryList &list)
 // Creation:   Mon May 8 14:52:30 PST 2006
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2307,7 +2307,7 @@ AddQuadraticQuad(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddQuadraticTetrahedron
 //
-// Purpose: 
+// Purpose:
 //   Breaks up the faces of the quadratic tet into linear triangles and adds
 //   them to the hash entry list.
 //
@@ -2315,7 +2315,7 @@ AddQuadraticQuad(vtkIdType *pts, int cellId, HashEntryList &list)
 // Creation:   Mon May 8 14:52:30 PST 2006
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2341,7 +2341,7 @@ AddQuadraticTetrahedron(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddQuadraticHexahedron
 //
-// Purpose: 
+// Purpose:
 //   Breaks up the faces of the quadratic hex into linear triangles and adds
 //   them to the hash entry list.
 //
@@ -2349,7 +2349,7 @@ AddQuadraticTetrahedron(vtkIdType *pts, int cellId, HashEntryList &list)
 // Creation:   Mon May 8 14:52:30 PST 2006
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2378,7 +2378,7 @@ AddQuadraticHexahedron(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddQuadraticPyramid
 //
-// Purpose: 
+// Purpose:
 //   Breaks up the faces of the quadratic pyramid into linear triangles and
 //   adds them to the list.
 //
@@ -2386,7 +2386,7 @@ AddQuadraticHexahedron(vtkIdType *pts, int cellId, HashEntryList &list)
 // Creation:   Thu Apr 29 14:32:38 PST 2010
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2422,7 +2422,7 @@ AddQuadraticPyramid(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddQuadraticWedge
 //
-// Purpose: 
+// Purpose:
 //   Breaks up the faces of the quadratic wedge into linear triangles and
 //   adds them to the list.
 //
@@ -2430,7 +2430,7 @@ AddQuadraticPyramid(vtkIdType *pts, int cellId, HashEntryList &list)
 // Creation:   Thu Apr 29 14:32:38 PST 2010
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2469,14 +2469,14 @@ AddQuadraticWedge(vtkIdType *pts, int cellId, HashEntryList &list)
 // ****************************************************************************
 // Function: AddUnknownCell
 //
-// Purpose: 
+// Purpose:
 //     Adds a cell of unknown type by using VTK general interface methods.
 //
 // Programmer: Hank Childs
 // Creation:   September 7, 2006
 //
 // Modifications:
-//   
+//
 //   Hank Childs, Thu Jul  9 08:09:26 PDT 2009
 //   Add support for polygons.
 //

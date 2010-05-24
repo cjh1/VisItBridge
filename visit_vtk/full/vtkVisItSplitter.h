@@ -92,7 +92,7 @@ class VISIT_VTK_API vtkVisItSplitter
 
     void Execute();
 
-    int *CellList;
+    vtkIdType *CellList;
     int  CellListSize;
   private:
     bool   removeWholeCells;

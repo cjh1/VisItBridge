@@ -7,7 +7,7 @@
   Version:   $Revision: 1.54 $
 
 
-Copyright (c) 1993-2000 Ken Martin, Will Schroeder, Bill Lorensen 
+Copyright (c) 1993-2000 Ken Martin, Will Schroeder, Bill Lorensen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //-----------------------------------------------------------------------------
 // Modifications:
-//   Kathleen Bonnell, Wed Mar  6 15:14:29 PST 2002 
+//   Kathleen Bonnell, Wed Mar  6 15:14:29 PST 2002
 //   Replace 'New' method with Macro to match VTK 4.0 API.
 //-----------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ void vtkPolyDataRelevantPointsFilter::Execute()
   vtkPoints *inPts  = input->GetPoints();
   int numPts        = input->GetNumberOfPoints();
   int numCells      = input->GetNumberOfCells();
-  
+
   //
   // Sanity checks
   //
@@ -101,7 +101,7 @@ void vtkPolyDataRelevantPointsFilter::Execute()
       vtkErrorMacro(<<"No data to Operate On!");
       return;
   }
- 
+
   //
   // The cells will be largely unaffected, so pass them straight through.
   //
@@ -109,7 +109,7 @@ void vtkPolyDataRelevantPointsFilter::Execute()
   vtkCellData  *inputCD  = input->GetCellData();
   vtkCellData  *outputCD = output->GetCellData();
   outputCD->PassData(inputCD);
-  
+
   //
   // First set up some of the constructs that will be used to create a mapping
   // between the old point indices and the new point indices.
@@ -154,7 +154,7 @@ void vtkPolyDataRelevantPointsFilter::Execute()
 
   //
   // Now create a new vtkPoints construct that reflects the mapping we created.
-  // This is a bit ugly (re: pointer arithmetic) in the interest of 
+  // This is a bit ugly (re: pointer arithmetic) in the interest of
   // performance.
   //
   vtkPoints *newPts = vtkPoints::New();
@@ -190,9 +190,9 @@ void vtkPolyDataRelevantPointsFilter::Execute()
   int nIdStoreSize = 1024;
   vtkIdType *pts = new vtkIdType[nIdStoreSize];
   vtkIdType *oldPts = NULL;
-  int nids = 0;
+  vtkIdType nids = 0;
   input->BuildCells();
-  for (i = 0; i < numCells; i++) 
+  for (i = 0; i < numCells; i++)
     {
     input->GetCellPoints(i, nids, oldPts);
     if(nids > nIdStoreSize)
@@ -214,7 +214,7 @@ void vtkPolyDataRelevantPointsFilter::Execute()
 }
 
 //-----------------------------------------------------------------------------
-void vtkPolyDataRelevantPointsFilter::PrintSelf(ostream& os, vtkIndent indent) 
+void vtkPolyDataRelevantPointsFilter::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
 }

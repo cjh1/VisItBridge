@@ -190,8 +190,8 @@ vtkVisItScalarTree::BuildTree()
     for (int cellId = 0 ; cellId < nCells ; cellId++)
     {
         vtkIdType *pts;
-        int npts;
-        int arr8[8];
+        vtkIdType npts;
+        vtkIdType arr8[8];
 
         // Get the points
         if (meshType==VTK_RECTILINEAR_GRID || meshType==VTK_STRUCTURED_GRID)

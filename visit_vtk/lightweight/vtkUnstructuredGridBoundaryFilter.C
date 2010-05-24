@@ -259,7 +259,7 @@ class BQuad
   public:
                    BQuad() { ordering_case = 255; matched = false; };
 
-    int            AssignNodes(const int *);
+    vtkIdType      AssignNodes(const vtkIdType *);
     bool           Equals(BQuad *);
     bool           Equals(BTri *);
     void           AddInRemainingTriangle(BTri *, int);
@@ -307,7 +307,7 @@ typedef enum
     Q3012, Q3021, Q3102, Q3120, Q3201, Q3210
 }  QUAD_ORDERING_CASES;
 
-static int quad_reorder_list[24][4] = 
+static vtkIdType quad_reorder_list[24][4] =
     { { -1, 0, 1, 2 }, { -1, 0, 2, 1 }, { -1, 1, 0, 2 }, { -1, 2, 0, 1 },
       { -1, 1, 2, 0 }, { -1, 2, 1, 0 },
       { 0, -1, 1, 2 }, { 0, -1, 2, 1 }, { 1, -1, 0, 2 }, { 2, -1, 0, 1 },
@@ -315,10 +315,10 @@ static int quad_reorder_list[24][4] =
       { 0, 1, -1, 2 }, { 0, 2, -1, 1 }, { 1, 0, -1, 2 }, { 2, 0, -1, 1 },
       { 1, 2, -1, 0 }, { 2, 1, -1, 0 },
       { 0, 1, 2, -1 }, { 0, 2, 1, -1 }, { 1, 0, 2, -1 }, { 2, 0, 1, -1 },
-      { 1, 2, 0, -1 }, { 2, 1, 0, -1 } 
+      { 1, 2, 0, -1 }, { 2, 1, 0, -1 }
     };
 
-static int quad_map_back_list[24][3] =
+static vtkIdType quad_map_back_list[24][3] =
     {
          { 1, 2, 3 }, { 1, 3, 2 }, { 2, 1, 3 },
          { 2, 3, 1 }, { 3, 1, 2 }, { 3, 2, 1 },
@@ -355,7 +355,7 @@ class BTri
   public:
                    BTri() { ordering_case = 255; matched = false; };
 
-    int            AssignNodes(const int *);
+    vtkIdType      AssignNodes(const vtkIdType *);
     inline bool    Equals(BTri *&t)
                    {
                       if (t->nodes[0] == nodes[0] && t->nodes[1] == nodes[1])
@@ -407,9 +407,9 @@ typedef enum
     T201, T210
 }  TRI_ORDERING_CASES;
 
-static int tri_reorder_list[6][3] = 
-    { 
-        { -1, 0, 1 }, { -1, 1, 0 }, 
+static int tri_reorder_list[6][3] =
+    {
+        { -1, 0, 1 }, { -1, 1, 0 },
         { 0, -1, 1 }, { 0, 1, -1 },
         { 1, -1, 0 }, { 1, 0, -1 }
     };
@@ -435,7 +435,7 @@ class BLine
   public:
                    BLine() { ordering_case = 255; matched = false; };
 
-    int            AssignNodes(const int *);
+    vtkIdType      AssignNodes(const vtkIdType *);
     inline bool    Equals(BLine *l)
                    {
                        return l->nodes[0] == nodes[0];
@@ -479,8 +479,8 @@ typedef enum
     T01, T10
 }  LINE_ORDERING_CASES;
 
-static int line_reorder_list[2][2] = 
-    { 
+static int line_reorder_list[2][2] =
+    {
         { -1, 0 }, { 0, -1 }
     };
 
@@ -531,7 +531,7 @@ class BHashEntry
     unsigned char  last_good_entry;
     unsigned char  face_type;
     BHashEntry     *extension;
-   
+
     static BHashEntryMemoryManager *MemoryManager;
     static BHashEntryList          *list;
 
@@ -580,7 +580,7 @@ class BHashEntry2D
     int            point_index;
     unsigned char  last_good_entry;
     BHashEntry2D   *extension;
-   
+
     static BHashEntryMemoryManager2D *MemoryManager;
     static BHashEntryList2D          *list;
 
@@ -674,7 +674,7 @@ class BHashEntryMemoryManager2D
 //
 //  Purpose:
 //      This effectively works as the hash.  It hashes each faces by its lowest
-//      numbered index. 
+//      numbered index.
 //
 //  Programmer: Hank Childs
 //  Creation:   October 21, 2002
@@ -691,8 +691,8 @@ class BHashEntryList
                 BHashEntryList(int npts);
     virtual    ~BHashEntryList();
 
-    void        AddTri(const int *, int orig_zone, int cell_value);
-    void        AddQuad(const int *, int orig_zone, int cell_value);
+    void        AddTri(const vtkIdType *, int orig_zone, int cell_value);
+    void        AddQuad(const vtkIdType *, int orig_zone, int cell_value);
 
     inline void IncrementMatchedCount() { matchedCount++; }
 
@@ -719,7 +719,7 @@ class BHashEntryList
 //
 //  Purpose:
 //      This effectively works as the hash.  It hashes each line by its lowest
-//      numbered index. 
+//      numbered index.
 //
 //  Programmer: Jeremy Meredith
 //  Creation:   June 12, 2003
@@ -736,7 +736,7 @@ class BHashEntryList2D
 
     inline void IncrementMatchedCount() { matchedCount++; }
 
-    void        AddLine(const int *, int orig_zone, int cell_value);
+    void        AddLine(const vtkIdType *, int orig_zone, int cell_value);
 
     inline void RemoveLine(void) { nlines--; };
     int         GetNumberOfMatchedLines(void) { return matchedCount; };
@@ -842,10 +842,10 @@ BQuad::RegisterMemoryManager(BQuadMemoryManager *mm)
 //
 // ****************************************************************************
 
-int
-BQuad::AssignNodes(const int *n)
+vtkIdType
+BQuad::AssignNodes(const vtkIdType *n)
 {
-    int smallest = 0;
+    vtkIdType smallest = 0;
     if (n[1] < n[smallest])
        smallest = 1;
     if (n[2] < n[smallest])
@@ -862,7 +862,7 @@ BQuad::AssignNodes(const int *n)
        biggest = 3;
 
     if (biggest == 3)
-    { 
+    {
         if (smallest == 0)
         {
             if (n[1] < n[2])
@@ -1077,7 +1077,7 @@ BQuad::AssignNodes(const int *n)
             }
         }
     }
-    
+
 /*** There was an effort to play with additional hashing functions.  It was
  *** determined that the functions to calculate the key was just too expensive.
  *** The only function that could be used for a single pass hash was one that
@@ -1112,7 +1112,7 @@ BQuad::OutputCell(int node0, vtkPolyData *pd, vtkCellData *in_cd,
                  vtkCellData *out_cd)
 {
     vtkIdType n[4];
-    int *list = quad_reorder_list[ordering_case];
+    vtkIdType *list = quad_reorder_list[ordering_case];
     n[0] = (list[0] == -1 ? node0 : nodes[list[0]]);
     n[1] = (list[1] == -1 ? node0 : nodes[list[1]]);
     n[2] = (list[2] == -1 ? node0 : nodes[list[2]]);
@@ -1239,14 +1239,14 @@ BQuad::AddInRemainingTriangle(BTri *t, int node_0)
 void
 BQuad::AddInRemainingTriangle(int n, int node_0)
 {
-    int orig_quad_index = quad_map_back_list[ordering_case][n];
-    int *neighbors = quad_reorder_list[ordering_case];
+    vtkIdType orig_quad_index = quad_map_back_list[ordering_case][n];
+    vtkIdType *neighbors = quad_reorder_list[ordering_case];
 
-    int n_list[3];
+    vtkIdType n_list[3];
     n_list[0] = neighbors[(orig_quad_index+3)%4];
     n_list[1] = neighbors[orig_quad_index];
     n_list[2] = neighbors[(orig_quad_index+1)%4];
-    int tmp_nodes[3];
+    vtkIdType tmp_nodes[3];
     for (int i = 0 ; i < 3 ; i++)
     {
         tmp_nodes[i] = (n_list[i] == -1 ? node_0 : nodes[n_list[i]]);
@@ -1289,10 +1289,10 @@ BTri::RegisterMemoryManager(BTriMemoryManager *mm)
 //
 // ****************************************************************************
 
-int
-BTri::AssignNodes(const int *n)
+vtkIdType
+BTri::AssignNodes(const vtkIdType *n)
 {
-    int smallest = 0;
+    vtkIdType smallest = 0;
     if (n[0] < n[1])
     {
         if (n[1] < n[2])
@@ -1453,10 +1453,10 @@ BLine::RegisterMemoryManager(BLineMemoryManager *mm)
 //
 // ****************************************************************************
 
-int
-BLine::AssignNodes(const int *n)
+vtkIdType
+BLine::AssignNodes(const vtkIdType *n)
 {
-    int smallest = 0;
+    vtkIdType smallest = 0;
     if (n[0] < n[1])
     {
         ordering_case = T01;
@@ -1541,7 +1541,7 @@ BHashEntry::AddTri(BTri *f)
         ActuallyAddTri(f);
     }
 }
-        
+
 
 // ****************************************************************************
 //  Method: BHashEntry::AddQuad
@@ -1564,7 +1564,7 @@ BHashEntry::AddQuad(BQuad *f)
         ActuallyAddQuad(f);
     }
 }
-        
+
 
 // ****************************************************************************
 //  Method: BHashEntry::RemoveEntry
@@ -1594,7 +1594,7 @@ BHashEntry::RemoveEntry(int ind)
 
 // ****************************************************************************
 //  Method: BHashEntry::LocateAndRemoveQuad
-// 
+//
 //  Purpose:
 //      Locates a quad in the hash entry.  If the quad already exists
 //      with the same value, removes it and tells the caller not to add
@@ -1690,7 +1690,7 @@ BHashEntry::LocateAndRemoveQuad(BQuad *f)
 
 // ****************************************************************************
 //  Method: BHashEntry::LocateAndRemoveQuad
-// 
+//
 //  Purpose:
 //      Locates a triangle in the hash entry and removes it if it exists.
 //
@@ -1816,7 +1816,7 @@ BHashEntry::ActuallyAddQuad(BQuad *f)
 //  Method: BHashEntry::ActuallyAddTri
 //
 //  Purpose:
-//      After determining that this triangle is unique, this actually adds it 
+//      After determining that this triangle is unique, this actually adds it
 //      to the hash entry.
 //
 //  Programmer: Hank Childs
@@ -1934,7 +1934,7 @@ BHashEntry2D::AddLine(BLine *l)
         ActuallyAddLine(l);
     }
 }
-        
+
 
 // ****************************************************************************
 //  Method: BHashEntry2D::RemoveEntry
@@ -1959,7 +1959,7 @@ BHashEntry2D::RemoveEntry(int ind)
 
 // ****************************************************************************
 //  Method: BHashEntry2D::LocateAndRemoveLine
-// 
+//
 //  Purpose:
 //      Locates a line in the hash entry.  If the line already exists
 //      with the same value, removes it and tells the caller not to add
@@ -2349,11 +2349,11 @@ BHashEntryList::~BHashEntryList()
 // ****************************************************************************
 
 void
-BHashEntryList::AddTri(const int *node_list, int orig_zone, int cell_value)
+BHashEntryList::AddTri(const vtkIdType *node_list, int orig_zone, int cell_value)
 {
     nfaces++;
     BTri *tri = tmm.GetFreeTri();
-    int hash_index = tri->AssignNodes(node_list);
+    vtkIdType hash_index = tri->AssignNodes(node_list);
     tri->SetOriginalZone(orig_zone);
     tri->SetCellValue(cell_value);
     if (list[hash_index] == NULL)
@@ -2384,11 +2384,11 @@ BHashEntryList::AddTri(const int *node_list, int orig_zone, int cell_value)
 // ****************************************************************************
 
 void
-BHashEntryList::AddQuad(const int *node_list, int orig_zone, int cell_value)
+BHashEntryList::AddQuad(const vtkIdType *node_list, int orig_zone, int cell_value)
 {
     nfaces++;
     BQuad *quad = qmm.GetFreeQuad();
-    int hash_index = quad->AssignNodes(node_list);
+    vtkIdType hash_index = quad->AssignNodes(node_list);
     quad->SetOriginalZone(orig_zone);
     quad->SetCellValue(cell_value);
     if (list[hash_index] == NULL)
@@ -2434,7 +2434,7 @@ BHashEntryList::CreateOutputCells(vtkPolyData *output, vtkCellData *in_cd,
 //  Method: BHashEntry::CreateOutputCells
 //
 //  Purpose:
-//      Goes through each of the faces and has them output themselves as VTK 
+//      Goes through each of the faces and has them output themselves as VTK
 //      objects.
 //
 //  Programmer: Hank Childs
@@ -2535,11 +2535,11 @@ BHashEntryList2D::~BHashEntryList2D()
 // ****************************************************************************
 
 void
-BHashEntryList2D::AddLine(const int *node_list, int orig_zone, int cell_value)
+BHashEntryList2D::AddLine(const vtkIdType *node_list, int orig_zone, int cell_value)
 {
     nlines++;
     BLine *line = lmm.GetFreeLine();
-    int hash_index = line->AssignNodes(node_list);
+    vtkIdType hash_index = line->AssignNodes(node_list);
     line->SetOriginalZone(orig_zone);
     line->SetCellValue(cell_value);
     if (list[hash_index] == NULL)
@@ -2583,7 +2583,7 @@ BHashEntryList2D::CreateOutputCells(vtkPolyData *output, vtkCellData *in_cd,
 //  Method: BHashEntry2D::CreateOutputCells
 //
 //  Purpose:
-//      Goes through each of the lines and has them output themselves as VTK 
+//      Goes through each of the lines and has them output themselves as VTK
 //      objects.
 //
 //  Programmer: Jeremy Meredith
@@ -2610,7 +2610,7 @@ BHashEntry2D::CreateOutputCells(vtkPolyData *output, vtkCellData *in_cd,
 }
 
 
-vtkStandardNewMacro(vtkUnstructuredGridBoundaryFilter); 
+vtkStandardNewMacro(vtkUnstructuredGridBoundaryFilter);
 
 void
 vtkUnstructuredGridBoundaryFilter::PrintSelf(ostream& os, vtkIndent indent)
@@ -2646,7 +2646,7 @@ vtkUnstructuredGridBoundaryFilter::Execute()
     vtkCellData *cd = input->GetCellData();
     vtkPolyData *output = this->GetOutput();
     vtkCellData *outputCD = output->GetCellData();
- 
+
     //
     // We won't be doing anything to the points, so they can be passed right
     // through.
