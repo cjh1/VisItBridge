@@ -52,7 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // **************************************************************************
 //  Modifications:
-//    Kathleen Bonnell, Wed Mar  6 17:10:03 PST 2002 
+//    Kathleen Bonnell, Wed Mar  6 17:10:03 PST 2002
 //    Replace 'New' method with Macro to match VTK 4.0 API.
 // **************************************************************************
 
@@ -74,8 +74,8 @@ vtkVertexFilter::vtkVertexFilter()
 //    Eric Brugger, Tue May 14 15:27:24 PDT 2002
 //    Modified to work properly with cell centered variables.
 //
-//    Kathleen Bonnell, Wed Oct 20 17:10:21 PDT 2004 
-//    Use vtkVisItUtility method to compute cell center. 
+//    Kathleen Bonnell, Wed Oct 20 17:10:21 PDT 2004
+//    Use vtkVisItUtility method to compute cell center.
 //
 //    Hank Childs, Fri Jun  9 13:13:20 PDT 2006
 //    Remove unused variable.
@@ -170,7 +170,7 @@ void vtkVertexFilter::Execute(void)
       // so avoid that if possible.
       if (ugrid != NULL && ugrid->GetCellType(i) == VTK_CONVEX_POINT_SET)
       {
-          int npts;
+          vtkIdType npts;
           vtkIdType *pts;
           ugrid->GetCellPoints(i, npts, pts);
           point[0] = 0.;
@@ -204,7 +204,7 @@ void vtkVertexFilter::Execute(void)
   outPts->Delete();
 }
 
-  
+
 void vtkVertexFilter::PrintSelf(ostream &os, vtkIndent indent)
 {
    this->Superclass::PrintSelf(os, indent);

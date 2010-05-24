@@ -189,13 +189,13 @@ vtkConnectedTubeFilter::PointSequenceList::~PointSequenceList()
 //  Method:  PointSequenceList::Build
 //
 //  Purpose:
-//    Extract the 
+//    Extract the
 //
 //  Programmer:  Jeremy Meredith
 //  Creation:    November  1, 2002
 //
 // ****************************************************************************
-bool 
+bool
 vtkConnectedTubeFilter::PointSequenceList::Build(vtkPoints *points,
                                                  vtkCellArray *lines)
 {
@@ -319,7 +319,7 @@ vtkConnectedTubeFilter::PointSequenceList::GetNextSequence(PointSequence &seq)
                 previous = current;
                 current = next;
 
- 
+
                 // we must skip any sequential identical points:
                 // 1) they are useless, and 2) they mess up calculations
                 if (pts[previous*3+0] != pts[current*3+0] ||
@@ -330,9 +330,9 @@ vtkConnectedTubeFilter::PointSequenceList::GetNextSequence(PointSequence &seq)
                 }
 
                 // check for a loop (AFTER adding the node again...)
-                if (lookforloops && visited[current]) 
+                if (lookforloops && visited[current])
                 {
-                    break; 
+                    break;
                 }
                 visited[current] = true;
 
@@ -355,10 +355,10 @@ vtkConnectedTubeFilter::PointSequenceList::GetNextSequence(PointSequence &seq)
         }
     }
 
-    if (index == len && !lookforloops) 
+    if (index == len && !lookforloops)
     {
-        lookforloops = true; 
-        index=0; 
+        lookforloops = true;
+        index=0;
         return GetNextSequence(seq);
     }
 
@@ -424,7 +424,7 @@ bool vtkConnectedTubeFilter::BuildConnectivityArrays()
     int numCells;
     vtkDebugMacro(<<"Building tube connectivity arrays");
 
-    if (!(inPts=input->GetPoints())               || 
+    if (!(inPts=input->GetPoints())               ||
         (numPts = inPts->GetNumberOfPoints()) < 1 ||
         !(inLines = input->GetLines())            ||
         (numCells = inLines->GetNumberOfCells()) < 1)
@@ -487,7 +487,7 @@ void vtkConnectedTubeFilter::Execute()
         return;
     }
 
-    if (!(inPts=input->GetPoints())               || 
+    if (!(inPts=input->GetPoints())               ||
         (numPts = inPts->GetNumberOfPoints()) < 1 ||
         !(inLines = input->GetLines())            ||
         (numCells = inLines->GetNumberOfCells()) < 1)
@@ -516,7 +516,7 @@ void vtkConnectedTubeFilter::Execute()
     vtkCellData   *newCD      = NULL;
     newCD = output->GetCellData();
     newCD->CopyAllocate(inCD, maxNewCells);
-    
+
     if (CreateNormals)
     {
         newNormals = vtkFloatArray::New();
@@ -566,7 +566,7 @@ void vtkConnectedTubeFilter::Execute()
             vtkMath::Normalize(v1);
             vtkMath::Normalize(v2);
 
-            // Hang on to the first point index we create; we need it 
+            // Hang on to the first point index we create; we need it
             // to create the cells
             vtkIdType firstIndex = newPts->GetNumberOfPoints();
 
@@ -601,7 +601,7 @@ void vtkConnectedTubeFilter::Execute()
             {
                 for (int j=0; j<NumberOfSides; j++)
                 {
-                    int p[4] =
+                    vtkIdType p[4] =
                     {
                         firstIndex + j,
                         firstIndex + j - NumberOfSides,
@@ -655,7 +655,7 @@ void vtkConnectedTubeFilter::PrintSelf(ostream& os, vtkIndent indent)
 
     os << indent << "Radius: " << this->Radius << "\n";
     os << indent << "Number Of Sides: " << this->NumberOfSides << "\n";
-    os << indent << "Create Normals: " 
+    os << indent << "Create Normals: "
        << (this->CreateNormals ? "On\n" : "Off\n");
     os << indent << "Capping: " << this->Capping << endl;
 }

@@ -82,7 +82,7 @@ class VISIT_VTK_API vtkVisItSplitter
     virtual void SetNewTagBitField(std::vector<FixedLengthBitField<16> > *);
     virtual void SetNewTagBit(int);
 
-    void SetCellList(int *, int);
+    void SetCellList(vtkIdType *, int);
     virtual void SetUpClipFunction(int) { ; };
 
 

@@ -232,7 +232,7 @@ vtkVisItSplitter::SetUseZeroCrossings(bool use)
 }
 
 void
-vtkVisItSplitter::SetCellList(int *cl, int size)
+vtkVisItSplitter::SetCellList(vtkIdType *cl, int size)
 {
     CellList = cl;
     CellListSize = size;

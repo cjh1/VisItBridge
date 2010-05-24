@@ -72,7 +72,7 @@ vtkStandardNewMacro(vtkVisItClipper);
 // percent value to hit the zero crossing
 //
 //  Programmer: Mark C. Miller
-//  Creation:   December 3, 2006 
+//  Creation:   December 3, 2006
 //
 static void
 AdjustPercentToZeroCrossing(const float *const pts, int ptId1, int ptId2,
@@ -227,7 +227,7 @@ vtkVisItClipper::~vtkVisItClipper()
 void
 vtkVisItClipper::SetUseZeroCrossings(bool use)
 {
-    if (use && clipFunction && 
+    if (use && clipFunction &&
         (strcmp(clipFunction->GetClassName(), "vtkQuadric") != 0))
     {
         vtkErrorMacro("UseZeroCrossings set to true allowed only with "
@@ -370,7 +370,7 @@ vtkVisItClipper::GetOtherOutput()
 //  Method:  vtkVisItClipper::Execute
 //
 //  Purpose:
-//    Main execution method.  
+//    Main execution method.
 //
 //  Arguments:
 //    none
@@ -498,7 +498,7 @@ vtkVisItClipper::Execute()
             for (int i=0; i<npts; i++)
             {
                 float *pt =  pts_ptr + 3*i;
-                scalarArray[i] = 
+                scalarArray[i] =
                    -clipFunction->EvaluateFunction(pt[0],pt[1],pt[2]);
             }
         }
@@ -511,7 +511,7 @@ vtkVisItClipper::Execute()
                 {
                     for (int i=0; i<pt_dims[0]; i++)
                     {
-                        scalarArray[ctr++] = 
+                        scalarArray[ctr++] =
                            -clipFunction->EvaluateFunction(X[i],Y[j],Z[k]);
                     }
                 }
@@ -533,7 +533,7 @@ vtkVisItClipper::Execute()
 
     const int max_pts = 8;
     int cellType = twoD ? VTK_QUAD : VTK_HEXAHEDRON; // constant for struct grd
-    int nCellPts = twoD ? 4 : 8;                     // constant for struct grd
+    vtkIdType nCellPts = twoD ? 4 : 8;                     // constant for struct grd
     vtkIdType cellPtsStruct[8];
     vtkIdType *cellPts = cellPtsStruct; // for struct grd, we'll fill it
 
@@ -542,7 +542,7 @@ vtkVisItClipper::Execute()
     for (int i = 0 ; i < nToProcess ; i++)
     {
         // Get the cell details
-        int cellId = (CellList != NULL ? CellList[i] : i);
+        vtkIdType cellId = (CellList != NULL ? CellList[i] : i);
         int cellI = -1;
         int cellJ = -1;
         int cellK = -1;
@@ -823,7 +823,7 @@ vtkVisItClipper::Execute()
                                                             &percent);
                             }
                         }
-                                
+
                         shape[p] = useVFV->AddPoint(ptId1, ptId2, percent);
                     }
                     else if (pt >= N0 && pt <= N3)
@@ -898,7 +898,7 @@ vtkVisItClipper::Execute()
     {
         vtkUnstructuredGrid *not_from_zoo  = vtkUnstructuredGrid::New();
         ClipDataset(stuff_I_cant_clip, not_from_zoo);
-        
+
         vtkUnstructuredGrid *just_from_zoo = vtkUnstructuredGrid::New();
         if (pts_ptr)
             vfvIn.ConstructDataSet(inPD, inCD, just_from_zoo, pts_ptr);

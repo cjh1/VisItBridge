@@ -92,7 +92,7 @@ public:
                    int dim, double *derivs);
 
 protected:
-  vtkCSGCell() {};
+  vtkCSGCell();
   ~vtkCSGCell() {};
 
 

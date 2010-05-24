@@ -74,7 +74,7 @@ vtkRectilinearGridFacelistFilter::vtkRectilinearGridFacelistFilter()
 //
 // The rectilinear grid must create a set of points and it does so by walking
 // through the front face, back face, bottom face, top face, left face, right
-// face (in that order without repeating points on the edges).  Indexing those 
+// face (in that order without repeating points on the edges).  Indexing those
 // points later can be tiresome, so the logic is contained here in the
 // "SpecializedIndexer".
 //
@@ -97,10 +97,10 @@ class SpecializedIndexer
                            {
                              if (z == 0) return GetFrontFacePoint(x, nY-1);
                              if (z == nZ-1) return GetBackFacePoint(x, nY-1);
-                             return topOffset + x*(nZ-2)+z-1; 
+                             return topOffset + x*(nZ-2)+z-1;
                            };
    inline int         GetLeftFacePoint(int y, int z)
-                           { 
+                           {
                              if (z == 0) return GetFrontFacePoint(0, y);
                              if (z == nZ-1) return GetBackFacePoint(0, y);
                              if (y == 0) return GetBottomFacePoint(0, z);
@@ -108,7 +108,7 @@ class SpecializedIndexer
                              return leftOffset + (y-1)*(nZ-2)+z-1;
                            };
    inline int         GetRightFacePoint(int y, int z)
-                           { 
+                           {
                              if (z == 0) return GetFrontFacePoint(nX-1, y);
                              if (z == nZ-1) return GetBackFacePoint(nX-1, y);
                              if (y == 0) return GetBottomFacePoint(nX-1, z);
@@ -117,7 +117,7 @@ class SpecializedIndexer
                            };
    inline int         GetCellIndex(int x, int y, int z)
                            { return z*cellZBase + y*cellYBase + x; };
- 
+
 
   protected:
    int                nX, nY, nZ;
@@ -237,7 +237,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
         output->Delete();
         return;
      }
-  }  
+  }
 
   //
   // If we are doing face compaction, we will come in after the fact and
@@ -398,11 +398,11 @@ void vtkRectilinearGridFacelistFilter::Execute()
   pts->Delete();
 
   //
-  // Our indexing of points can be nasty, so use the indexer set up 
+  // Our indexing of points can be nasty, so use the indexer set up
   // specifically for this class and scheme.
   //
   SpecializedIndexer indexer(nX, nY, nZ);
-  
+
   //
   // Have the cell data allocate memory.
   //
@@ -425,7 +425,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
   vtkIdTypeArray *list = vtkIdTypeArray::New();
   list->SetNumberOfValues(numOutCells*(4+1));
   vtkIdType *nl = list->GetPointer(0);
-  
+
   //
   // Left face
   //
@@ -447,7 +447,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
       cellId++;
     }
   }
-  
+
   //
   // Right face
   //
@@ -458,7 +458,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
     columnSize.push_back(nY-1);
     for (i = 0 ; i < nY-1 ; i++)
     {
-      for (j = 0 ; j < nZ-1 ; j++) 
+      for (j = 0 ; j < nZ-1 ; j++)
       {
         *nl++ = 4;
         *nl++ = indexer.GetRightFacePoint(i, j);
@@ -471,7 +471,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
       }
     }
   }
-  
+
   //
   // Bottom face
   //
@@ -492,7 +492,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
       cellId++;
     }
   }
-  
+
   //
   // Top face
   //
@@ -516,7 +516,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
       }
     }
   }
-  
+
   //
   // Back face
   //
@@ -537,7 +537,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
       cellId++;
     }
   }
-  
+
   //
   // Front face
   //
@@ -561,7 +561,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
       }
     }
   }
-  
+
   polys->SetCells(numOutCells, list);
   list->Delete();
   outCellData->Squeeze();
@@ -571,7 +571,7 @@ void vtkRectilinearGridFacelistFilter::Execute()
   if (ForceFaceConsolidation)
   {
      //
-     // We only get to this spot if we have ghost zones -- which makes 
+     // We only get to this spot if we have ghost zones -- which makes
      // consolidating faces a harder problem.  Use a sub-routine to do that.
      //
      vtkPolyData *new_output = ConsolidateFacesWithGhostZones(output, list,
@@ -617,7 +617,7 @@ vtkRectilinearGridFacelistFilter::ConsolidateFacesWithGhostZones(
   vtkPointData *inPointData = pd->GetPointData();
   vtkCellData *inCellData   = pd->GetCellData();
   vtkCellData *outCellData  = cpd->GetCellData();
-  vtkUnsignedCharArray *gzv = (vtkUnsignedCharArray *) 
+  vtkUnsignedCharArray *gzv = (vtkUnsignedCharArray *)
                                  inCellData->GetArray("avtGhostZones");
   unsigned char *gza        = NULL;
   bool constructGZA = false;
@@ -664,9 +664,9 @@ vtkRectilinearGridFacelistFilter::ConsolidateFacesWithGhostZones(
   int cellGuess = pd->GetNumberOfCells();
   vtkCellArray *polys = vtkCellArray::New();
   polys->Allocate(cellGuess*(4+1));
-  
+
   //
-  // These for loops will walk through the cells and try to identify 
+  // These for loops will walk through the cells and try to identify
   // neighboring cells that can be compacted.  Although the algorithm appears
   // to be quite slow (there are 5 nested for loops), it should actually run
   // in about O(nfaces) time.
@@ -727,7 +727,7 @@ vtkRectilinearGridFacelistFilter::ConsolidateFacesWithGhostZones(
               break;
             }
           }
-            
+
           if (all_matches)
             lastColumnMatch = m;
           else
@@ -744,13 +744,13 @@ vtkRectilinearGridFacelistFilter::ConsolidateFacesWithGhostZones(
         //
         // We know now that we have a face that hasn't been used yet --
         // face (j, k).  In addition, we know that we can form a bigger quad
-        // with face (j, k) as one corner and 
+        // with face (j, k) as one corner and
         // face (lastRowMatch, lastColumnMatch) as the opposite corner.
         //
         int quad_index[4];
         quad_index[0] = startFace + k*rowSize[i]+j;  // bottom-left
         quad_index[1] = startFace + lastColumnMatch*rowSize[i]+j; // top-left
-        quad_index[2] = startFace 
+        quad_index[2] = startFace
                        + lastColumnMatch*rowSize[i]+lastRowMatch; // top-right
         quad_index[3] = startFace + k*rowSize[i]+lastRowMatch; // bottom-right
 
@@ -795,7 +795,7 @@ vtkRectilinearGridFacelistFilter::ConsolidateFacesWithGhostZones(
       new_gz->Delete();
       delete [] gza;
   }
-  
+
   return cpd;
 }
 
@@ -809,7 +809,7 @@ vtkRectilinearGridFacelistFilter::ConsolidateFacesWithGhostZones(
 //    to make it clear what its purpose was.
 //
 //    Jeremy Meredith, Tue Oct 14 15:14:39 EDT 2008
-//    Handle cases where the grid is 2D but aligned with the X or Y axis, 
+//    Handle cases where the grid is 2D but aligned with the X or Y axis,
 //    not just the Z axis.
 //
 // ****************************************************************************
@@ -827,7 +827,7 @@ void vtkRectilinearGridFacelistFilter::ConsolidateFacesWithoutGhostZones(void)
 
   int numOutCells;
   int numOutPoints;
-  int (*quads)[4];
+  vtkIdType (*quads)[4];
   int *ptIds;
 
   int nX = input->GetXCoordinates()->GetNumberOfTuples();
@@ -835,7 +835,7 @@ void vtkRectilinearGridFacelistFilter::ConsolidateFacesWithoutGhostZones(void)
   int nZ = input->GetZCoordinates()->GetNumberOfTuples();
   if (nX == 1)
   {
-      static int quads2[1][4] = { { 0, 1, 2, 3 } };
+      static vtkIdType quads2[1][4] = { { 0, 1, 2, 3 } };
       static int ptIds2[4];
       ptIds2[0] = 0;
       ptIds2[1] = nY-1;
@@ -849,7 +849,7 @@ void vtkRectilinearGridFacelistFilter::ConsolidateFacesWithoutGhostZones(void)
   }
   else if (nY == 1)
   {
-      static int quads2[1][4] = { { 0, 1, 2, 3 } };
+      static vtkIdType quads2[1][4] = { { 0, 1, 2, 3 } };
       static int ptIds2[4];
       ptIds2[0] = 0;
       ptIds2[1] = nX-1;
@@ -863,7 +863,7 @@ void vtkRectilinearGridFacelistFilter::ConsolidateFacesWithoutGhostZones(void)
   }
   else if (nZ == 1)
   {
-      static int quads2[1][4] = { { 0, 1, 2, 3 } };
+      static vtkIdType quads2[1][4] = { { 0, 1, 2, 3 } };
       static int ptIds2[4];
       ptIds2[0] = 0;
       ptIds2[1] = nX-1;
@@ -877,7 +877,7 @@ void vtkRectilinearGridFacelistFilter::ConsolidateFacesWithoutGhostZones(void)
   }
   else
   {
-      static int quads3[6][4] = { { 0, 1, 2, 3 }, { 0, 4, 5, 1 }, 
+      static vtkIdType quads3[6][4] = { { 0, 1, 2, 3 }, { 0, 4, 5, 1 },
                                   { 1, 5, 6, 2 }, { 2, 6, 7, 3 },
                                   { 3, 7, 4, 0 }, { 4, 7, 6, 5 } };
       static int ptIds3[8];
@@ -901,7 +901,7 @@ void vtkRectilinearGridFacelistFilter::ConsolidateFacesWithoutGhostZones(void)
 
   for (i = 0 ; i < numOutCells ; i++)
       polys->InsertNextCell(4, quads[i]);
-  
+
   outCellData->CopyAllocate(inCellData, numOutCells);
   for (i = 0 ; i < numOutCells ; i++)
       outCellData->CopyData(inCellData, 0, i);

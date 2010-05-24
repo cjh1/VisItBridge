@@ -6,12 +6,12 @@
   Date:      $Date: 2002/02/22 21:16:54 $
   Version:   $Revision: 1.66 $
 
-  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen 
+  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
@@ -137,7 +137,7 @@ vtkVisItContourFilter::GetPointScalars(vtkDataSet *in_ds)
 // ****************************************************************************
 
 int
-vtkVisItContourFilter::StructuredGridExecute(vtkDataSet *input, 
+vtkVisItContourFilter::StructuredGridExecute(vtkDataSet *input,
                                              vtkPolyData *output)
 {
     int  i, j;
@@ -242,7 +242,7 @@ vtkVisItContourFilter::StructuredGridExecute(vtkDataSet *input,
 //
 // ****************************************************************************
 
-int 
+int
 vtkVisItContourFilter::RectilinearGridExecute(vtkDataSet *input,
                                               vtkPolyData *output)
 {
@@ -344,7 +344,7 @@ vtkVisItContourFilter::RectilinearGridExecute(vtkDataSet *input,
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-int 
+int
 vtkVisItContourFilter::UnstructuredGridExecute(vtkDataSet *input,
                                                vtkPolyData *output)
 {
@@ -388,9 +388,9 @@ vtkVisItContourFilter::UnstructuredGridExecute(vtkDataSet *input,
     int numIcantContour = 0;
     for (i = 0 ; i < nToProcess ; i++)
     {
-        int        cellId = (CellList != NULL ? CellList[i] : i);
+        vtkIdType  cellId = (CellList != NULL ? CellList[i] : i);
         int        cellType = ug->GetCellType(cellId);
-        int        npts;
+        vtkIdType  npts;
         vtkIdType *pts;
         ug->GetCellPoints(cellId, npts, pts);
         int *triangulation_table = NULL;
@@ -405,21 +405,21 @@ vtkVisItContourFilter::UnstructuredGridExecute(vtkDataSet *input,
             tt_step = 7;
             canContour = true;
             break;
- 
+
           case VTK_PYRAMID:
             triangulation_table = (int *) pyramidTriangulationTable;
             vertices_from_edges = (int *) pyramidVerticesFromEdges;
             tt_step = 13;
             canContour = true;
             break;
- 
+
           case VTK_WEDGE:
             triangulation_table = (int *) wedgeTriangulationTable;
             vertices_from_edges = (int *) wedgeVerticesFromEdges;
             tt_step = 13;
             canContour = true;
             break;
- 
+
           case VTK_HEXAHEDRON:
             triangulation_table = (int *) hexTriangulationTable;
             vertices_from_edges = (int *) hexVerticesFromEdges;
@@ -431,7 +431,7 @@ vtkVisItContourFilter::UnstructuredGridExecute(vtkDataSet *input,
             canContour = false;
             break;
         }
- 
+
         if (canContour)
         {
             const int max_pts = 8;
@@ -488,7 +488,7 @@ vtkVisItContourFilter::UnstructuredGridExecute(vtkDataSet *input,
     {
         vtkPolyData *not_from_zoo  = vtkPolyData::New();
         ContourDataset(stuff_I_cant_contour, not_from_zoo);
-        
+
         vtkPolyData *just_from_zoo = vtkPolyData::New();
         sfv.ConstructPolyData(inPD, inCD, just_from_zoo, pts_ptr);
 
@@ -512,7 +512,7 @@ vtkVisItContourFilter::UnstructuredGridExecute(vtkDataSet *input,
 }
 
 
-int 
+int
 vtkVisItContourFilter::GeneralExecute(vtkDataSet *input, vtkPolyData* output)
 {
     return ContourDataset(input, output);
@@ -530,7 +530,7 @@ vtkVisItContourFilter::ContourDataset(vtkDataSet *in_ds,
     contour->Update();
 
     out_pd->ShallowCopy(contour->GetOutput());
-    
+
     contour->Delete();
     return 1;
 }
@@ -542,7 +542,7 @@ void vtkVisItContourFilter::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "Isovalue: " << Isovalue << "\n";
 }
 
-int 
+int
 vtkVisItContourFilter::FillInputPortInformation(int, vtkInformation *info)
 {
   info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");

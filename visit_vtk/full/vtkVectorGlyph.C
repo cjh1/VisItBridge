@@ -48,9 +48,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
 
+#ifdef _WIN32
+#define M_PI 3.14159265358979323846
+#endif
+
 // ****************************************************************************
 //  Modifications:
-//    Kathleen Bonnell, Wed Mar  6 17:10:03 PST 2002 
+//    Kathleen Bonnell, Wed Mar  6 17:10:03 PST 2002
 //    Replace 'New' method with Macro to match VTK 4.0 API
 // ****************************************************************************
 
@@ -108,7 +112,7 @@ void vtkVectorGlyph::Execute(void)
     vtkPoints *pts = vtkPoints::New();
     output->SetPoints(pts);
     pts->Delete();
-  
+
     vtkCellArray *lines = vtkCellArray::New();
     output->SetLines(lines);
     lines->Delete();
@@ -121,7 +125,7 @@ void vtkVectorGlyph::Execute(void)
     // The vector will be with the bounding box x,y,z=-0.5,0.5.
     // The head will start at (0.5, 0., 0.) and
     // the tail will end at (-0.5,0.,0.)
-    // 
+    //
     float realHeadSize = MakeHead ? this->HeadSize : 0;
     float endOfHead = 0.5 - realHeadSize;
     float proportion = realHeadSize;
@@ -150,7 +154,7 @@ void vtkVectorGlyph::Execute(void)
         float y = proportion * 0.5 * cos(theta);
         float z;
         if (ConeHead)
-            z = proportion * 0.5 * sin(theta); 
+            z = proportion * 0.5 * sin(theta);
         else
             z = 0;
         pts->SetPoint(3 + i, x, y, z);
@@ -184,7 +188,7 @@ void vtkVectorGlyph::Execute(void)
         {
             float theta = 2*M_PI * float(i)/float(nSteps);
             float y = cylThickness * 0.5 * cos(theta);
-            float z = cylThickness * 0.5 * sin(theta); 
+            float z = cylThickness * 0.5 * sin(theta);
             pts->SetPoint(3 + 1*nSteps + i, startx, y, z);
             pts->SetPoint(3 + 2*nSteps + i, endx,   y, z);
         }
@@ -245,7 +249,7 @@ void vtkVectorGlyph::Execute(void)
     }
 }
 
-  
+
 // ****************************************************************************
 //  Modifications:
 //    Jeremy Meredith, Mon Mar 19 14:33:15 EDT 2007

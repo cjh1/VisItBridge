@@ -6,12 +6,12 @@
   Date:      $Date: 2002/02/22 21:16:54 $
   Version:   $Revision: 1.66 $
 
-  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen 
+  Copyright (c) 1993-2002 Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
@@ -339,7 +339,7 @@ void vtkSlicer::UnstructuredGridExecute(void)
     {
         int        cellId = (CellList != NULL ? CellList[i] : i);
         int        cellType = ug->GetCellType(cellId);
-        int        npts;
+        vtkIdType  npts;
         vtkIdType *pts;
         ug->GetCellPoints(cellId, npts, pts);
         int *triangulation_table = NULL;
@@ -355,28 +355,28 @@ void vtkSlicer::UnstructuredGridExecute(void)
             tt_step = 7;
             canSlice = true;
             break;
- 
+
           case VTK_PYRAMID:
             triangulation_table = (int *) pyramidTriangulationTable;
             vertices_from_edges = (int *) pyramidVerticesFromEdges;
             tt_step = 13;
             canSlice = true;
             break;
- 
+
           case VTK_WEDGE:
             triangulation_table = (int *) wedgeTriangulationTable;
             vertices_from_edges = (int *) wedgeVerticesFromEdges;
             tt_step = 13;
             canSlice = true;
             break;
- 
+
           case VTK_HEXAHEDRON:
             triangulation_table = (int *) hexTriangulationTable;
             vertices_from_edges = (int *) hexVerticesFromEdges;
             tt_step = 16;
             canSlice = true;
             break;
- 
+
           case VTK_VERTEX:
             isVertex = true;
             break;
@@ -385,7 +385,7 @@ void vtkSlicer::UnstructuredGridExecute(void)
             canSlice = false;
             break;
         }
- 
+
         if (canSlice)
         {
             const int max_pts = 8;
@@ -516,7 +516,7 @@ void vtkSlicer::GeneralExecute(void)
 // ****************************************************************************
 //  Modifications:
 //    Kathleen Bonnell, Wed Apr 27 18:47:18 PDT 2005
-//    Use vtkVisItCutter, which has modifications to correctly handle CellData. 
+//    Use vtkVisItCutter, which has modifications to correctly handle CellData.
 //
 // ****************************************************************************
 void vtkSlicer::SliceDataset(vtkDataSet *in_ds, vtkPolyData *out_pd)
@@ -531,7 +531,7 @@ void vtkSlicer::SliceDataset(vtkDataSet *in_ds, vtkPolyData *out_pd)
     cutter->Update();
 
     out_pd->ShallowCopy(cutter->GetOutput());
-    
+
     cutter->Delete();
     plane->Delete();
 }
