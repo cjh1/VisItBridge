@@ -190,11 +190,11 @@ avtVisItReaderFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md)
     // {
     //     char str[32];
     //     sprintf(str, "mat%d", i);
-    //     -- or -- 
+    //     -- or --
     //     strcpy(str, "Aluminum");
     //     mnames.push_back(str);
     // }
-    // 
+    //
     // Here's the call that tells the meta-data object that we have a mat:
     //
     // AddMaterialToMetaData(md, matname, mesh_for_mat, nmats, mnames);
@@ -329,7 +329,7 @@ avtVisItReaderFileFormat::GetVectorVar(const char *varname)
     //           one_entry[j] = ...
     //      for (j = ncomps ; j < ucomps ; j++)
     //           one_entry[j] = 0.;
-    //      rv->SetTuple(i, one_entry); 
+    //      rv->SetTuple(i, one_entry);
     // }
     //
     // delete [] one_entry;
