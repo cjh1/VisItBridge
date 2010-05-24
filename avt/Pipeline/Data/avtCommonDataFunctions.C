@@ -100,14 +100,14 @@ void GetDataMajorEigenvalueRange(vtkDataSet *, double *, const char *, bool);
 //  Arguments:
 //    data        The data from which to retrieve the extents.
 //    se          A place to put the spatial extents.
-//    success     Assigned true if operation successful, false otherwise. 
+//    success     Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
 //      avtDataTree::Traverse.
 //
-//  Programmer:   Kathleen Bonnell 
-//  Creation:     April 17, 2001 
+//  Programmer:   Kathleen Bonnell
+//  Creation:     April 17, 2001
 //
 //  Modifications:
 //
@@ -121,12 +121,12 @@ void GetDataMajorEigenvalueRange(vtkDataSet *, double *, const char *, bool);
 //    Kathleen Bonnell, Tue Jul 24 14:12:27 PDT 2001
 //    Allow for successful setting of extents when a tree has some
 //    vtk datasets with data and some without data by using |= to
-//    set success in the false case. 
-// 
+//    set success in the false case.
+//
 //    Hank Childs, Fri Sep  7 17:58:58 PDT 2001
 //    Use doubles rather than floats.
 //
-//    Kathleen Bonnell, Thu Oct 4 13:36:54 PDT 2001 
+//    Kathleen Bonnell, Thu Oct 4 13:36:54 PDT 2001
 //    Change if statement regarding number of cells/points to && from ||.
 //
 //    Hank Childs, Tue Nov  6 14:41:52 PST 2001
@@ -145,7 +145,7 @@ void GetDataMajorEigenvalueRange(vtkDataSet *, double *, const char *, bool);
 //
 // ****************************************************************************
 
-void 
+void
 CGetSpatialExtents(avtDataRepresentation &data, void *info, bool &success)
 {
     typedef struct {double *se; const double *xform;} tmpstruct;
@@ -216,7 +216,7 @@ CGetSpatialExtents(avtDataRepresentation &data, void *info, bool &success)
             success |= false;
         }
     }
-    else 
+    else
     {
         debug1 << "Attempting to retrieve Spatial Extents "
                << "of non-existent data." << endl;
@@ -234,14 +234,14 @@ CGetSpatialExtents(avtDataRepresentation &data, void *info, bool &success)
 //  Arguments:
 //    data        The data represention from which to get the extents.
 //    de          A place to put the data extents.
-//    success     Assigned true if operation successful, false otherwise. 
+//    success     Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
 //      avtDataTree::Traverse.
 //
-//  Programmer:   Kathleen Bonnell 
-//  Creation:     April 17, 2001 
+//  Programmer:   Kathleen Bonnell
+//  Creation:     April 17, 2001
 //
 //  Modifications:
 //
@@ -255,15 +255,15 @@ CGetSpatialExtents(avtDataRepresentation &data, void *info, bool &success)
 //    Kathleen Bonnell, Tue Jul 24 14:12:27 PDT 2001
 //    Allow for successful setting of extents when a tree has some
 //    vtk datasets with data and some without data by using |= to
-//    set success in the false case. 
-// 
+//    set success in the false case.
+//
 //    Hank Childs, Fri Sep  7 17:15:03 PDT 2001
 //    Do not assume that extents are scalars or floats.
 //
-//    Kathleen Bonnell, Mon Oct  8 12:45:31 PDT 2001 
+//    Kathleen Bonnell, Mon Oct  8 12:45:31 PDT 2001
 //    Do not overwrite data extents, merge them instead.  Since
 //    this method uses GetDataRange, use that method's criteria
-//    for determing the number of <min,max> tuples that will be retrieved. 
+//    for determing the number of <min,max> tuples that will be retrieved.
 //    Use && instead of || in if statement regarding number of cells/points.
 //
 //    Hank Childs, Tue Nov  6 14:41:52 PST 2001
@@ -275,7 +275,7 @@ CGetSpatialExtents(avtDataRepresentation &data, void *info, bool &success)
 //    Hank Childs, Tue Feb 24 15:08:59 PST 2004
 //    Add support for multiple variables.
 //
-//    Kathleen Bonnell, Thu Mar 11 10:32:04 PST 2004 
+//    Kathleen Bonnell, Thu Mar 11 10:32:04 PST 2004
 //    Call appropriate Get*Range method for the number of tuples in the
 //    data array.   DataExtents now always have only 2 components.
 //
@@ -284,8 +284,8 @@ CGetSpatialExtents(avtDataRepresentation &data, void *info, bool &success)
 //
 // ****************************************************************************
 
-void 
-CGetDataExtents(avtDataRepresentation &data, void *g, bool &success) 
+void
+CGetDataExtents(avtDataRepresentation &data, void *g, bool &success)
 {
     if (data.Valid())
     {
@@ -340,9 +340,9 @@ CGetDataExtents(avtDataRepresentation &data, void *g, bool &success)
         else
         {
             success |= false;
-        } 
+        }
     }
-    else 
+    else
     {
         debug1 << "Attempting to retrieve Data Extents "
                << "of non-existent data." << endl;
@@ -355,12 +355,12 @@ CGetDataExtents(avtDataRepresentation &data, void *g, bool &success)
 //  Method: CGetNumberOfZones
 //
 //  Purpose:
-//    Adds the number of cells in the vtk input to the passed sum argument. 
+//    Adds the number of cells in the vtk input to the passed sum argument.
 //
 //  Arguments:
 //    data      The data from which to calculate number of cells.
 //    sum       A place to store the cumulative number of cells.
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -399,7 +399,7 @@ CGetNumberOfZones(avtDataRepresentation &data, void *sum, bool &)
 //    data      The data which may be an unstructured grid, but should be
 //              a poly data.
 //    <unused>
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -438,7 +438,7 @@ CConvertUnstructuredGridToPolyData(avtDataRepresentation &data, void *, bool &)
         {
             int celltype = ugrid->GetCellType(i);
             vtkIdType *pts;
-            int npts;
+            vtkIdType npts;
             ugrid->GetCellPoints(i, npts, pts);
             out_pd->InsertNextCell(celltype, npts, pts);
         }
@@ -459,7 +459,7 @@ CConvertUnstructuredGridToPolyData(avtDataRepresentation &data, void *, bool &)
 //  Arguments:
 //    data      The data from which to calculate number of cells.
 //    arg       optional bool pointer for enabling debug mode
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -539,7 +539,7 @@ CGetVariableList(avtDataRepresentation &data, void *nv, bool &success)
 
     VarList *vl = (VarList *) nv;
     vtkDataSet *ds = data.GetDataVTK();
-    vl->nvars = ds->GetPointData()->GetNumberOfArrays() + 
+    vl->nvars = ds->GetPointData()->GetNumberOfArrays() +
                 ds->GetCellData()->GetNumberOfArrays();
     vl->varnames.clear();
     vl->varsizes.clear();
@@ -574,7 +574,7 @@ CGetVariableList(avtDataRepresentation &data, void *nv, bool &success)
 //  Method: CUpdateData
 //
 //  Purpose:
-//    Updates the vtk input.  
+//    Updates the vtk input.
 //
 //  Arguments:
 //    data      The data to be updated.
@@ -609,12 +609,12 @@ CUpdateData(avtDataRepresentation &data, void *, bool &modified)
 //  Method: CAddInputToAppendFilter
 //
 //  Purpose:
-//    Updates the vtk input.  
+//    Updates the vtk input.
 //
 //  Arguments:
 //    data      The data to add  to the filter.
 //    filter    The filter to use.
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -634,7 +634,7 @@ CUpdateData(avtDataRepresentation &data, void *, bool &modified)
 //
 //    Kathleen Bonnell, Wed May 17 14:51:16 PDT 2006
 //    Remove call to SetSource(NULL) as it now removes information necessary
-//    to the dataset. 
+//    to the dataset.
 //
 // ****************************************************************************
 
@@ -675,7 +675,7 @@ CAddInputToAppendFilter(avtDataRepresentation & data, void *arg, bool &)
     {
         pmap->pf->AddInput((vtkPolyData*)ds);
     }
-    else if (ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID) 
+    else if (ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
     {
         pmap->af->AddInput(ds);
     }
@@ -691,7 +691,7 @@ CAddInputToAppendFilter(avtDataRepresentation & data, void *arg, bool &)
 //  Arguments:
 //    data      The data to add to the list.
 //    list      The list.
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -731,7 +731,7 @@ CGetAllDatasets(avtDataRepresentation & data, void *arg, bool &)
 //  Arguments:
 //    data      The data to use as input to the mappers.
 //    arg       The arguments specific to this function.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -781,12 +781,12 @@ CPruneByDomainList(avtDataRepresentation & data, void *arg, bool &success)
 //
 //  Purpose:
 //    Gets the datatree that holds all the datasets corresponding to a given
-//    chunk id. 
+//    chunk id.
 //
 //  Arguments:
 //    data      The data to use as input to the mappers.
 //    arg       Mappers and other necessary info.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -818,12 +818,12 @@ CGetChunkByDomain(avtDataRepresentation & data, void *arg, bool &success)
         success = true;
         avtDataTree_p child = new avtDataTree(data);
         // test for first "real" child added to this tree:
-        if (pmap->subTree->GetNChildren() == 1 
+        if (pmap->subTree->GetNChildren() == 1
             && !(pmap->subTree->ChildIsPresent(0)))
         {
             pmap->subTree = child;
         }
-        else 
+        else
         {
             pmap->subTree->Merge(child);
         }
@@ -840,12 +840,12 @@ CGetChunkByDomain(avtDataRepresentation & data, void *arg, bool &success)
 //
 //  Purpose:
 //    Gets the datatree that holds all the datasets corresponding to a given
-//    label. 
+//    label.
 //
 //  Arguments:
 //    data      The data to use as input to the mappers.
 //    arg       Mappers and other necessary info.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -877,12 +877,12 @@ CGetChunkByLabel(avtDataRepresentation & data, void *arg, bool &success)
         success = true;
         avtDataTree_p child = new avtDataTree(data);
         // test for first "real" child added to this tree:
-        if (pmap->subTree->GetNChildren() == 1 
+        if (pmap->subTree->GetNChildren() == 1
             && !(pmap->subTree->ChildIsPresent(0)))
         {
             pmap->subTree = child;
         }
-        else 
+        else
         {
             pmap->subTree->Merge(child);
         }
@@ -903,7 +903,7 @@ CGetChunkByLabel(avtDataRepresentation & data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose variables should be set.
 //    arg       A struct with information about setting the active variable.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -1005,7 +1005,7 @@ CSetActiveVariable(avtDataRepresentation &data, void *arg, bool &success)
         args->hasPointVars = true;
         if (pd->GetArrayName(i) == NULL)
         {
-            debug1 << "WARNING: NULL variable name present in data set." 
+            debug1 << "WARNING: NULL variable name present in data set."
                    << endl;
             continue;
         }
@@ -1033,7 +1033,7 @@ CSetActiveVariable(avtDataRepresentation &data, void *arg, bool &success)
         args->hasCellVars = true;
         if (cd->GetArrayName(i) == NULL)
         {
-            debug1 << "WARNING: NULL variable name present in data set." 
+            debug1 << "WARNING: NULL variable name present in data set."
                    << endl;
             continue;
         }
@@ -1070,7 +1070,7 @@ CSetActiveVariable(avtDataRepresentation &data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose constants should be expanded.
 //    <unused>  An unused variable.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Programmer: Hank Childs
 //  Creation:   January 13, 2008
@@ -1096,7 +1096,7 @@ CExpandSingletonConstants(avtDataRepresentation &data, void *, bool &success)
     vtkDataSetAttributes *atts[2];
     atts[0] = ds->GetPointData();
     atts[1] = ds->GetCellData();
-   
+
     int ntups[2];
     ntups[0] = ds->GetNumberOfPoints();
     ntups[1] = ds->GetNumberOfCells();
@@ -1106,7 +1106,7 @@ CExpandSingletonConstants(avtDataRepresentation &data, void *, bool &success)
         if (ntups[i] <= 1)
             continue;
 
-        int nvars = atts[i]->GetNumberOfArrays(); 
+        int nvars = atts[i]->GetNumberOfArrays();
         for (int j = 0 ; j < nvars ; j++)
         {
             vtkDataArray *arr = atts[i]->GetArray(j);
@@ -1138,7 +1138,7 @@ CExpandSingletonConstants(avtDataRepresentation &data, void *, bool &success)
 //  Arguments:
 //    data      The data whose variables should be set.
 //    arg       The variable to remove.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -1188,8 +1188,8 @@ CRemoveVariable(avtDataRepresentation &data, void *arg, bool &success)
 //      ignoreGhost  A Boolean.  True if we should ignore ghosts, else false.
 //
 //  Returns:    True if retrieving the range was successful, false otherwise.
-//   
-//  Programmer: Kathleen Bonnell 
+//
+//  Programmer: Kathleen Bonnell
 //  Creation:   March 11, 2004
 //
 //  Modifications:
@@ -1251,15 +1251,15 @@ GetDataRange(vtkDataSet *ds, double *de, const char *vname,
 //    Hank Childs, Tue Feb 24 14:54:28 PST 2004
 //    Added a variable to get the range for.
 //
-//    Kathleen Bonnell, Thu Mar 11 10:32:04 PST 2004 
+//    Kathleen Bonnell, Thu Mar 11 10:32:04 PST 2004
 //    Renamed from GetDataRange. DataExtents now always have only 2 components.
 //
 //    Kathleen Bonnell, Tue May 11 08:02:51 PDT 2004
-//    Added support for VTK_DOUBLE. 
+//    Added support for VTK_DOUBLE.
 //
 //    Mark C. Miller, Tue Dec  5 18:14:58 PST 2006
 //    Templatized it to support all array types.
-// 
+//
 //    Hank Childs, Wed Oct 10 15:56:16 PDT 2007
 //    Added argument for ignoring values from ghost zones.
 //
@@ -1269,8 +1269,8 @@ GetDataRange(vtkDataSet *ds, double *de, const char *vname,
 //    Cyrus Harrison, Mon Feb 25 11:03:03 PST 2008
 //    Changed std::isfinite to isfinite to work around an AIX compiler bug.
 //
-//    Kathleen Bonnell, Thu Mar  6 09:15:46 PST 2008 
-//    Use _finite on Windows. 
+//    Kathleen Bonnell, Thu Mar  6 09:15:46 PST 2008
+//    Use _finite on Windows.
 //
 //    Eric Brugger, Tue Apr  8 10:01:07 PDT 2008
 //    Make the use of isfinite conditional, since not all platforms support
@@ -1281,7 +1281,7 @@ GetDataRange(vtkDataSet *ds, double *de, const char *vname,
 template <class T> static bool
 GetScalarRange(T *buf, int n, double *exts, unsigned char *ghosts)
 {
-    T min; 
+    T min;
     T max;
     bool setOne = false;
     for (int i = 0; i < n; i++, buf++)
@@ -1352,11 +1352,11 @@ GetDataScalarRange(vtkDataSet *ds, double *exts, const char *vname,
 
     exts[0] = +FLT_MAX;
     exts[1] = -FLT_MAX;
-    
+
     switch (da->GetDataType())
     {
         case VTK_CHAR:
-            GetScalarRange((char*) da->GetVoidPointer(0), nvals, exts, 
+            GetScalarRange((char*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
         case VTK_UNSIGNED_CHAR:
@@ -1371,31 +1371,31 @@ GetDataScalarRange(vtkDataSet *ds, double *exts, const char *vname,
             GetScalarRange((unsigned short*) da->GetVoidPointer(0), nvals,exts,
                            ghosts);
             break;
-        case VTK_INT:           
+        case VTK_INT:
             GetScalarRange((int*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
-        case VTK_UNSIGNED_INT:  
+        case VTK_UNSIGNED_INT:
             GetScalarRange((unsigned int*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
-        case VTK_LONG:          
+        case VTK_LONG:
             GetScalarRange((long*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
-        case VTK_UNSIGNED_LONG: 
+        case VTK_UNSIGNED_LONG:
             GetScalarRange((unsigned long*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
-        case VTK_FLOAT:         
+        case VTK_FLOAT:
             GetScalarRange((float*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
-        case VTK_DOUBLE:        
+        case VTK_DOUBLE:
             GetScalarRange((double*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
-        case VTK_ID_TYPE:       
+        case VTK_ID_TYPE:
             GetScalarRange((vtkIdType*) da->GetVoidPointer(0), nvals, exts,
                            ghosts);
             break;
@@ -1428,7 +1428,7 @@ GetDataScalarRange(vtkDataSet *ds, double *exts, const char *vname,
 template <class T> static bool
 GetComponentRange(T *buf, int n, int c, int nc, double *exts, unsigned char *ghosts)
 {
-    T min; 
+    T min;
     T max;
     bool setOne = false;
     buf += c;
@@ -1494,7 +1494,7 @@ GetDataAllComponentsRange(vtkDataSet *ds, double *exts, const char *vname,
         double *compexts = &(exts[2*comp]);
         compexts[0] = +FLT_MAX;
         compexts[1] = -FLT_MAX;
-    
+
         switch (da->GetDataType())
         {
           case VTK_CHAR:
@@ -1513,31 +1513,31 @@ GetDataAllComponentsRange(vtkDataSet *ds, double *exts, const char *vname,
             GetComponentRange((unsigned short*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps,compexts, ghosts);
             break;
-          case VTK_INT:           
+          case VTK_INT:
             GetComponentRange((int*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
-          case VTK_UNSIGNED_INT:  
+          case VTK_UNSIGNED_INT:
             GetComponentRange((unsigned int*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
-          case VTK_LONG:          
+          case VTK_LONG:
             GetComponentRange((long*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
-          case VTK_UNSIGNED_LONG: 
+          case VTK_UNSIGNED_LONG:
             GetComponentRange((unsigned long*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
-          case VTK_FLOAT:         
+          case VTK_FLOAT:
             GetComponentRange((float*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
-          case VTK_DOUBLE:        
+          case VTK_DOUBLE:
             GetComponentRange((double*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
-          case VTK_ID_TYPE:       
+          case VTK_ID_TYPE:
             GetComponentRange((vtkIdType*) da->GetVoidPointer(0),
                               ntuples, comp, ncomps, compexts, ghosts);
             break;
@@ -1581,8 +1581,8 @@ GetDataAllComponentsRange(vtkDataSet *ds, double *exts, const char *vname,
 //    Cyrus Harrison, Mon Feb 25 11:03:03 PST 2008
 //    Changed std::isfinite to isfinite to work around an AIX compiler bug.
 //
-//    Kathleen Bonnell, Thu Mar  6 09:15:46 PST 2008 
-//    Use _finite on Windows. 
+//    Kathleen Bonnell, Thu Mar  6 09:15:46 PST 2008
+//    Use _finite on Windows.
 //
 //    Eric Brugger, Tue Apr  8 10:01:07 PDT 2008
 //    Make the use of isfinite conditional, since not all platforms support
@@ -1591,7 +1591,7 @@ GetDataAllComponentsRange(vtkDataSet *ds, double *exts, const char *vname,
 // ****************************************************************************
 
 template <class T> static void
-GetMagnitudeRange(T *buf, int n, int ncomps, double *exts, 
+GetMagnitudeRange(T *buf, int n, int ncomps, double *exts,
                   unsigned char *ghosts)
 {
     for (int i = 0; i < n; i++)
@@ -1661,46 +1661,46 @@ GetDataMagnitudeRange(vtkDataSet *ds, double *exts, const char *vname,
     switch (da->GetDataType())
     {
         case VTK_CHAR:
-            GetMagnitudeRange((char*) da->GetVoidPointer(0), nvals, 
+            GetMagnitudeRange((char*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
         case VTK_UNSIGNED_CHAR:
-            GetMagnitudeRange((unsigned char*) da->GetVoidPointer(0), nvals, 
+            GetMagnitudeRange((unsigned char*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
         case VTK_SHORT:
-            GetMagnitudeRange((short*) da->GetVoidPointer(0), nvals, 
+            GetMagnitudeRange((short*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
         case VTK_UNSIGNED_SHORT:
-            GetMagnitudeRange((unsigned short*) da->GetVoidPointer(0), nvals, 
+            GetMagnitudeRange((unsigned short*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_INT:           
-            GetMagnitudeRange((int*) da->GetVoidPointer(0), nvals, 
+        case VTK_INT:
+            GetMagnitudeRange((int*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_UNSIGNED_INT:  
-            GetMagnitudeRange((unsigned int*) da->GetVoidPointer(0), nvals, 
+        case VTK_UNSIGNED_INT:
+            GetMagnitudeRange((unsigned int*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_LONG:          
-            GetMagnitudeRange((long*) da->GetVoidPointer(0), nvals, 
+        case VTK_LONG:
+            GetMagnitudeRange((long*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_UNSIGNED_LONG: 
+        case VTK_UNSIGNED_LONG:
             GetMagnitudeRange((unsigned long*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_FLOAT:         
+        case VTK_FLOAT:
             GetMagnitudeRange((float*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_DOUBLE:        
+        case VTK_DOUBLE:
             GetMagnitudeRange((double*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
-        case VTK_ID_TYPE:       
+        case VTK_ID_TYPE:
             GetMagnitudeRange((vtkIdType*) da->GetVoidPointer(0), nvals,
                               ncomps, exts, ghosts);
             break;
@@ -1720,8 +1720,8 @@ GetDataMagnitudeRange(vtkDataSet *ds, double *exts, const char *vname,
 //      vname   The variable name to get the range for.
 //      ignoreGhost  A Boolean.  True if we should ignore ghosts, else false.
 //
-//  Programmer: Kathleen Bonnell 
-//  Creation:   March 11, 2004 
+//  Programmer: Kathleen Bonnell
+//  Creation:   March 11, 2004
 //
 //  Modifications:
 //
@@ -1734,8 +1734,8 @@ GetDataMagnitudeRange(vtkDataSet *ds, double *exts, const char *vname,
 //    Cyrus Harrison, Mon Feb 25 11:03:03 PST 2008
 //    Changed std::isfinite to isfinite to work around an AIX compiler bug.
 //
-//    Kathleen Bonnell, Thu Mar  6 09:15:46 PST 2008 
-//    Use _finite on Windows. 
+//    Kathleen Bonnell, Thu Mar  6 09:15:46 PST 2008
+//    Use _finite on Windows.
 //
 //    Eric Brugger, Tue Apr  8 10:01:07 PDT 2008
 //    Make the use of isfinite conditional, since not all platforms support
@@ -1819,7 +1819,7 @@ GetDataMajorEigenvalueRange(vtkDataSet *ds, double *exts, const char *vname,
 //  Arguments:
 //    data      The data whose variables should be set.
 //    arg       A struct with information how to determine the maximum.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -1829,11 +1829,11 @@ GetDataMajorEigenvalueRange(vtkDataSet *ds, double *exts, const char *vname,
 //  Creation:   March 15, 2002
 //
 //  Modifications:
-//    Kathleen Bonnell, Mon Mar 18 13:11:51 PST 2002 
+//    Kathleen Bonnell, Mon Mar 18 13:11:51 PST 2002
 //    vtkScalars has been deprecated in VTK 4.0, use vtkDataArray instead.
 //
-//    Kathleen Bonnell, Wed Oct 20 17:06:12 PDT 2004 
-//    Replaced get-cell-center code with single call to 
+//    Kathleen Bonnell, Wed Oct 20 17:06:12 PDT 2004
+//    Replaced get-cell-center code with single call to
 //    vtkVisItUtility::GetCellCenter.
 //
 // ****************************************************************************
@@ -1925,7 +1925,7 @@ CFindMaximum(avtDataRepresentation &data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose variables should be set.
 //    arg       A struct with information how to determine the minimum.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -1935,11 +1935,11 @@ CFindMaximum(avtDataRepresentation &data, void *arg, bool &success)
 //  Creation:   March 15, 2002
 //
 //  Modifications:
-//    Kathleen Bonnell, Mon Mar 18 13:11:51 PST 2002 
+//    Kathleen Bonnell, Mon Mar 18 13:11:51 PST 2002
 //    vtkScalars has been deprecated in VTK 4.0, use vtkDataArray instead.
 //
-//    Kathleen Bonnell, Wed Oct 20 17:06:12 PDT 2004 
-//    Replaced get-cell-center code with single call to 
+//    Kathleen Bonnell, Wed Oct 20 17:06:12 PDT 2004
+//    Replaced get-cell-center code with single call to
 //    vtkVisItUtility::GetCellCenter.
 //
 // ****************************************************************************
@@ -2031,7 +2031,7 @@ CFindMinimum(avtDataRepresentation &data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose variables should be set.
 //    arg       A struct with information about which zone to locate.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2045,8 +2045,8 @@ CFindMinimum(avtDataRepresentation &data, void *arg, bool &success)
 //    Hank Childs, Wed Jun 18 10:55:48 PDT 2003
 //    Make use of original zones array if available.
 //
-//    Kathleen Bonnell, Wed Oct 20 17:06:12 PDT 2004 
-//    Replaced get-cell-center code with single call to 
+//    Kathleen Bonnell, Wed Oct 20 17:06:12 PDT 2004
+//    Replaced get-cell-center code with single call to
 //    vtkVisItUtility::GetCellCenter.
 //
 // ****************************************************************************
@@ -2197,7 +2197,7 @@ CLocateZone(avtDataRepresentation &data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose variables should be set.
 //    arg       A struct with information about which node to locate.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2211,8 +2211,8 @@ CLocateZone(avtDataRepresentation &data, void *arg, bool &success)
 //    Hank Childs, Wed Jun 18 10:55:48 PDT 2003
 //    Make use of original nodes array if available.
 //
-//    Kathleen Bonnell, Wed Jun 16 13:54:28 PDT 2004 
-//    avtOriginalNodeNumbers is now of type vtkIntArray. 
+//    Kathleen Bonnell, Wed Jun 16 13:54:28 PDT 2004
+//    avtOriginalNodeNumbers is now of type vtkIntArray.
 //
 // ****************************************************************************
 
@@ -2358,7 +2358,7 @@ CLocateNode(avtDataRepresentation &data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose arrays should potentially be obtained.
 //    arg       A struct with information about which array to get.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2420,7 +2420,7 @@ CGetArray(avtDataRepresentation &data, void *arg, bool &success)
 //  Arguments:
 //    data      The data whose arrays should potentially be obtained.
 //    arg       A struct with information about which array to get.
-//    success   Assigned true if operation successful, false otherwise. 
+//    success   Assigned true if operation successful, false otherwise.
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2470,12 +2470,12 @@ CGetVariableCentering(avtDataRepresentation &data, void *arg, bool &success)
 //  Method: CGetNumberOfNodes
 //
 //  Purpose:
-//    Adds the number of nodes in the vtk input to the passed sum argument. 
+//    Adds the number of nodes in the vtk input to the passed sum argument.
 //
 //  Arguments:
 //    data      The data from which to calculate number of nodes.
 //    sum       A place to store the cumulative number of nodes.
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2508,13 +2508,13 @@ CGetNumberOfNodes(avtDataRepresentation &data, void *sum, bool &)
 //  Method: CGetNumberOfRealZones
 //
 //  Purpose:
-//    Adds the number of zones in the vtk input to the passed sum argument. 
+//    Adds the number of zones in the vtk input to the passed sum argument.
 //    Counts 'real' and 'ghost' separately.
 //
 //  Arguments:
 //    data      The data from which to calculate number of zones.
 //    sum       A place to store the cumulative number of zones.
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2557,7 +2557,7 @@ CGetNumberOfRealZones(avtDataRepresentation &data, void *sum, bool &)
         {
            if (gptr[i])
                numZones[1]++;
-           else 
+           else
                numZones[0]++;
         }
     }
@@ -2572,13 +2572,13 @@ CGetNumberOfRealZones(avtDataRepresentation &data, void *sum, bool &)
 //  Method: CGetNumberOfRealNodes
 //
 //  Purpose:
-//    Adds the number of nodes in the vtk input to the passed sum argument. 
+//    Adds the number of nodes in the vtk input to the passed sum argument.
 //    Counts 'real' and 'ghost' separately.
 //
 //  Arguments:
 //    data      The data from which to calculate number of nodes.
 //    sum       A place to store the cumulative number of nodes.
-//    <unused> 
+//    <unused>
 //
 //  Notes:
 //      This method is designed to be used as the function parameter of
@@ -2620,7 +2620,7 @@ CGetNumberOfRealNodes(avtDataRepresentation &data, void *sum, bool &)
         {
            if (gptr[i])
                numNodes[1]++;
-           else 
+           else
                numNodes[0]++;
         }
     }
@@ -2630,7 +2630,7 @@ CGetNumberOfRealNodes(avtDataRepresentation &data, void *sum, bool &)
         vtkIdList *ids = vtkIdList::New();
         for (int i = 0; i < nPoints; i++)
         {
-           ds->GetPointCells(i, ids);    
+           ds->GetPointCells(i, ids);
            int numGhostCells = 0;
            if (ids->GetNumberOfIds() == 0)
                continue;
@@ -2641,7 +2641,7 @@ CGetNumberOfRealNodes(avtDataRepresentation &data, void *sum, bool &)
            }
            if (numGhostCells == ids->GetNumberOfIds())
                numNodes[1]++;
-           else 
+           else
                numNodes[0]++;
         }
         ids->Delete();
@@ -2662,12 +2662,12 @@ CGetNumberOfRealNodes(avtDataRepresentation &data, void *sum, bool &)
 //  Notes:  Assumes 9 values in vals.
 //
 //  Arguments:
-//      vals    Then tensor values. 
+//      vals    Then tensor values.
 //
 //  Returns:    The major Eigenvalue.
 
-//  Programmer: Kathleen Bonnell 
-//  Creation:   March 11, 2004 
+//  Programmer: Kathleen Bonnell
+//  Creation:   March 11, 2004
 //
 //  Modifications:
 //
@@ -2717,10 +2717,10 @@ MajorEigenvalue(double *vals)
 //  Function: CMaybeCompressedDataString
 //
 //  Purpose: Check a data string for leading characters indicating it *might*
-//           be a compressed string. 
+//           be a compressed string.
 //
-//  Programmer: Mark C. Miller 
-//  Creation:   November 15, 2005 
+//  Programmer: Mark C. Miller
+//  Creation:   November 15, 2005
 //
 //  Modifciations:
 //    Mark C. Miller, Sun Aug 17 00:38:37 PDT 2008
@@ -2737,7 +2737,7 @@ CMaybeCompressedDataString(const unsigned char *dstr)
 }
 
 // ****************************************************************************
-//  Function: CCompressDataString 
+//  Function: CCompressDataString
 //
 //  Purpose: Attempts to compress a data string to a size no larger than a
 //           specified size. The maximum specified size is read from *newlen
@@ -2752,8 +2752,8 @@ CMaybeCompressedDataString(const unsigned char *dstr)
 //  Notes:   Information about the compression is tacked onto the end of the
 //           returned string.
 //
-//  Programmer: Mark C. Miller 
-//  Creation:   November 15, 2005 
+//  Programmer: Mark C. Miller
+//  Creation:   November 15, 2005
 //
 //  Modifications:
 //
@@ -2767,7 +2767,7 @@ bool CCompressDataString(const unsigned char *dstr, int len,
                          unsigned char **newdstr, int *newlen,
                          float *timec, float *ratioc)
 {
-#ifdef HAVE_ZLIB_H 
+#ifdef HAVE_ZLIB_H
     unsigned int lenZIP = *newlen == 0 ? len / 2 : *newlen;
     unsigned char *dstrZIP = new unsigned char [lenZIP+24];
     int startCompress = visitTimer->StartTimer(true);
@@ -2788,7 +2788,7 @@ bool CCompressDataString(const unsigned char *dstr, int len,
     else
     {
         lenZIP = (unsigned int) lenZIPtmp+4;
-        double timeToCompress = 
+        double timeToCompress =
             visitTimer->StopTimer(startCompress, "Compressing data", true);
         debug5 << "Compressed data "
                << (float) len / (float) lenZIP
@@ -2812,8 +2812,8 @@ bool CCompressDataString(const unsigned char *dstr, int len,
 // Purpose: Decompress a possibly compressed data string. Return true if
 //          decompression succeeded, false otherwise
 //
-//  Programmer: Mark C. Miller 
-//  Creation:   November 15, 2005 
+//  Programmer: Mark C. Miller
+//  Creation:   November 15, 2005
 //
 //  Modifications:
 //
@@ -2856,7 +2856,7 @@ bool CDecompressDataString(const unsigned char *dstr, int len,
             double timeToDecompress =
                 visitTimer->StopTimer(startDecompress, "Decompressing data", true);
             debug5 << "Uncompressed data 1:"
-                   << (float) strLengthOrig / (float) len 
+                   << (float) strLengthOrig / (float) len
                    << " in " << timeToDecompress << " seconds" << endl;
             *newdstr = strOrig;
             *newlen = strLengthOrig;
@@ -2876,20 +2876,20 @@ bool CDecompressDataString(const unsigned char *dstr, int len,
 }
 
 // ****************************************************************************
-//  Function: CGetCompressionInfoFromDataString 
+//  Function: CGetCompressionInfoFromDataString
 //
 //  Purpose: Without actually doing a decompression, obtain compression
 //           information from the end of the datastring
 //
-//  Programmer: Mark C. Miller 
-//  Creation:   November 15, 2005 
+//  Programmer: Mark C. Miller
+//  Creation:   November 15, 2005
 //
 //  Modifications:
 //    Jeremy Meredith, Wed Aug  6 18:06:14 EDT 2008
 //    scanf doesn't understand many printf modifiers.
-//    
+//
 //    Mark C. Miller, Wed Aug 26 17:42:40 PDT 2009
-//    Switched timeToCompress to double so its consistent with other code. 
+//    Switched timeToCompress to double so its consistent with other code.
 // ****************************************************************************
 
 void
@@ -2992,7 +2992,7 @@ CApplyTransformToRectGrid(avtDataRepresentation &data,
         out->GetPointData()->ShallowCopy(rgrid->GetPointData());
 
         // NOTE: We do not transform vector data here.
-        //       This is different from the behavior of the 
+        //       This is different from the behavior of the
         //       avtTransform code, because vectors will have been
         //       created (e.g. by the database) in the transformed
         //       space already.  The normals filter does not create

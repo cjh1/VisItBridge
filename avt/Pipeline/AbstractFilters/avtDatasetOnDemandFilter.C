@@ -68,7 +68,7 @@
 //
 //   Hank Childs, Thu Jun 12 16:08:41 PDT 2008
 //   Initialize operatingOnDemand.
-//   
+//
 //    Dave Pugmire, Mon Jan 26 13:04:56 EST 2009
 //    Initialize purgeDSCount.
 //
@@ -103,7 +103,7 @@ avtDatasetOnDemandFilter::avtDatasetOnDemandFilter()
 //    Moved vtkCellLocator from map to DomainCacheEntry data structure.
 //
 //    Hank Childs, Sat Apr 11 23:27:56 CDT 2009
-//    Remove some Delete calls, as they are now handled by the 
+//    Remove some Delete calls, as they are now handled by the
 //    DomainCacheEntry struct directly.
 //
 // ****************************************************************************
@@ -147,7 +147,7 @@ avtDatasetOnDemandFilter::~avtDatasetOnDemandFilter()
 //    Counter to keep track of how many times a domain is loaded.
 //
 //    Hank Childs, Sat Apr 11 23:27:56 CDT 2009
-//    Remove some Delete calls, as they are now handled by the 
+//    Remove some Delete calls, as they are now handled by the
 //    DomainCacheEntry struct directly.
 //
 //    Hank Childs, Mon Feb  1 14:23:46 PST 2010
@@ -202,7 +202,7 @@ avtDatasetOnDemandFilter::GetDomain(int domainId,
     entry.ds = rv;
     rv->Register(NULL);
     loadDSCount++;
-    
+
     //Update the domainLoadCount.
     //Turn two ints into a long. Put timeStep in upper, domain in lower.
     unsigned long long A =  (((unsigned long long)timeStep)<<32);
@@ -243,7 +243,7 @@ avtDatasetOnDemandFilter::GetDomain(int domainId,
 //    the DataCacheEntry instead.
 //
 //    Hank Childs, Sat Apr 11 23:27:56 CDT 2009
-//    Remove some Delete calls, as they are now handled by the 
+//    Remove some Delete calls, as they are now handled by the
 //    DomainCacheEntry struct directly.
 //
 // ****************************************************************************
@@ -283,9 +283,9 @@ avtDatasetOnDemandFilter::GetDataAroundPoint(double X, double Y, double Z,
                    Y >= bbox[2] && Y <= bbox[3] &&
                    Z >= bbox[4] && Z <= bbox[5]))
                 continue;
-            
+
             bool foundIt = false;
-            
+
             // If rectilinear, we found the domain.
             if (it->ds->GetDataObjectType() == VTK_RECTILINEAR_GRID)
                 foundIt = true;
@@ -303,10 +303,11 @@ avtDatasetOnDemandFilter::GetDataAroundPoint(double X, double Y, double Z,
                     cellLocator->BuildLocator();
                     it->cl = cellLocator;
                 }
-                
+
                 double rad = 1e-6, dist=0.0;
                 double p[3] = {X,Y,Z}, resPt[3]={0.0,0.0,0.0};
-                int foundCell = -1, subId = 0;
+                vtkIdType foundCell = -1;
+                int subId = 0;
 
                 if (cellLocator->FindClosestPointWithinRadius(p, rad, resPt,
                                                               foundCell, subId, dist))
@@ -456,16 +457,16 @@ avtDatasetOnDemandFilter::ModifyContract(avtContract_p in_contract)
     // method will interrogate the contract to see if ghost data is needed.
     // The contract at this point may believe that it is not needed ... but
     // someone upstream may decide that it is.  We could somehow try to defer
-    // the decision, but this filter wants to turn off all of the domains, 
-    // which may change the decisions other filters make.  
+    // the decision, but this filter wants to turn off all of the domains,
+    // which may change the decisions other filters make.
     //
-    // One way out would be to always request ghost data, but that would 
+    // One way out would be to always request ghost data, but that would
     // preclude a lot of on demand processing, which defeats the purpose.
     //
     // I'm putting my head in the sand right now.  If you are running into
     // a problem, have your derived type of filter re-define ModifyContract
     // and always request ghost data.
-    operatingOnDemand = 
+    operatingOnDemand =
             GetInput()->GetOriginatingSource()->CanDoStreaming(in_contract)
          && CheckOnDemandViability();
 
