@@ -13,12 +13,21 @@ set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(VISIT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(VISIT_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake )
 
+set(VISIT_PARALLEL ${VTK_USE_MPI})
+IF(VTK_USE_MPI)
+	INCLUDE(FindMPI)
+  INCLUDE_DIRECTORIES(  
+    ${MPI_INCLUDE_PATH}
+    )  
+ENDIF(VTK_USE_MPI)
+
+
 include(CTest)
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
 
 #lower warning level since this project has to many warnings
 set(OLD_CMAKE_CXX_WARNING_LEVEL ${CMAKE_CXX_WARNING_LEVEL})
-set(CMAKE_CXX_WARNING_LEVEL 1)
+set(CMAKE_CXX_WARNING_LEVEL 0)
 
 #-----------------------------------------------------------------------------
 # Setup Vars for visit-config.h
