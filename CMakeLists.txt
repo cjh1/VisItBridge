@@ -120,9 +120,11 @@ set(VISIT_COMMON_INCLUDES
 #watch out, you need to make sure common/parser is always in front of
 # python2.X includes
 
-INCLUDE(${PARAVIEW_USE_FILE})
 INCLUDE_DIRECTORIES(
   ${VISIT_COMMON_INCLUDES}
+  )
+INCLUDE(${PARAVIEW_USE_FILE})  
+INCLUDE_DIRECTORIES(
   ${VTK_INCLUDE_DIRS}
   ${PARAVIEW_INCLUDE_DIRS}
   ${PARAVIEW_GUI_INCLUDE_DIRS}   

@@ -68,9 +68,6 @@ vtkVisItUtility.C
 INCLUDE_DIRECTORIES(
 ${VISIT_SOURCE_DIR}/visit_vtk/full
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
-${VISIT_SOURCE_DIR}/common/misc
-${VISIT_SOURCE_DIR}/common/utility
-${VTK_INCLUDE_DIRS}
 )
 
 # Add link directories needed to use our libraries and VTK.

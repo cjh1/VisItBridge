@@ -92,29 +92,23 @@ vtkVisItTensorGlyph.C
 vtkVolumeFromVolume.C
 )
 
-MESSAGE(STATUS "VISIT BINARY DIR: ${VISIT_BINARY_DIR}")
 INCLUDE_DIRECTORIES(
 ${VISIT_BINARY_DIR}
-${VISIT_BINARY_DIR}/include
-${VISIT_SOURCE_DIR}/include
 ${VISIT_SOURCE_DIR}/visit_vtk/full
-${VISIT_SOURCE_DIR}/avt/Pipeline/Data
-${VISIT_SOURCE_DIR}/common/Exceptions/Pipeline
-${VISIT_SOURCE_DIR}/common/misc
-${VISIT_SOURCE_DIR}/common/utility
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
-${VTK_INCLUDE_DIRS}
-${BOOST_INCLUDE_DIR}
+${VISIT_SOURCE_DIR}/avt/Pipeline/Data
 )
 
-IF(HAVE_BILIB)
-    ADD_DEFINITIONS(-D__USE_ISOC99)
-ENDIF(HAVE_BILIB)
 
 # Add link directories needed to use our libraries and VTK.
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS})
 
-ADD_LIBRARY(visit_vtk ${VISIT_VTK_SOURCES})
+#fix the include directories to have the parser first no matter what
+get_directory_property(tmp_include_dirs INCLUDE_DIRECTORIES)
+set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
+  "${VISIT_SOURCE_DIR}/parser;${tmp_include_dirs}")
+
+  ADD_LIBRARY(visit_vtk ${VISIT_VTK_SOURCES})
 TARGET_LINK_LIBRARIES(visit_vtk lightweight_visit_vtk vtkGraphics vtkImaging vtktiff)
 
 VISIT_INSTALL_TARGETS(visit_vtk)

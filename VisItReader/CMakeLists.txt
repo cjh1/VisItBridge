@@ -44,4 +44,4 @@ ADD_PARAVIEW_PLUGIN(VisItReader "1.0"
   SERVER_SOURCES ${EXTRA_SOURCES}
   SERVER_MANAGER_XML VisItReader.xml)
   
-TARGET_LINK_LIBRARIES(avtdatabase_ser visitcommon avtdbatts avtpipeline_ser visit_vtk)  
+TARGET_LINK_LIBRARIES(VisItReader avtdatabase_ser visitcommon avtdbatts avtpipeline_ser visit_vtk)  
