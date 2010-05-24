@@ -39,7 +39,7 @@
 #include <vtkCSGCell.h>
 #include <vtkMath.h>
 #include <vtkCellArray.h>
-#include <vtkPointLocator.h>
+#include <vtkIncrementalPointLocator.h>
 #include <vtkPoints.h>
 #include <vtkObjectFactory.h>
 
@@ -47,7 +47,7 @@ vtkStandardNewMacro(vtkCSGCell);
 
 vtkCSGCell::vtkCSGCell()
 {
-
+return;
 }
 
 int vtkCSGCell::EvaluatePosition(double  vtkNotUsed(x)[3],
@@ -74,9 +74,9 @@ int vtkCSGCell::CellBoundary(int vtkNotUsed(subId),
   return 0;
 }
 
-void vtkCSGCell::Contour(double vtkNotUsed(value),
+void vtkCSGCell::Contour(double value,
                            vtkDataArray *vtkNotUsed(cellScalars),
-                           vtkPointLocator *vtkNotUsed(locator),
+                           vtkIncrementalPointLocator *vtkNotUsed(locator),
                            vtkCellArray *vtkNotUsed(verts),
                            vtkCellArray *vtkNotUsed(lines),
                            vtkCellArray *vtkNotUsed(polys),
@@ -86,6 +86,7 @@ void vtkCSGCell::Contour(double vtkNotUsed(value),
                            vtkIdType vtkNotUsed(cellId),
                            vtkCellData *vtkNotUsed(outCd))
 {
+return ;
 }
 
 // Project point on line. If it lies between 0<=t<=1 and distance off line
@@ -121,7 +122,7 @@ void vtkCSGCell::Derivatives(int vtkNotUsed(subId),
 
 void vtkCSGCell::Clip(double vtkNotUsed(value),
                         vtkDataArray *vtkNotUsed(cellScalars),
-                        vtkPointLocator *vtkNotUsed(locator),
+                        vtkIncrementalPointLocator *vtkNotUsed(locator),
                         vtkCellArray *vtkNotUsed(verts),
                         vtkPointData *vtkNotUsed(inPD),
                         vtkPointData *vtkNotUsed(outPD),
@@ -130,4 +131,5 @@ void vtkCSGCell::Clip(double vtkNotUsed(value),
                         vtkCellData *vtkNotUsed(outCD),
                         int vtkNotUsed(insideOut))
 {
+return;
 }
