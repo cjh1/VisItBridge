@@ -1,6 +1,6 @@
 <ParaViewReaders>
-  <Reader name="SiloReader"
-    extensions="HDF5 PDB"
-    file_description="dummy file format for VisItReader Testing">
+  <Reader name="VisItFluentReader"
+    extensions="cas"
+    file_description="VisItReader Fluent Example">
   </Reader>
 </ParaViewReaders>

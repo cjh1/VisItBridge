@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkVisItSiloReader.h
+   Module:    vtkVisItFluentReader.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -35,34 +35,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkPolyDataAlgorithm.h"
 
 //BTX
-class avtSiloFileFormat;
+class avtFluentFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkVisItSiloReader : public vtkPolyDataAlgorithm
+class VTK_EXPORT vtkVisItFluentReader : public vtkPolyDataAlgorithm
 {
 public:
-  static vtkVisItSiloReader *New();
-  vtkTypeMacro(vtkVisItSiloReader,vtkPolyDataAlgorithm);
+  static vtkVisItFluentReader *New();
+  vtkTypeMacro(vtkVisItFluentReader,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
   int CanReadFile(const char* fname);
 
 protected:
-  vtkVisItSiloReader();
-  ~vtkVisItSiloReader();
+  vtkVisItFluentReader();
+  ~vtkVisItFluentReader();
   int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   char *FileName;
 
 //BTX
-  avtSiloFileFormat *AvtReader;
+  avtFluentFileFormat *AvtReader;
   avtDatabaseMetaData *ReaderMetaData;
 //ETX
 
 private:
-  vtkVisItSiloReader(const vtkVisItSiloReader&);
-  void operator = (const vtkVisItSiloReader&);
+  vtkVisItFluentReader(const vtkVisItFluentReader&);
+  void operator = (const vtkVisItFluentReader&);
 };
 #endif

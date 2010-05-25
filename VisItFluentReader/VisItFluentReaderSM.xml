@@ -1,7 +1,7 @@
 <ServerManagerConfiguration>
   <!-- Begin SiloReader -->
   <ProxyGroup name="sources">
-    <SourceProxy name="SiloReader" class="vtkSiloReader">
+    <SourceProxy name="VisItFluentReader" class="vtkVisItFluentReader">
       <StringVectorProperty
         name="FileName"
         command="SetFileName"

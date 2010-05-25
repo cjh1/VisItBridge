@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkVisItSiloReader.cxx
+   Module:    vtkVisItFluentReader.cxx
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -29,20 +29,20 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
-#include "vtkVisItSiloReader.h"
+#include "vtkVisItFluentReader.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkPolyDataAlgorithm.h"
 #include "vtkPolyData.h"
 
-#include "avtSiloFileFormat.h"
+#include "avtFluentFileFormat.h"
 #include "avtDatabaseMetaData.h"
 
-vtkStandardNewMacro(vtkVisItSiloReader);
+vtkStandardNewMacro(vtkVisItFluentReader);
 
 //-----------------------------------------------------------------------------
-vtkVisItSiloReader::vtkVisItSiloReader()
+vtkVisItFluentReader::vtkVisItFluentReader()
 {
   this->FileName = 0;
   this->SetNumberOfInputPorts(0);
@@ -53,7 +53,7 @@ vtkVisItSiloReader::vtkVisItSiloReader()
 }
 
 //-----------------------------------------------------------------------------
-vtkVisItSiloReader::~vtkVisItSiloReader()
+vtkVisItFluentReader::~vtkVisItFluentReader()
 {
   this->SetFileName(0);
   if ( this->AvtReader )
@@ -67,7 +67,7 @@ vtkVisItSiloReader::~vtkVisItSiloReader()
     }
 }
 //-----------------------------------------------------------------------------
-int vtkVisItSiloReader::CanReadFile(const char *fname)
+int vtkVisItFluentReader::CanReadFile(const char *fname)
 {
   if ( this->AvtReader )
     {
@@ -77,7 +77,7 @@ int vtkVisItSiloReader::CanReadFile(const char *fname)
   int ret = 0;
   try
     {
-    this->AvtReader = new avtSiloFileFormat(fname);
+    this->AvtReader = new avtFluentFileFormat(fname);
     ret = 1;
     }
   catch(...)
@@ -90,7 +90,7 @@ int vtkVisItSiloReader::CanReadFile(const char *fname)
 }
 
 //-----------------------------------------------------------------------------
-int vtkVisItSiloReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkVisItFluentReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
   if (!this->AvtReader && !this->CanReadFile( this->FileName ))
     {
@@ -110,7 +110,7 @@ int vtkVisItSiloReader::RequestInformation(vtkInformation *request, vtkInformati
 
 
 //-----------------------------------------------------------------------------
-int vtkVisItSiloReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkVisItFluentReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
   if (!this->AvtReader )
     {
@@ -137,7 +137,7 @@ int vtkVisItSiloReader::RequestData(vtkInformation *request, vtkInformationVecto
 }
 
 //-----------------------------------------------------------------------------
-void vtkVisItSiloReader::PrintSelf(ostream& os, vtkIndent indent)
+void vtkVisItFluentReader::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
