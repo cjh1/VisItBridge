@@ -81,7 +81,7 @@ int vtkVisItReader::CanReadFile(const char *fname)
     ret = 0;
     }
 
-  return 0;
+  return ret;
 }
 
 //-----------------------------------------------------------------------------
