@@ -185,11 +185,21 @@ INCLUDE_DIRECTORIES(
   ${VISIT_COMMON_INCLUDES}
   )
 INCLUDE(${PARAVIEW_USE_FILE})  
+
+#grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
+SET(VTK_BINARY_DIR ${PARAVIEW_VTK_DIR} )
+INCLUDE(${VTK_SOURCE_DIR}/Cmake/vtkThirdParty.cmake)
+
+#setup ZLib
+VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)  
+VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 INCLUDE_DIRECTORIES(
   ${VTK_INCLUDE_DIRS}
   ${PARAVIEW_INCLUDE_DIRS}
   ${PARAVIEW_GUI_INCLUDE_DIRS}   
-  )    
+  ${VTK_INCLUDE_DIRS_SOURCE_TREE}
+  ) 
+  
 add_subdirectory(common)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
