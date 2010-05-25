@@ -225,12 +225,12 @@ LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS})
 #********************************* SERIAL ************************************
 ADD_LIBRARY(avtpipeline_ser ${ALL_SOURCES})
 
-TARGET_LINK_LIBRARIES(avtpipeline_ser visitcommon avtdbatts lightweight_visit_vtk vtkGraphics ${ZLIB_LIB})
+TARGET_LINK_LIBRARIES(avtpipeline_ser visitcommon avtmath avtdbatts lightweight_visit_vtk vtkGraphics ${ZLIB_LIB})
 VISIT_INSTALL_TARGETS(avtpipeline_ser)
 
 #********************************* PARALLEL **********************************
 IF(VISIT_PARALLEL)
     ADD_PARALLEL_LIBRARY(avtpipeline_par ${ALL_SOURCES})
-    TARGET_LINK_LIBRARIES(avtpipeline_par visitcommon avtdbatts lightweight_visit_vtk vtkGraphics ${ZLIB_LIB})
+    TARGET_LINK_LIBRARIES(avtpipeline_par visitcommon avtmath avtdbatts lightweight_visit_vtk vtkGraphics ${ZLIB_LIB})
     VISIT_INSTALL_TARGETS(avtpipeline_par)
 ENDIF(VISIT_PARALLEL)

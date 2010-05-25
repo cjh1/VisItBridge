@@ -38,8 +38,7 @@
 #
 #****************************************************************************/
 
-IF(VISIT_DBIO_ONLY)
-    ADD_SUBDIRECTORY(DBAtts)
-    ADD_SUBDIRECTORY(Pipeline)
-    ADD_SUBDIRECTORY(Database)
-ENDIF(VISIT_DBIO_ONLY)
+ADD_SUBDIRECTORY(Math)
+ADD_SUBDIRECTORY(DBAtts)
+ADD_SUBDIRECTORY(Pipeline)
+ADD_SUBDIRECTORY(Database)
