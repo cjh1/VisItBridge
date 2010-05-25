@@ -25,8 +25,15 @@ ENDIF(VTK_USE_MPI)
 include(CTest)
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
 
-#block out most of the warnings in visit
-add_definitions( "/wd4267 /wd4996" )
+#block out most of the warnings in visit on windows
+IF (WIN32)
+  ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
+  IF ("${VISIT_MSVC_VERSION}" STREQUAL "MSVC80")
+      ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
+      ADD_DEFINITIONS(-D_SCL_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
+      ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+  ENDIF ("${VISIT_MSVC_VERSION}" STREQUAL "MSVC80")
+ENDIF(WIN32)  
 
 #-----------------------------------------------------------------------------
 # Setup Vars for visit-config.h
@@ -72,9 +79,35 @@ ELSE(VISIT_STATIC)
     ENDIF(WIN32)
 ENDIF(VISIT_STATIC)
 
-#Get the size of types
+#-----------------------------------------------------------------------------
+# Detect packages here. We could probably write macros that we can include from
+# elsewhere for this. 
+#-----------------------------------------------------------------------------
+INCLUDE(CheckIncludeFiles)
 INCLUDE(CMakeBackwardCompatibilityC)
+INCLUDE(CMakeBackwardCompatibilityCXX)
 INCLUDE(CheckTypeSize)
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckSymbolExists)
+INCLUDE(TestBigEndian)
+INCLUDE(FindOpenGL)
+
+CHECK_INCLUDE_FILES (fcntl.h     HAVE_FCNTL_H)
+CHECK_INCLUDE_FILES (inttypes.h  HAVE_INTTYPES_H)
+CHECK_INCLUDE_FILES (malloc.h    HAVE_MALLOC_H)
+CHECK_INCLUDE_FILES (limits.h    HAVE_LIMITS_H)
+CHECK_INCLUDE_FILES (memory.h    HAVE_MEMORY_H)
+CHECK_INCLUDE_FILES (stdint.h    HAVE_STDINT_H)
+CHECK_INCLUDE_FILES (stdlib.h    HAVE_STDLIB_H)
+CHECK_INCLUDE_FILES (strings.h   HAVE_STRINGS_H)
+CHECK_INCLUDE_FILES (string.h    HAVE_STRING_H)
+CHECK_INCLUDE_FILES (sys/time.h  HAVE_SYS_TIME_H)
+CHECK_INCLUDE_FILES (sys/types.h HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILES (sys/stat.h  HAVE_SYS_STAT_H)
+CHECK_INCLUDE_FILES (unistd.h    HAVE_UNISTD_H)
+CHECK_INCLUDE_FILES (zlib.h      HAVE_ZLIB_H)
+CHECK_INCLUDE_FILES (stdbool.h   HAVE_STDBOOL_H)
+
 # Check for type sizes, endian
 SET(SIZEOF_BOOLEAN              ${CMAKE_SIZEOF_BOOLEAN})
 SET(SIZEOF_CHAR                 ${CMAKE_SIZEOF_CHAR})
@@ -92,9 +125,29 @@ SET(SIZEOF_UNSIGNED_LONG        ${CMAKE_SIZEOF_UNSIGNED_LONG})
 SET(SIZEOF_UNSIGNED_LONG_LONG   ${CMAKE_SIZEOF_UNSIGNED_LONG_LONG})
 SET(SIZEOF_UNSIGNED_SHORT       ${CMAKE_SIZEOF_UNSIGNED_SHORT})
 SET(SIZEOF_VOID_P               ${CMAKE_SIZEOF_VOID_P})
-#SET(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE)
+SET(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE)
 CHECK_TYPE_SIZE("off64_t" SIZEOF_OFF64_T)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
+
+
+# manually check for socklen_t as CHECK_SYMBOL_EXISTS
+# doesn't appear to work on linux (at least) 
+IF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
+    MESSAGE(STATUS "Check for socklen_t")
+    TRY_COMPILE(HAVE_SOCKLEN_T
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${VISIT_SOURCE_DIR}/CMake/TestSocklenT.c
+        OUTPUT_VARIABLE SLT
+    )
+    IF (HAVE_SOCKLEN_T)
+        SET(HAVE_SOCKLEN_T 1 CACHE INTERNAL "support for socklen_t")
+        MESSAGE(STATUS "Check for socklen_t - found")
+    ELSE(HAVE_SOCKLEN_T)
+        SET(HAVE_SOCKLEN_T 0 CACHE INTERNAL "support for socklen_t")
+        MESSAGE(STATUS "Check for socklen_t - not found")
+    ENDIF (HAVE_SOCKLEN_T)
+ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
+
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
