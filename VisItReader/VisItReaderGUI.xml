@@ -1,0 +1,6 @@
+<ParaViewReaders>
+  <Reader name="VisItReader"
+    extensions="vis"
+    file_description="dummy file format for VisItReader Testing">
+  </Reader>
+</ParaViewReaders>

@@ -49,6 +49,7 @@ ${VTK_INCLUDE_DIRS}
 ADD_PARAVIEW_PLUGIN(VisItReader "1.0"
   SERVER_MANAGER_SOURCES ${SERVER_SOURCES}
   SERVER_SOURCES ${EXTRA_SOURCES}
-  SERVER_MANAGER_XML VisItReader.xml)
+  SERVER_MANAGER_XML VisItReader.xml
+  GUI_RESOURCE_FILES VisItReaderGUI.xml)
   
 TARGET_LINK_LIBRARIES(VisItReader avtdatabase_ser visitcommon avtdbatts avtpipeline_ser visit_vtk)  
