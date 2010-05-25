@@ -33,8 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
-#include "vtkPolyDataAlgorithm.h"
-#include "vtkPolyData.h"
+#include "vtkUnstructuredGridAlgorithm.h"
+#include "vtkUnstructuredGrid.h"
 
 #include "avtFluentFileFormat.h"
 #include "avtDatabaseMetaData.h"
@@ -118,15 +118,15 @@ int vtkVisItFluentReader::RequestData(vtkInformation *request, vtkInformationVec
     }
 
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  vtkPolyData *output = vtkPolyData::SafeDownCast(
+  vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   stringVector names = this->ReaderMetaData->GetAllMeshNames();
   size_t size = names.size();
   if ( size == 1 )
     {
-    vtkPolyData *mesh = vtkPolyData::SafeDownCast(
-      this->AvtReader->GetMesh( names.at(0).c_str() ) );
+    vtkUnstructuredGrid *mesh = vtkUnstructuredGrid::SafeDownCast(
+      this->AvtReader->GetMesh( 0, names.at(0).c_str() ) );
     if ( mesh )
       {
       output->ShallowCopy( mesh );

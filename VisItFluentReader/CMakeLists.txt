@@ -16,25 +16,19 @@ FluentPluginInfo.C
 )
 
 INCLUDE_DIRECTORIES(
-${CMAKE_CURRENT_SOURCE_DIR}
+${AVT_DATABASE_SOURCE_DIR}/Database
+${AVT_DATABASE_SOURCE_DIR}/Formats
 ${VISIT_COMMON_INCLUDES}
-${VISIT_INCLUDE_DIR}/avt/DBAtts/MetaData
-${VISIT_INCLUDE_DIR}/avt/DBAtts/SIL
-${VISIT_INCLUDE_DIR}/avt/Database/Database
-${VISIT_INCLUDE_DIR}/avt/Database/Formats
-${VISIT_INCLUDE_DIR}/avt/Database/Ghost
-${VISIT_INCLUDE_DIR}/avt/FileWriter
-${VISIT_INCLUDE_DIR}/avt/Filters
-${VISIT_INCLUDE_DIR}/avt/Math
-${VISIT_INCLUDE_DIR}/avt/Pipeline/AbstractFilters
-${VISIT_INCLUDE_DIR}/avt/Pipeline/Data
-${VISIT_INCLUDE_DIR}/avt/Pipeline/Pipeline
-${VISIT_INCLUDE_DIR}/avt/Pipeline/Sinks
-${VISIT_INCLUDE_DIR}/avt/Pipeline/Sources
-${VISIT_INCLUDE_DIR}/avt/VisWindow/VisWindow
-${VISIT_INCLUDE_DIR}/visit_vtk/full
-${VISIT_INCLUDE_DIR}/visit_vtk/lightweight
-${VTK_INCLUDE_DIRS} 
+${AVT_DBATTS_SOURCE_DIR}/MetaData
+${AVT_DBATTS_SOURCE_DIR}/SIL
+${VISIT_SOURCE_DIR}/avt/Math
+${VISIT_SOURCE_DIR}/avt/VisWindow/VisWindow
+${AVT_PIPELINE_SOURCE_DIR}/AbstractFilters
+${AVT_PIPELINE_SOURCE_DIR}/Data
+${AVT_PIPELINE_SOURCE_DIR}/Pipeline
+${AVT_PIPELINE_SOURCE_DIR}/Sinks
+${AVT_PIPELINE_SOURCE_DIR}/Sources
+${VTK_INCLUDE_DIRS}
 )
 
 LINK_DIRECTORIES(${VISIT_LIBRARY_DIR} ${VTK_LIBRARY_DIRS})

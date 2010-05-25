@@ -32,18 +32,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
-#include "vtkPolyDataAlgorithm.h"
+#include "vtkUnstructuredGridAlgorithm.h"
 
 //BTX
 class avtFluentFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkVisItFluentReader : public vtkPolyDataAlgorithm
+class VTK_EXPORT vtkVisItFluentReader : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkVisItFluentReader *New();
-  vtkTypeMacro(vtkVisItFluentReader,vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkVisItFluentReader,vtkUnstructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
