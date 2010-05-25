@@ -69,6 +69,11 @@ vtkVisItReader::~vtkVisItReader()
 //-----------------------------------------------------------------------------
 int vtkVisItReader::CanReadFile(const char *fname)
 {
+  if ( this->AvtReader )
+    {
+    return true;
+    }
+
   int ret = 0;
   try
     {
@@ -87,7 +92,7 @@ int vtkVisItReader::CanReadFile(const char *fname)
 //-----------------------------------------------------------------------------
 int vtkVisItReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
-  if (!this->AvtReader )
+  if (!this->AvtReader && !this->CanReadFile( this->FileName ))
     {
     return 0;
     }

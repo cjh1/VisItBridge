@@ -48,6 +48,7 @@
 #include <vtkPolyData.h>
 #include <vtkCellArray.h>
 #include <vtkPoints.h>
+#include <vtkCubeSource.h>
 
 #include <avtDatabaseMetaData.h>
 #include <DBOptionsAttributes.h>
@@ -215,42 +216,12 @@ avtVisItReaderFileFormat::GetMesh(const char *meshname)
 {
   if ( strcmp(meshname,"mesh") == 0 )
     {
-    vtkPolyData *mesh = vtkPolyData::New();
-
-    //construct the cells
-    vtkCellArray *cells = vtkCellArray::New();
-    vtkIdList *pointIds = vtkIdList::New();
-
-    pointIds->SetNumberOfIds(3);
-    pointIds->SetId(0,0);
-    pointIds->SetId(1,1);
-    pointIds->SetId(2,2);
-    cells->InsertNextCell( pointIds );
-
-    pointIds->Reset();
-    pointIds->SetId(0,1);
-    pointIds->SetId(1,3);
-    pointIds->SetId(2,2);
-    cells->InsertNextCell( pointIds );
-
-    //construct the points
-    vtkPoints *points = vtkPoints::New();
-    points->SetNumberOfPoints( 4 );
-
-    points->SetPoint(0, 0.0, 0.0, 0.0 );
-    points->SetPoint(1, 1.0, 0.0, 0.0 );
-    points->SetPoint(2, 0.0, 1.0, 0.0 );
-    points->SetPoint(3, 1.0, 1.0, 0.0 );
-
-    mesh->SetPoints( points );
-    points->Delete();
-
-    mesh->SetVerts( cells );
-    cells->Delete();
-    pointIds->Delete();
-
-    return mesh;
-
+    vtkCubeSource *cube = vtkCubeSource::New();
+    cube->SetXLength(1);
+    cube->SetYLength(10);
+    cube->SetZLength(4);
+    cube->Update();
+    return cube->GetOutput();
     }
   else
     {
