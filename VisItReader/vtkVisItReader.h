@@ -33,6 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
 #include "vtkPolyDataAlgorithm.h"
+
+//BTX
+class avtVisItReaderFileFormat;
+class avtDatabaseMetaData;
+//ETX
+
 class VTK_EXPORT vtkVisItReader : public vtkPolyDataAlgorithm
 {
 public:
@@ -49,6 +55,11 @@ protected:
   int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   char *FileName;
+
+//BTX
+  avtVisItReaderFileFormat *AvtReader;
+  avtDatabaseMetaData *ReaderMetaData;
+//ETX
 
 private:
   vtkVisItReader(const vtkVisItReader&);

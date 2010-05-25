@@ -36,6 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkPolyDataAlgorithm.h"
 #include "vtkPolyData.h"
 
+#include "avtVisItReaderFileFormat.h"
+#include "avtDatabaseMetaData.h"
+
 vtkStandardNewMacro(vtkVisItReader);
 
 //-----------------------------------------------------------------------------
@@ -44,28 +47,85 @@ vtkVisItReader::vtkVisItReader()
   this->FileName = 0;
   this->SetNumberOfInputPorts(0);
   this->SetNumberOfOutputPorts(1);
+
+  this->AvtReader = NULL;
+  this->ReaderMetaData = NULL;
 }
 
 //-----------------------------------------------------------------------------
 vtkVisItReader::~vtkVisItReader()
 {
   this->SetFileName(0);
+  if ( this->AvtReader )
+    {
+    delete this->AvtReader;
+    }
+
+  if ( this->ReaderMetaData )
+    {
+    delete this->ReaderMetaData;
+    }
 }
 //-----------------------------------------------------------------------------
 int vtkVisItReader::CanReadFile(const char *fname)
 {
-  return 1;
-}
+  int ret = 0;
+  try
+    {
+    this->AvtReader = new avtVisItReaderFileFormat(fname);
+    ret = 1;
+    }
+  catch(...)
+    {
+    //we are going to catch all exceptions currently
+    ret = 0;
+    }
 
-//-----------------------------------------------------------------------------
-int vtkVisItReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
-{
-  return 1;
+  return 0;
 }
 
 //-----------------------------------------------------------------------------
 int vtkVisItReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
+  if (!this->AvtReader )
+    {
+    return 0;
+    }
+
+  //construct an AVT meta data, that we will allow the avt reader to populate
+  this->ReaderMetaData = new avtDatabaseMetaData( );
+
+  //get all the meta data the avt reader has
+  this->AvtReader->SetDatabaseMetaData( this->ReaderMetaData );
+
+  //now cycle through and convert all the meta data that was added to paraview framework
+
+  return 1;
+}
+
+
+//-----------------------------------------------------------------------------
+int vtkVisItReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+{
+  if (!this->AvtReader )
+    {
+    return 0;
+    }
+
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkPolyData *output = vtkPolyData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  stringVector names = this->ReaderMetaData->GetAllMeshNames();
+  size_t size = names.size();
+  if ( size == 1 )
+    {
+    vtkPolyData *mesh = vtkPolyData::SafeDownCast(
+      this->AvtReader->GetMesh( names.at(0).c_str() ) );
+
+    output->ShallowCopy( mesh );
+    mesh->Delete();
+    }
   return 1;
 }
 
