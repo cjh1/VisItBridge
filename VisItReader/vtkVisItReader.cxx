@@ -127,8 +127,10 @@ int vtkVisItReader::RequestData(vtkInformation *request, vtkInformationVector **
     {
     vtkPolyData *mesh = vtkPolyData::SafeDownCast(
       this->AvtReader->GetMesh( names.at(0).c_str() ) );
-
-    output->ShallowCopy( mesh );
+    if ( mesh )
+      {
+      output->ShallowCopy( mesh );
+      }
     mesh->Delete();
     }
   return 1;

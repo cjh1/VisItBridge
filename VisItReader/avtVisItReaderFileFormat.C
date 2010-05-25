@@ -221,7 +221,10 @@ avtVisItReaderFileFormat::GetMesh(const char *meshname)
     cube->SetYLength(10);
     cube->SetZLength(4);
     cube->Update();
-    return cube->GetOutput();
+    vtkPolyData *mesh = vtkPolyData::New();
+    mesh->ShallowCopy( cube->GetOutput() );
+    cube->Delete();
+    return mesh;
     }
   else
     {
