@@ -45,20 +45,14 @@
 #include <string>
 
 #include <vtkFloatArray.h>
-#include <vtkRectilinearGrid.h>
-#include <vtkStructuredGrid.h>
-#include <vtkUnstructuredGrid.h>
+#include <vtkPolyData.h>
+#include <vtkCellArray.h>
+#include <vtkPoints.h>
 
 #include <avtDatabaseMetaData.h>
-
 #include <DBOptionsAttributes.h>
 #include <Expression.h>
-
 #include <InvalidVariableException.h>
-
-
-using     std::string;
-
 
 // ****************************************************************************
 //  Method: avtVisItReaderFileFormat constructor
@@ -71,7 +65,7 @@ using     std::string;
 avtVisItReaderFileFormat::avtVisItReaderFileFormat(const char *filename)
     : avtSTSDFileFormat(filename)
 {
-    // INITIALIZE DATA MEMBERS
+  //this 'reader' only generates a single triangle
 }
 
 
@@ -111,26 +105,11 @@ avtVisItReaderFileFormat::FreeUpResources(void)
 void
 avtVisItReaderFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md)
 {
-    //
-    // CODE TO ADD A MESH
-    //
-    // string meshname = ...
-    //
-    // AVT_RECTILINEAR_MESH, AVT_CURVILINEAR_MESH, AVT_UNSTRUCTURED_MESH,
-    // AVT_POINT_MESH, AVT_SURFACE_MESH, AVT_UNKNOWN_MESH
-    // avtMeshType mt = AVT_RECTILINEAR_MESH;
-    //
-    // int nblocks = 1;  <-- this must be 1 for STSD
-    // int block_origin = 0;
-    // int spatial_dimension = 2;
-    // int topological_dimension = 2;
-    // double *extents = NULL;
-    //
+    avtMeshType mt = AVT_SURFACE_MESH;
+    std::string meshname = "mesh";
+
     // Here's the call that tells the meta-data object that we have a mesh:
-    //
-    // AddMeshToMetaData(md, meshname, mt, extents, nblocks, block_origin,
-    //                   spatial_dimension, topological_dimension);
-    //
+    this->AddMeshToMetaData(md, meshname, mt);
 
     //
     // CODE TO ADD A SCALAR VARIABLE
@@ -234,7 +213,49 @@ avtVisItReaderFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md)
 vtkDataSet *
 avtVisItReaderFileFormat::GetMesh(const char *meshname)
 {
-    YOU MUST IMPLEMENT THIS
+  if ( strcmp(meshname,"mesh") == 0 )
+    {
+    vtkPolyData *mesh = vtkPolyData::New();
+
+    //construct the cells
+    vtkCellArray *cells = vtkCellArray::New();
+    vtkIdList *pointIds = vtkIdList::New();
+
+    pointIds->SetNumberOfIds(3);
+    pointIds->SetId(0,0);
+    pointIds->SetId(1,1);
+    pointIds->SetId(2,2);
+    cells->InsertNextCell( pointIds );
+
+    pointIds->Reset();
+    pointIds->SetId(0,1);
+    pointIds->SetId(1,3);
+    pointIds->SetId(2,2);
+    cells->InsertNextCell( pointIds );
+
+    //construct the points
+    vtkPoints *points = vtkPoints::New();
+    points->SetNumberOfPoints( 4 );
+
+    points->SetPoint(0, 0.0, 0.0, 0.0 );
+    points->SetPoint(1, 1.0, 0.0, 0.0 );
+    points->SetPoint(2, 0.0, 1.0, 0.0 );
+    points->SetPoint(3, 1.0, 1.0, 0.0 );
+
+    mesh->SetPoints( points );
+    points->Delete();
+
+    mesh->SetVerts( cells );
+    cells->Delete();
+    pointIds->Delete();
+
+    return mesh;
+
+    }
+  else
+    {
+    EXCEPTION1(InvalidVariableException, meshname);
+    }
 }
 
 
@@ -257,14 +278,12 @@ avtVisItReaderFileFormat::GetMesh(const char *meshname)
 vtkDataArray *
 avtVisItReaderFileFormat::GetVar(const char *varname)
 {
-    YOU MUST IMPLEMENT THIS
-
     //
     // If you have a file format where variables don't apply (for example a
     // strictly polygonal format like the STL (Stereo Lithography) format,
     // then uncomment the code below.
     //
-    // EXCEPTION1(InvalidVariableException, varname);
+    EXCEPTION1(InvalidVariableException, varname);
     //
 
     //
@@ -302,14 +321,12 @@ avtVisItReaderFileFormat::GetVar(const char *varname)
 vtkDataArray *
 avtVisItReaderFileFormat::GetVectorVar(const char *varname)
 {
-    YOU MUST IMPLEMENT THIS
-
     //
     // If you have a file format where variables don't apply (for example a
     // strictly polygonal format like the STL (Stereo Lithography) format,
     // then uncomment the code below.
     //
-    // EXCEPTION1(InvalidVariableException, varname);
+    EXCEPTION1(InvalidVariableException, varname);
     //
 
     //
