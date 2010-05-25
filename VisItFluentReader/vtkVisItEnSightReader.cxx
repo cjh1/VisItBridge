@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkVisItReader.cxx
+   Module:    vtkVisItSiloReader.cxx
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -29,20 +29,20 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
-#include "vtkVisItReader.h"
+#include "vtkVisItSiloReader.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkPolyDataAlgorithm.h"
 #include "vtkPolyData.h"
 
-#include "avtVisItReaderFileFormat.h"
+#include "avtSiloFileFormat.h"
 #include "avtDatabaseMetaData.h"
 
-vtkStandardNewMacro(vtkVisItReader);
+vtkStandardNewMacro(vtkVisItSiloReader);
 
 //-----------------------------------------------------------------------------
-vtkVisItReader::vtkVisItReader()
+vtkVisItSiloReader::vtkVisItSiloReader()
 {
   this->FileName = 0;
   this->SetNumberOfInputPorts(0);
@@ -53,7 +53,7 @@ vtkVisItReader::vtkVisItReader()
 }
 
 //-----------------------------------------------------------------------------
-vtkVisItReader::~vtkVisItReader()
+vtkVisItSiloReader::~vtkVisItSiloReader()
 {
   this->SetFileName(0);
   if ( this->AvtReader )
@@ -67,7 +67,7 @@ vtkVisItReader::~vtkVisItReader()
     }
 }
 //-----------------------------------------------------------------------------
-int vtkVisItReader::CanReadFile(const char *fname)
+int vtkVisItSiloReader::CanReadFile(const char *fname)
 {
   if ( this->AvtReader )
     {
@@ -77,7 +77,7 @@ int vtkVisItReader::CanReadFile(const char *fname)
   int ret = 0;
   try
     {
-    this->AvtReader = new avtVisItReaderFileFormat(fname);
+    this->AvtReader = new avtSiloFileFormat(fname);
     ret = 1;
     }
   catch(...)
@@ -90,7 +90,7 @@ int vtkVisItReader::CanReadFile(const char *fname)
 }
 
 //-----------------------------------------------------------------------------
-int vtkVisItReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkVisItSiloReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
   if (!this->AvtReader && !this->CanReadFile( this->FileName ))
     {
@@ -110,7 +110,7 @@ int vtkVisItReader::RequestInformation(vtkInformation *request, vtkInformationVe
 
 
 //-----------------------------------------------------------------------------
-int vtkVisItReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkVisItSiloReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
   if (!this->AvtReader )
     {
@@ -137,7 +137,7 @@ int vtkVisItReader::RequestData(vtkInformation *request, vtkInformationVector **
 }
 
 //-----------------------------------------------------------------------------
-void vtkVisItReader::PrintSelf(ostream& os, vtkIndent indent)
+void vtkVisItSiloReader::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
