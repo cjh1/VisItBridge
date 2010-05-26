@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSetAlgorithm.h"
 
+#include "vtkMultiBlockDataSet.h"
 #include "vtkPolyData.h"
 #include "vtkUnstructuredGrid.h"
 
@@ -106,11 +107,11 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInfor
         {
         case avtMeshType::AVT_UNSTRUCTURED_MESH:
           data = vtkUnstructuredGrid::SafeDownCast(
-              this->AvtReader->GetMesh( j, names.at(i).c_str() ) );
+              this->AvtFile->GetMesh( j, names.at(i).c_str() ) );
           break;
         case avtMeshType::AVT_SURFACE_MESH:
           data = vtkPolyData::SafeDownCast(
-              this->AvtReader->GetMesh( j, names.at(i).c_str() ) );
+              this->AvtFile->GetMesh( j, names.at(i).c_str() ) );
           break;
         }
       if ( data )
