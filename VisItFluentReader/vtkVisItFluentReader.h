@@ -32,18 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
-#include "vtkMultiBlockDataSetAlgorithm.h"
+#include "vtkSTMDAvtFileFormatAlgorithm.h"
 
-//BTX
-class avtFluentFileFormat;
-class avtDatabaseMetaData;
-//ETX
-
-class VTK_EXPORT vtkVisItFluentReader : public vtkMultiBlockDataSetAlgorithm
+class VTK_EXPORT vtkVisItFluentReader : public vtkSTMDAvtFileFormatAlgorithm
 {
 public:
   static vtkVisItFluentReader *New();
-  vtkTypeMacro(vtkVisItFluentReader,vtkMultiBlockDataSetAlgorithm );
+  vtkTypeMacro(vtkVisItFluentReader,vtkSTMDAvtFileFormatAlgorithm );
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
@@ -53,13 +48,7 @@ protected:
   vtkVisItFluentReader();
   ~vtkVisItFluentReader();
   int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
-  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   char *FileName;
-
-//BTX
-  avtFluentFileFormat *AvtReader;
-  avtDatabaseMetaData *ReaderMetaData;
-//ETX
 
 private:
   vtkVisItFluentReader(const vtkVisItFluentReader&);

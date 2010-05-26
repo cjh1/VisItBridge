@@ -33,9 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
-#include "vtkMultiBlockDataSetAlgorithm.h"
 #include "vtkMultiBlockDataSet.h"
-#include "vtkUnstructuredGrid.h"
 
 #include "avtFluentFileFormat.h"
 #include "avtDatabaseMetaData.h"
@@ -47,109 +45,47 @@ vtkStandardNewMacro(vtkVisItFluentReader);
 vtkVisItFluentReader::vtkVisItFluentReader()
 {
   this->FileName = 0;
-  this->SetNumberOfInputPorts(0);
-  this->SetNumberOfOutputPorts(1);
-
-  this->AvtReader = NULL;
-  this->ReaderMetaData = NULL;
 }
 
 //-----------------------------------------------------------------------------
 vtkVisItFluentReader::~vtkVisItFluentReader()
 {
   this->SetFileName(0);
-  if ( this->AvtReader )
-    {
-    delete this->AvtReader;
-    }
-
-  if ( this->ReaderMetaData )
-    {
-    delete this->ReaderMetaData;
-    }
 }
 //-----------------------------------------------------------------------------
 int vtkVisItFluentReader::CanReadFile(const char *fname)
 {
-  if ( this->AvtReader )
-    {
-    return true;
-    }
-
   int ret = 0;
   try
     {
-    this->AvtReader = new avtFluentFileFormat(fname);
+    avtFluentFileFormat *temp = new avtFluentFileFormat(fname);
     ret = 1;
     }
   catch(...)
     {
-    //we are going to catch all exceptions currently
     ret = 0;
     }
-
   return ret;
 }
 
 //-----------------------------------------------------------------------------
 int vtkVisItFluentReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
-  if (!this->AvtReader && !this->CanReadFile( this->FileName ))
+  if (!this->AvtFile)
     {
-    return 0;
+    this->AvtFile = new avtFluentFileFormat(this->FileName);
     }
 
-  //construct an AVT meta data, that we will allow the avt reader to populate
-  this->ReaderMetaData = new avtDatabaseMetaData( );
-
+  if (!this->MetaData)
+    {
+    this->MetaData = new avtDatabaseMetaData( );
+    }
   //get all the meta data the avt reader has
-  this->AvtReader->SetDatabaseMetaData( this->ReaderMetaData );
-
-  //now cycle through and convert all the meta data that was added to paraview framework
+  this->AvtFile->SetDatabaseMetaData( this->MetaData );
 
   return 1;
 }
 
-
-//-----------------------------------------------------------------------------
-int vtkVisItFluentReader::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
-{
-  if (!this->AvtReader )
-    {
-    return 0;
-    }
-
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
-    outInfo->Get(vtkDataObject::DATA_OBJECT()));
-
-  stringVector names = this->ReaderMetaData->GetAllMeshNames();
-  size_t size = names.size();
-  output->SetNumberOfBlocks( size );
-
-  for ( int i=0; i < size; ++i)
-    {
-    const avtMeshMetaData *meshMetaData = this->ReaderMetaData->GetMesh( i );
-    int subBlockSize = meshMetaData->numBlocks;
-
-    vtkMultiBlockDataSet *child = vtkMultiBlockDataSet::New();
-    child->SetNumberOfBlocks( subBlockSize );
-
-    for ( int j=0; j < subBlockSize; ++j )
-      {
-      vtkUnstructuredGrid *mesh = vtkUnstructuredGrid::SafeDownCast(
-      this->AvtReader->GetMesh( j, names.at(i).c_str() ) );
-      if ( mesh )
-        {
-        child->SetBlock(j,mesh);
-        }
-      mesh->Delete();
-      }
-    output->SetBlock(i,child);
-    child->Delete();
-    }
-  return 1;
-}
 
 //-----------------------------------------------------------------------------
 void vtkVisItFluentReader::PrintSelf(ostream& os, vtkIndent indent)

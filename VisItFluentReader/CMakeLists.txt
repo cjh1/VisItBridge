@@ -16,6 +16,7 @@ FluentPluginInfo.C
 )
 
 INCLUDE_DIRECTORIES(
+${AVTALGORITHMS_SOURCE_DIR}
 ${AVT_DATABASE_SOURCE_DIR}/Database
 ${AVT_DATABASE_SOURCE_DIR}/Formats
 ${VISIT_COMMON_INCLUDES}
@@ -38,5 +39,5 @@ ADD_PARAVIEW_PLUGIN(VisItFluentReader "1.0"
   SERVER_SOURCES ${EXTRA_SOURCES}
   SERVER_MANAGER_XML VisItFluentReaderSM.xml
   GUI_RESOURCE_FILES VisItFluentReaderGUI.xml)
-  
-TARGET_LINK_LIBRARIES(VisItFluentReader visitcommon avtdatabase_ser avtpipeline_ser)  
+
+TARGET_LINK_LIBRARIES(VisItFluentReader AVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser)
