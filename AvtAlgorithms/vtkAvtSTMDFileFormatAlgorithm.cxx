@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkSTMDAvtFileFormatAlgorithm.cxx
+   Module:    vtkAvtSTMDFileFormatAlgorithm.cxx
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -29,21 +29,24 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
-#include "vtkSTMDAvtFileFormatAlgorithm.h"
+#include "vtkAvtSTMDFileFormatAlgorithm.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSetAlgorithm.h"
 
+#include "vtkPolyData.h"
+#include "vtkUnstructuredGrid.h"
+
+
 #include "avtSTMDFileFormat.h"
 #include "avtDatabaseMetaData.h"
 
-vtkStandardNewMacro(vtkSTMDAvtFileFormatAlgorithm);
+vtkStandardNewMacro(vtkAvtSTMDFileFormatAlgorithm);
 
 //-----------------------------------------------------------------------------
-vtkSTMDAvtFileFormatAlgorithm::vtkSTMDAvtFileFormatAlgorithm()
+vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
 {
-  this->FileName = 0;
   this->SetNumberOfInputPorts(0);
   this->SetNumberOfOutputPorts(1);
 
@@ -52,7 +55,7 @@ vtkSTMDAvtFileFormatAlgorithm::vtkSTMDAvtFileFormatAlgorithm()
 }
 
 //-----------------------------------------------------------------------------
-vtkSTMDAvtFileFormatAlgorithm::~vtkSTMDAvtFileFormatAlgorithm()
+vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
 {
   this->SetFileName(0);
   if ( this->AvtFile )
@@ -66,26 +69,70 @@ vtkSTMDAvtFileFormatAlgorithm::~vtkSTMDAvtFileFormatAlgorithm()
     }
 }
 //-----------------------------------------------------------------------------
-int vtkSTMDAvtFileFormatAlgorithm::CanReadFile(const char *fname)
+int vtkAvtSTMDFileFormatAlgorithm::CanReadFile(const char *fname)
 {
   return 1;
 }
 
 //-----------------------------------------------------------------------------
-int vtkSTMDAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkAvtSTMDFileFormatAlgorithm::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
   return 1;
 }
 
 
 //-----------------------------------------------------------------------------
-int vtkSTMDAvtFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
+  if (!this->AvtFile || !this->MetaData)
+    {
+    return 0;
+    }
+
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  stringVector names = this->MetaData->GetAllMeshNames();
+  size_t size = names.size();
+  output->SetNumberOfBlocks( size );
+
+  for ( int i=0; i < size; ++i)
+    {
+    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh( i );
+    int subBlockSize = meshMetaData->numBlocks;
+
+    vtkMultiBlockDataSet *child = vtkMultiBlockDataSet::New();
+    child->SetNumberOfBlocks( subBlockSize );
+
+    for ( int j=0; j < subBlockSize; ++j )
+      {
+      vtkDataObject *data;
+      switch(meshMetaData->meshType)
+        {
+        case avtMeshType::AVT_UNSTRUCTURED_MESH:
+          data = vtkUnstructuredGrid::SafeDownCast(
+              this->AvtReader->GetMesh( j, names.at(i).c_str() ) );
+          break;
+        case avtMeshType::AVT_SURFACE_MESH:
+          data = vtkPolyData::SafeDownCast(
+              this->AvtReader->GetMesh( j, names.at(i).c_str() ) );
+          break;
+        }
+      if ( data )
+        {
+        child->SetBlock(j,data);
+        }
+      data->Delete();
+      }
+    output->SetBlock(i,child);
+    child->Delete();
+    }
   return 1;
 }
 
 //-----------------------------------------------------------------------------
-void vtkSTMDAvtFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
+void vtkAvtSTMDFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }

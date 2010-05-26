@@ -39,7 +39,7 @@ class avtFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkSTSDAvtFileFormatAlgorithm : public vtkDataSetAlgorithm
+class VTK_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkDataSetAlgorithm
 {
 public:
   static vtkSTSDAvtFileFormatAlgorithm *New();

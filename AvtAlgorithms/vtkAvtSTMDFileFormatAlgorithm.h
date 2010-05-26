@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkSTMDAvtFileFormatAlgorithm.h
+   Module:    vtkAvtSTMDFileFormatAlgorithm.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -39,20 +39,16 @@ class avtSTMDFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkSTMDAvtFileFormatAlgorithm : public vtkMultiBlockDataSetAlgorithm
+class VTK_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkMultiBlockDataSetAlgorithm
 {
 public:
-  static vtkSTMDAvtFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkSTMDAvtFileFormatAlgorithm,vtkMultiBlockDataSetAlgorithm);
+  static vtkAvtSTMDFileFormatAlgorithm *New();
+  vtkTypeMacro(vtkAvtSTMDFileFormatAlgorithm,vtkMultiBlockDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  vtkSetStringMacro(FileName);
-  vtkGetStringMacro(FileName);
-  int CanReadFile(const char* fname);
-
 protected:
-  vtkSTMDAvtFileFormatAlgorithm();
-  ~vtkSTMDAvtFileFormatAlgorithm();
+  vtkAvtSTMDFileFormatAlgorithm();
+  ~vtkAvtSTMDFileFormatAlgorithm();
 
   // convenience method
   virtual int RequestInformation(vtkInformation* request,
@@ -66,7 +62,6 @@ protected:
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
-  char *FileName;
 
 //BTX
   avtSTMDFileFormat *AvtFile;
@@ -74,7 +69,7 @@ protected:
 //ETX
 
 private:
-  vtkSTMDAvtFileFormatAlgorithm(const vtkSTMDAvtFileFormatAlgorithm&);
-  void operator = (const vtkSTMDAvtFileFormatAlgorithm&);
+  vtkAvtSTMDFileFormatAlgorithm(const vtkAvtSTMDFileFormatAlgorithm&);
+  void operator = (const vtkAvtSTMDFileFormatAlgorithm&);
 };
 #endif
