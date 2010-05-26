@@ -33,11 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
-#include "vtkUnstructuredGridAlgorithm.h"
+#include "vtkMultiBlockDataSetAlgorithm.h"
+#include "vtkMultiBlockDataSet.h"
 #include "vtkUnstructuredGrid.h"
 
 #include "avtFluentFileFormat.h"
 #include "avtDatabaseMetaData.h"
+#include "avtMeshMetaData.h"
 
 vtkStandardNewMacro(vtkVisItFluentReader);
 
@@ -118,20 +120,33 @@ int vtkVisItFluentReader::RequestData(vtkInformation *request, vtkInformationVec
     }
 
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
+  vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   stringVector names = this->ReaderMetaData->GetAllMeshNames();
   size_t size = names.size();
-  if ( size == 1 )
+  output->SetNumberOfBlocks( size );
+
+  for ( int i=0; i < size; ++i)
     {
-    vtkUnstructuredGrid *mesh = vtkUnstructuredGrid::SafeDownCast(
-      this->AvtReader->GetMesh( 0, names.at(0).c_str() ) );
-    if ( mesh )
+    const avtMeshMetaData *meshMetaData = this->ReaderMetaData->GetMesh( i );
+    int subBlockSize = meshMetaData->numBlocks;
+
+    vtkMultiBlockDataSet *child = vtkMultiBlockDataSet::New();
+    child->SetNumberOfBlocks( subBlockSize );
+
+    for ( int j=0; j < subBlockSize; ++j )
       {
-      output->ShallowCopy( mesh );
+      vtkUnstructuredGrid *mesh = vtkUnstructuredGrid::SafeDownCast(
+      this->AvtReader->GetMesh( j, names.at(i).c_str() ) );
+      if ( mesh )
+        {
+        child->SetBlock(j,mesh);
+        }
+      mesh->Delete();
       }
-    mesh->Delete();
+    output->SetBlock(i,child);
+    child->Delete();
     }
   return 1;
 }
