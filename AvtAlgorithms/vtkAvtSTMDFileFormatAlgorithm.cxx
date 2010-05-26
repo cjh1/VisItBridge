@@ -57,7 +57,6 @@ vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
 //-----------------------------------------------------------------------------
 vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
 {
-  this->SetFileName(0);
   if ( this->AvtFile )
     {
     delete this->AvtFile;
@@ -67,11 +66,6 @@ vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
     {
     delete this->MetaData;
     }
-}
-//-----------------------------------------------------------------------------
-int vtkAvtSTMDFileFormatAlgorithm::CanReadFile(const char *fname)
-{
-  return 1;
 }
 
 //-----------------------------------------------------------------------------
