@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkAvtFileFormatAlgorithm.cxx
+   Module:    vtkSTMDAvtFileFormatAlgorithm.cxx
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -29,20 +29,19 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
-#include "vtkAvtFileFormatAlgorithm.h"
+#include "vtkSTMDAvtFileFormatAlgorithm.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
-#include "vtkUnstructuredGridAlgorithm.h"
-#include "vtkUnstructuredGrid.h"
+#include "vtkMultiBlockDataSetAlgorithm.h"
 
-#include "avtFileFormat.h"
+#include "avtSTMDFileFormat.h"
 #include "avtDatabaseMetaData.h"
 
-vtkStandardNewMacro(vtkAvtFileFormatAlgorithm);
+vtkStandardNewMacro(vtkSTMDAvtFileFormatAlgorithm);
 
 //-----------------------------------------------------------------------------
-vtkAvtFileFormatAlgorithm::vtkAvtFileFormatAlgorithm()
+vtkSTMDAvtFileFormatAlgorithm::vtkSTMDAvtFileFormatAlgorithm()
 {
   this->FileName = 0;
   this->SetNumberOfInputPorts(0);
@@ -53,7 +52,7 @@ vtkAvtFileFormatAlgorithm::vtkAvtFileFormatAlgorithm()
 }
 
 //-----------------------------------------------------------------------------
-vtkAvtFileFormatAlgorithm::~vtkAvtFileFormatAlgorithm()
+vtkSTMDAvtFileFormatAlgorithm::~vtkSTMDAvtFileFormatAlgorithm()
 {
   this->SetFileName(0);
   if ( this->AvtFile )
@@ -67,27 +66,26 @@ vtkAvtFileFormatAlgorithm::~vtkAvtFileFormatAlgorithm()
     }
 }
 //-----------------------------------------------------------------------------
-int vtkAvtFileFormatAlgorithm::CanReadFile(const char *fname)
-{
-
-  return 1;
-}
-
-//-----------------------------------------------------------------------------
-int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
-{
-  return 1;
-}
-
-
-//-----------------------------------------------------------------------------
-int vtkAvtFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+int vtkSTMDAvtFileFormatAlgorithm::CanReadFile(const char *fname)
 {
   return 1;
 }
 
 //-----------------------------------------------------------------------------
-void vtkAvtFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
+int vtkSTMDAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+{
+  return 1;
+}
+
+
+//-----------------------------------------------------------------------------
+int vtkSTMDAvtFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+{
+  return 1;
+}
+
+//-----------------------------------------------------------------------------
+void vtkSTMDAvtFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }

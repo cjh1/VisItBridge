@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkAvtFileFormatAlgorithm.h
+   Module:    vtkSTMDAvtFileFormatAlgorithm.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -32,34 +32,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
-#include "vtkAlgorithm.h"
+#include "vtkMultiBlockDataSetAlgorithm.h"
 
 //BTX
-class avtFileFormat;
+class avtSTMDFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkAvtFileFormatAlgorithm : public vtkAlgorithm
+class VTK_EXPORT vtkSTMDAvtFileFormatAlgorithm : public vtkMultiBlockDataSetAlgorithm
 {
 public:
-  static vtkAvtFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtFileFormatAlgorithm,vtkAlgorithm);
+  static vtkSTMDAvtFileFormatAlgorithm *New();
+  vtkTypeMacro(vtkSTMDAvtFileFormatAlgorithm,vtkMultiBlockDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
   int CanReadFile(const char* fname);
 
-  // Description:
-  // see vtkAlgorithm for details
-  virtual int ProcessRequest(vtkInformation*,
-                             vtkInformationVector**,
-                             vtkInformationVector*);
-
-
 protected:
-  vtkAvtFileFormatAlgorithm();
-  ~vtkAvtFileFormatAlgorithm();
+  vtkSTMDAvtFileFormatAlgorithm();
+  ~vtkSTMDAvtFileFormatAlgorithm();
 
   // convenience method
   virtual int RequestInformation(vtkInformation* request,
@@ -73,26 +66,15 @@ protected:
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
-  // Description:
-  // This is called by the superclass.
-  // This is the method you should override.
-  virtual int RequestUpdateExtent(vtkInformation*,
-                                  vtkInformationVector**,
-                                  vtkInformationVector*);
-
-  // see algorithm for more info
-  virtual int FillOutputPortInformation(int port, vtkInformation* info);
-  virtual int FillInputPortInformation(int port, vtkInformation* info);
-
   char *FileName;
 
 //BTX
-  avtFileFormat *AvtFile;
+  avtSTMDFileFormat *AvtFile;
   avtDatabaseMetaData *MetaData;
 //ETX
 
 private:
-  vtkAvtFileFormatAlgorithm(const vtkAvtFileFormatAlgorithm&);
-  void operator = (const vtkAvtFileFormatAlgorithm&);
+  vtkSTMDAvtFileFormatAlgorithm(const vtkSTMDAvtFileFormatAlgorithm&);
+  void operator = (const vtkSTMDAvtFileFormatAlgorithm&);
 };
 #endif

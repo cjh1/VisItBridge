@@ -1,8 +1,10 @@
 PROJECT(AVTALGORITHMS)
 
 SET(SOURCES
-vtkAvtFileFormatAlgorithm.h
-vtkAvtFileFormatAlgorithm.cxx
+vtkAvtSTSDFileFormatAlgorithm.h
+vtkAvtSTSDFileFormatAlgorithm.cxx
+vtkAvtSTMDFileFormatAlgorithm.h
+vtkAvtSTMDFileFormatAlgorithm.cxx
 )
 
 INCLUDE_DIRECTORIES(
