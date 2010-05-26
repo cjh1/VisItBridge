@@ -203,5 +203,7 @@ INCLUDE_DIRECTORIES(
 add_subdirectory(common)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
+add_subdirectory(AvtAlgorithms)
 add_subdirectory(VisItReader)
 add_subdirectory(VisItFluentReader)
+
