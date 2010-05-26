@@ -26,10 +26,6 @@ VisItReaderMDServerPluginInfo.C
 VisItReaderPluginInfo.h
 VisItReaderPluginInfo.C
 WRAP_EXCLUDE)
-
-
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/vtkVisItReaderExport.h.in"
-               "${CMAKE_CURRENT_BINARY_DIR}/vtkVisItReaderExport.h")
                
 INCLUDE_DIRECTORIES(
 ${AVT_DATABASE_SOURCE_DIR}/Database
