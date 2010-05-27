@@ -30,16 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 
-#ifndef _vtkVisItReader_h
-#define _vtkVisItReader_h
+#ifndef _vtkAvtSTMDFileFormatAlgorithm_h
+#define _vtkAvtSTMDFileFormatAlgorithm_h
 #include "vtkMultiBlockDataSetAlgorithm.h"
-
+#include "vtkAvtAlgorithmsExport.h"
 //BTX
 class avtSTMDFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkMultiBlockDataSetAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkMultiBlockDataSetAlgorithm
 {
 public:
   static vtkAvtSTMDFileFormatAlgorithm *New();

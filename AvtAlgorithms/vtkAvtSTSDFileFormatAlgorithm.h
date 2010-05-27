@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkSTSDAvtFileFormatAlgorithm.h
+   Module:    vtkAvtSTSDFileFormatAlgorithm.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -30,20 +30,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 
-#ifndef _vtkVisItReader_h
-#define _vtkVisItReader_h
+#ifndef _vtkAvtSTSDFileFormatAlgorithm_h
+#define _vtkAvtSTSDFileFormatAlgorithm_h
 #include "vtkDataSetAlgorithm.h"
+#include "vtkAvtAlgorithmsExport.h"
 
 //BTX
 class avtFileFormat;
 class avtDatabaseMetaData;
 //ETX
 
-class VTK_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkDataSetAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkDataSetAlgorithm
 {
 public:
-  static vtkSTSDAvtFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkSTSDAvtFileFormatAlgorithm,vtkDataSetAlgorithm);
+  static vtkAvtSTSDFileFormatAlgorithm *New();
+  vtkTypeMacro(vtkAvtSTSDFileFormatAlgorithm,vtkDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   vtkSetStringMacro(FileName);
@@ -51,8 +52,8 @@ public:
   int CanReadFile(const char* fname);
 
 protected:
-  vtkSTSDAvtFileFormatAlgorithm();
-  ~vtkSTSDAvtFileFormatAlgorithm();
+  vtkAvtSTSDFileFormatAlgorithm();
+  ~vtkAvtSTSDFileFormatAlgorithm();
 
   // convenience method
   virtual int RequestInformation(vtkInformation* request,
@@ -74,7 +75,7 @@ protected:
 //ETX
 
 private:
-  vtkSTSDAvtFileFormatAlgorithm(const vtkSTSDAvtFileFormatAlgorithm&);
-  void operator = (const vtkSTSDAvtFileFormatAlgorithm&);
+  vtkAvtSTSDFileFormatAlgorithm(const vtkAvtSTSDFileFormatAlgorithm&);
+  void operator = (const vtkAvtSTSDFileFormatAlgorithm&);
 };
 #endif
