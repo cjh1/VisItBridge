@@ -11,6 +11,7 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/vtkAvtAlgorithmsExport.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
 
 INCLUDE_DIRECTORIES(
+${CMAKE_CURRENT_SOURCE_DIR}
 ${CMAKE_CURRENT_BINARY_DIR}
 ${AVT_DATABASE_SOURCE_DIR}/Database
 ${AVT_DATABASE_SOURCE_DIR}/Formats
@@ -26,9 +27,8 @@ ${AVT_PIPELINE_SOURCE_DIR}/Sinks
 ${AVT_PIPELINE_SOURCE_DIR}/Sources
 ${VTK_INCLUDE_DIRS}
 )
-
-LINK_DIRECTORIES(${VISIT_LIBRARY_DIR} ${VTK_LIBRARY_DIRS})
-
-ADD_LIBRARY(AVTAlgorithms ${SOURCES})  
-
-TARGET_LINK_LIBRARIES(AVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser)  
+ADD_PARAVIEW_PLUGIN(AVTAlgorithms "1.0"
+  SERVER_MANAGER_SOURCES ${SOURCES}
+  )
+ 
+TARGET_LINK_LIBRARIES(AVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk)  

@@ -30,15 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 
-#ifndef _vtkVisItReader_h
-#define _vtkVisItReader_h
-#include "vtkSTMDAvtFileFormatAlgorithm.h"
+#ifndef _vtkVisItFluentReader_h
+#define _vtkVisItFluentReader_h
 
-class VTK_EXPORT vtkVisItFluentReader : public vtkSTMDAvtFileFormatAlgorithm
+#include "vtkAvtSTMDFileFormatAlgorithm.h"
+
+class vtkVisItFluentReader : public vtkAvtSTMDFileFormatAlgorithm
 {
 public:
   static vtkVisItFluentReader *New();
-  vtkTypeMacro(vtkVisItFluentReader,vtkSTMDAvtFileFormatAlgorithm );
+  vtkTypeMacro(vtkVisItFluentReader,vtkAvtSTMDFileFormatAlgorithm );
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
