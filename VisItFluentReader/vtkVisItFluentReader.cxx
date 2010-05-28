@@ -59,6 +59,7 @@ int vtkVisItFluentReader::CanReadFile(const char *fname)
   try
     {
     avtFluentFileFormat *temp = new avtFluentFileFormat(fname);
+    delete temp;
     ret = 1;
     }
   catch(...)
