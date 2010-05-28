@@ -63,20 +63,43 @@ vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
 //-----------------------------------------------------------------------------
 vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
 {
+  this->CleanupAVTReader();
+}
+
+//-----------------------------------------------------------------------------
+bool vtkAvtSTMDFileFormatAlgorithm::InitializeAVTReader()
+{
+  return false;
+}
+
+//-----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::CleanupAVTReader()
+{
   if ( this->AvtFile )
     {
     delete this->AvtFile;
+    this->AvtFile = NULL;
     }
 
   if ( this->MetaData )
     {
     delete this->MetaData;
+    this->MetaData = NULL;
     }
 }
 
 //-----------------------------------------------------------------------------
 int vtkAvtSTMDFileFormatAlgorithm::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
+  if (!this->InitializeAVTReader())
+    {
+    return 0;
+    }
+
+  //grab image extents etc
+
+
+  this->CleanupAVTReader();
   return 1;
 }
 
@@ -84,7 +107,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestInformation(vtkInformation *request, v
 //-----------------------------------------------------------------------------
 int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
 {
-  if (!this->AvtFile || !this->MetaData)
+  if (!this->InitializeAVTReader())
     {
     return 0;
     }
@@ -119,6 +142,8 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInfor
     output->SetBlock(i,child);
     child->Delete();
     }
+
+  this->CleanupAVTReader();
   return 1;
 }
 

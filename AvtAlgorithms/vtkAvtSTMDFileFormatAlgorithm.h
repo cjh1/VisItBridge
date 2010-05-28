@@ -56,6 +56,10 @@ protected:
   vtkAvtSTMDFileFormatAlgorithm();
   ~vtkAvtSTMDFileFormatAlgorithm();
 
+  //the subclasses need to define these methods
+  virtual bool InitializeAVTReader();
+  virtual void CleanupAVTReader();
+
   // convenience method
   virtual int RequestInformation(vtkInformation* request,
                                  vtkInformationVector** inputVector,
