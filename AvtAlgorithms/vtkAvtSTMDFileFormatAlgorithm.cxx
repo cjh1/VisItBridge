@@ -39,9 +39,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkPolyData.h"
 #include "vtkUnstructuredGrid.h"
 
+#include "vtkFieldData.h"
+#include "vtkPointData.h"
+#include "vtkCellData.h"
 
 #include "avtSTMDFileFormat.h"
 #include "avtDatabaseMetaData.h"
+#include "avtScalarMetaData.h"
 
 vtkStandardNewMacro(vtkAvtSTMDFileFormatAlgorithm);
 
@@ -94,28 +98,19 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInfor
 
   for ( int i=0; i < size; ++i)
     {
-    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh( i );
-    int subBlockSize = meshMetaData->numBlocks;
+    const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
+    int subBlockSize = meshMetaData.numBlocks;
 
     vtkMultiBlockDataSet *child = vtkMultiBlockDataSet::New();
     child->SetNumberOfBlocks( subBlockSize );
 
     for ( int j=0; j < subBlockSize; ++j )
       {
-      vtkDataObject *data;
-      switch(meshMetaData->meshType)
-        {
-        case avtMeshType::AVT_UNSTRUCTURED_MESH:
-          data = vtkUnstructuredGrid::SafeDownCast(
-              this->AvtFile->GetMesh( j, names.at(i).c_str() ) );
-          break;
-        case avtMeshType::AVT_SURFACE_MESH:
-          data = vtkPolyData::SafeDownCast(
-              this->AvtFile->GetMesh( j, names.at(i).c_str() ) );
-          break;
-        }
+      vtkDataSet *data = this->AvtFile->GetMesh( j, names.at(i).c_str() );
       if ( data )
         {
+        //place all the scalar&vector properties onto the data
+        this->AssignProperties(data,names.at(i),j);
         child->SetBlock(j,data);
         }
       data->Delete();
@@ -126,6 +121,49 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInfor
   return 1;
 }
 
+//-----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
+    const vtkStdString &meshName, const int &domain)
+{
+  int size = this->MetaData->GetNumScalars();
+  for ( int i=0; i < size; ++i)
+    {
+    const avtScalarMetaData scalarMeta = this->MetaData->GetScalars(i);
+    if ( meshName != scalarMeta.meshName )
+      {
+      //this mesh doesn't have this scalar property, go to next
+      continue;
+      }
+    vtkstd::string name = scalarMeta.name;
+    vtkDataArray *scalar = this->AvtFile->GetVar(domain,name.c_str());
+    if ( !scalar )
+      {
+      //it seems that we had a bad array for this domain
+      continue;
+      }
+
+    //update the vtkDataArray to have the name, since GetVar doesn't require
+    //placing a name on the returned array
+    scalar->SetName( name.c_str() );
+
+    //based on the centering we go determine if this is cell or point based
+    switch(scalarMeta.centering)
+      {
+      case AVT_ZONECENT:
+        //cell property
+        data->GetCellData()->AddArray( scalar );
+        break;
+      case AVT_NODECENT:
+        //point based
+        data->GetPointData()->AddArray( scalar );
+        break;
+      case AVT_NO_VARIABLE:
+      case AVT_UNKNOWN_CENT:
+        break;
+      }
+    scalar->Delete();
+    }
+}
 //-----------------------------------------------------------------------------
 void vtkAvtSTMDFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
 {

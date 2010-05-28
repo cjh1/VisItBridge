@@ -32,8 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _vtkAvtSTMDFileFormatAlgorithm_h
 #define _vtkAvtSTMDFileFormatAlgorithm_h
+
 #include "vtkMultiBlockDataSetAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
+#include "vtkStdString.h"
+
+class vtkDataSet;
+
+
 //BTX
 class avtSTMDFileFormat;
 class avtDatabaseMetaData;
@@ -62,13 +68,17 @@ protected:
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
-
 //BTX
   avtSTMDFileFormat *AvtFile;
   avtDatabaseMetaData *MetaData;
 //ETX
 
 private:
+
+  //BTX
+  void AssignProperties( vtkDataSet *data, const vtkStdString &meshName, const int &domain);
+  //ETX
+
   vtkAvtSTMDFileFormatAlgorithm(const vtkAvtSTMDFileFormatAlgorithm&);
   void operator = (const vtkAvtSTMDFileFormatAlgorithm&);
 };
