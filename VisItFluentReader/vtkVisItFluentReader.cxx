@@ -70,17 +70,25 @@ int vtkVisItFluentReader::CanReadFile(const char *fname)
 }
 
 //-----------------------------------------------------------------------------
-int vtkVisItFluentReader::RequestInformation(vtkInformation *request, vtkInformationVector **inputVector, vtkInformationVector *outputVector)
+bool vtkVisItFluentReader::InitializeAVTReader( )
 {
   if (!this->AvtFile)
     {
-    this->AvtFile = new avtFluentFileFormat(this->FileName);
+    try
+      {
+      this->AvtFile = new avtFluentFileFormat(this->FileName);
+      }
+    catch(...)
+      {
+      return 0;
+      }
     }
 
   if (!this->MetaData)
     {
     this->MetaData = new avtDatabaseMetaData( );
     }
+
   //get all the meta data the avt reader has
   this->AvtFile->SetDatabaseMetaData( this->MetaData );
 

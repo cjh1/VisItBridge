@@ -48,7 +48,8 @@ public:
 protected:
   vtkVisItFluentReader();
   ~vtkVisItFluentReader();
-  int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+
+  virtual bool InitializeAVTReader();
   char *FileName;
 
 private:
