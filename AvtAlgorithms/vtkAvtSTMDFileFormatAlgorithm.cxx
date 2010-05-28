@@ -46,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtSTMDFileFormat.h"
 #include "avtDatabaseMetaData.h"
 #include "avtScalarMetaData.h"
+#include "avtVectorMetaData.h"
 
 vtkStandardNewMacro(vtkAvtSTMDFileFormatAlgorithm);
 
@@ -162,6 +163,46 @@ void vtkAvtSTMDFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
         break;
       }
     scalar->Delete();
+    }
+
+  //now do vector properties
+  size = this->MetaData->GetNumVectors();
+  for ( int i=0; i < size; ++i)
+    {
+    const avtVectorMetaData vectorMeta = this->MetaData->GetVectors(i);
+    if ( meshName != vectorMeta.meshName )
+      {
+      //this mesh doesn't have this vector property, go to next
+      continue;
+      }
+    vtkstd::string name = vectorMeta.name;
+    vtkDataArray *vector = this->AvtFile->GetVectorVar(domain,name.c_str());
+    if ( !vector )
+      {
+      //it seems that we had a bad array for this domain
+      continue;
+      }
+
+    //update the vtkDataArray to have the name, since GetVar doesn't require
+    //placing a name on the returned array
+    vector->SetName( name.c_str() );
+
+    //based on the centering we go determine if this is cell or point based
+    switch(vectorMeta.centering)
+      {
+      case AVT_ZONECENT:
+        //cell property
+        data->GetCellData()->AddArray( vector );
+        break;
+      case AVT_NODECENT:
+        //point based
+        data->GetPointData()->AddArray( vector );
+        break;
+      case AVT_NO_VARIABLE:
+      case AVT_UNKNOWN_CENT:
+        break;
+      }
+    vector->Delete();
     }
 }
 //-----------------------------------------------------------------------------
