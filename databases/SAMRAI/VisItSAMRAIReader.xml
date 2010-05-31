@@ -1,7 +1,6 @@
-<ServerManagerConfiguration>
-  <!-- Begin VisItReader -->
+<ServerManagerConfiguration>  
   <ProxyGroup name="sources">
-    <SourceProxy name="VisItReader" class="vtkVisItReader">
+    <SourceProxy name="VisItSAMRAIReader" class="vtkVisItSAMRAIReader">
       <StringVectorProperty
         name="FileName"
         command="SetFileName"
@@ -9,6 +8,5 @@
         <FileListDomain name="files"/>
       </StringVectorProperty>
     </SourceProxy>
-  </ProxyGroup>
-  <!-- End VisItReader -->
+  </ProxyGroup>  
 </ServerManagerConfiguration>

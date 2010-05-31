@@ -1,0 +1,6 @@
+<ParaViewReaders>
+  <Reader name="VisItSAMRAIReader"
+    extensions="samrai"
+    file_description="VisItReader SAMRAI Example">
+  </Reader>
+</ParaViewReaders>

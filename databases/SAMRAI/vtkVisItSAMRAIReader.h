@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkVisItReader.h
+   Module:    vtkVisItSAMRAIReader.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -30,39 +30,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 
-#ifndef _vtkVisItReader_h
-#define _vtkVisItReader_h
-#include "vtkPolyDataAlgorithm.h"
+#ifndef _vtkVisItSAMRAIReader_h
+#define _vtkVisItSAMRAIReader_h
 
-//BTX
-class avtVisItReaderFileFormat;
-class avtDatabaseMetaData;
-//ETX
+#include "vtkAvtSTMDFileFormatAlgorithm.h"
 
-class VTK_EXPORT vtkVisItReader : public vtkPolyDataAlgorithm
+class vtkVisItSAMRAIReader : public vtkAvtSTMDFileFormatAlgorithm
 {
 public:
-  static vtkVisItReader *New();
-  vtkTypeMacro(vtkVisItReader,vtkPolyDataAlgorithm);
+  static vtkVisItSAMRAIReader *New();
+  vtkTypeMacro(vtkVisItSAMRAIReader,vtkAvtSTMDFileFormatAlgorithm );
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
   int CanReadFile(const char* fname);
 
 protected:
-  vtkVisItReader();
-  ~vtkVisItReader();
-  int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
-  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  vtkVisItSAMRAIReader();
+  ~vtkVisItSAMRAIReader();
+
+  virtual bool InitializeAVTReader();
   char *FileName;
 
-//BTX
-  avtVisItReaderFileFormat *AvtReader;
-  avtDatabaseMetaData *ReaderMetaData;
-//ETX
-
 private:
-  vtkVisItReader(const vtkVisItReader&);
-  void operator = (const vtkVisItReader&);
+  vtkVisItSAMRAIReader(const vtkVisItSAMRAIReader&);
+  void operator = (const vtkVisItSAMRAIReader&);
 };
 #endif
