@@ -116,29 +116,29 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request, vtkInfor
   vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-  stringVector names = this->MetaData->GetAllMeshNames();
-  size_t size = names.size();
-  output->SetNumberOfBlocks( size );
 
+  int size = this->MetaData->GetNumMeshes();
+  output->SetNumberOfBlocks( size );
   for ( int i=0; i < size; ++i)
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
     int subBlockSize = meshMetaData.numBlocks;
+    vtkstd::string name = meshMetaData.name;
 
     vtkMultiBlockDataSet *child = vtkMultiBlockDataSet::New();
     child->SetNumberOfBlocks( subBlockSize );
-
     for ( int j=0; j < subBlockSize; ++j )
       {
-      vtkDataSet *data = this->AvtFile->GetMesh( j, names.at(i).c_str() );
+      vtkDataSet *data = this->AvtFile->GetMesh( j, name.c_str() );
       if ( data )
         {
         //place all the scalar&vector properties onto the data
-        this->AssignProperties(data,names.at(i),j);
+        this->AssignProperties(data,name,j);
         child->SetBlock(j,data);
         }
       data->Delete();
       }
+    output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
     output->SetBlock(i,child);
     child->Delete();
     }
