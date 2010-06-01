@@ -33,23 +33,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _vtkAvtSTMDFileFormatAlgorithm_h
 #define _vtkAvtSTMDFileFormatAlgorithm_h
 
-#include "vtkMultiBlockDataSetAlgorithm.h"
+#include "vtkCompositeDataSetAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
 #include "vtkStdString.h"
+#include "avtMeshMetaData.h"
+
 
 class vtkDataSet;
-
+class vtkDataArray;
+class vtkHierarchicalBoxDataSet;
+class vtkMultiBlockDataSet;
 
 //BTX
 class avtSTMDFileFormat;
 class avtDatabaseMetaData;
+class avtVariableCache;
 //ETX
 
-class AVTALGORITHMS_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkMultiBlockDataSetAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkCompositeDataSetAlgorithm
 {
 public:
   static vtkAvtSTMDFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtSTMDFileFormatAlgorithm,vtkMultiBlockDataSetAlgorithm);
+  vtkTypeMacro(vtkAvtSTMDFileFormatAlgorithm,vtkCompositeDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
 protected:
@@ -59,6 +64,11 @@ protected:
   //the subclasses need to define these methods
   virtual bool InitializeAVTReader();
   virtual void CleanupAVTReader();
+
+
+  //needed since we have to change the type we output
+  virtual int RequestDataObject(vtkInformation *, vtkInformationVector **,
+                                vtkInformationVector *);
 
   // convenience method
   virtual int RequestInformation(vtkInformation* request,
@@ -72,17 +82,24 @@ protected:
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
+  virtual int FillOutputPortInformation(int, vtkInformation *info);
+
 //BTX
-  avtSTMDFileFormat *AvtFile;
-  avtDatabaseMetaData *MetaData;
-//ETX
-
-private:
-
-  //BTX
+  int FillAMR( vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData &meshMetaData,
+    const int &domain);
+  void FillMultiBlock( vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData );
   void AssignProperties( vtkDataSet *data, const vtkStdString &meshName, const int &domain);
+
+  bool ValidAMR( const avtMeshMetaData &meshMetaData );
   //ETX
 
+  bool IsEvenlySpacedDataArray(vtkDataArray *data);
+
+  avtSTMDFileFormat *AvtFile;
+  avtDatabaseMetaData *MetaData;
+  avtVariableCache *Cache;
+  int OutputType;
+private:
   vtkAvtSTMDFileFormatAlgorithm(const vtkAvtSTMDFileFormatAlgorithm&);
   void operator = (const vtkAvtSTMDFileFormatAlgorithm&);
 };

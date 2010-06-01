@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES(
 ${CMAKE_CURRENT_SOURCE_DIR}
 ${CMAKE_CURRENT_BINARY_DIR}
 ${AVT_DATABASE_SOURCE_DIR}/Database
+${AVT_DATABASE_SOURCE_DIR}/Ghost
 ${AVT_DATABASE_SOURCE_DIR}/Formats
 ${VISIT_COMMON_INCLUDES}
 ${AVT_DBATTS_SOURCE_DIR}/MetaData
@@ -30,5 +31,5 @@ ${VTK_INCLUDE_DIRS}
 ADD_PARAVIEW_PLUGIN(AVTAlgorithms "1.0"
   SERVER_MANAGER_SOURCES ${SOURCES}
   )
- 
-TARGET_LINK_LIBRARIES(AVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk)  
+
+TARGET_LINK_LIBRARIES(AVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk)
