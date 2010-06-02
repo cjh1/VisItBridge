@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkVisItFluentReader.cxx
+   Module:    VisItSTMD.cxx
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -29,75 +29,85 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
-#include "vtkVisItFluentReader.h"
+#include "@PLUGIN_NAME@.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSet.h"
 
-#include "avtFluentFileFormat.h"
+#include "@ARG_VISIT_READER_NAME@.h"
 #include "avtDatabaseMetaData.h"
 #include "avtMeshMetaData.h"
+#include "avtVariableCache.h"
 
-vtkStandardNewMacro(vtkVisItFluentReader);
+vtkStandardNewMacro(@PLUGIN_NAME@);
 
 //-----------------------------------------------------------------------------
-vtkVisItFluentReader::vtkVisItFluentReader()
+@PLUGIN_NAME@::@PLUGIN_NAME@()
 {
   this->FileName = 0;
 }
 
 //-----------------------------------------------------------------------------
-vtkVisItFluentReader::~vtkVisItFluentReader()
+@PLUGIN_NAME@::~@PLUGIN_NAME@()
 {
   this->SetFileName(0);
 }
 //-----------------------------------------------------------------------------
-int vtkVisItFluentReader::CanReadFile(const char *fname)
+int @PLUGIN_NAME@::CanReadFile(const char *fname)
 {
   int ret = 0;
+  if ( this->AvtFile )
+    {
+    delete this->AvtFile;
+    this->AvtFile = NULL;
+    }
+
   try
     {
-    avtFluentFileFormat *temp = new avtFluentFileFormat(fname);
-    delete temp;
+    this->AvtFile = new @ARG_VISIT_READER_NAME@(fname);
     ret = 1;
     }
   catch(...)
     {
+    this->AvtFile = NULL;
     ret = 0;
     }
   return ret;
 }
 
 //-----------------------------------------------------------------------------
-bool vtkVisItFluentReader::InitializeAVTReader( )
+bool @PLUGIN_NAME@::InitializeAVTReader( )
 {
-  if (!this->AvtFile)
-    {
-    try
-      {
-      this->AvtFile = new avtFluentFileFormat(this->FileName);
-      }
-    catch(...)
-      {
-      return 0;
-      }
-    }
-
-  if (!this->MetaData)
+ if (!this->MetaData)
     {
     this->MetaData = new avtDatabaseMetaData( );
     }
 
-  //get all the meta data the avt reader has
-  this->AvtFile->SetDatabaseMetaData( this->MetaData );
+  if (!this->Cache)
+    {
+    this->Cache = new avtVariableCache( );
+    }
 
-  return 1;
+  if (!this->AvtFile)
+    {
+    if (this->CanReadFile(this->FileName))
+      {
+      this->AvtFile->SetDatabaseMetaData( this->MetaData );
+      this->AvtFile->SetCache( this->Cache );
+      }
+    else
+      {
+      return false;
+      }
+    }
+
+  return true;
 }
 
 
 //-----------------------------------------------------------------------------
-void vtkVisItFluentReader::PrintSelf(ostream& os, vtkIndent indent)
+void @PLUGIN_NAME@::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
