@@ -1,6 +1,0 @@
-<ParaViewReaders>
-  <Reader name="VisItFluentReader"
-    extensions="cas"
-    file_description="VisItReader Fluent Example">
-  </Reader>
-</ParaViewReaders>
