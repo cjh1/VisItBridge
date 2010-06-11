@@ -30,11 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 #include "vtkAvtSTMDFileFormatAlgorithm.h"
+
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSetAlgorithm.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+
+#include "vtkCallbackCommand.h"
+#include "vtkDataArraySelection.h"
 
 #include "vtkAMRBox.h"
 #include "vtkHierarchicalBoxDataSet.h"
@@ -45,9 +49,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkUniformGrid.h"
 #include "vtkUnstructuredGrid.h"
 
+#include "vtkCellData.h"
 #include "vtkFieldData.h"
 #include "vtkPointData.h"
-#include "vtkCellData.h"
+
 
 #include "avtSTMDFileFormat.h"
 #include "avtDomainNesting.h"
@@ -71,6 +76,20 @@ vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
 
   this->OutputType = VTK_MULTIBLOCK_DATA_SET;
 
+  this->PointDataArraySelection = vtkDataArraySelection::New();
+  this->CellDataArraySelection = vtkDataArraySelection::New();
+
+  // Setup the selection callback to modify this object when an array
+  // selection is changed.
+  this->SelectionObserver = vtkCallbackCommand::New();
+  this->SelectionObserver->SetCallback(&
+    vtkAvtSTMDFileFormatAlgorithm::SelectionModifiedCallback);
+  this->SelectionObserver->SetClientData(this);
+  this->PointDataArraySelection->AddObserver(vtkCommand::ModifiedEvent,
+                                             this->SelectionObserver);
+  this->CellDataArraySelection->AddObserver(vtkCommand::ModifiedEvent,
+                                            this->SelectionObserver);
+
   //visit has this horrible singelton timer that is called in all algorithms
   //we need to initiailize it, and than disable it
   if ( !visitTimer )
@@ -84,6 +103,12 @@ vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
 vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
 {
   this->CleanupAVTReader();
+
+  this->CellDataArraySelection->RemoveObserver(this->SelectionObserver);
+  this->PointDataArraySelection->RemoveObserver(this->SelectionObserver);
+  this->SelectionObserver->Delete();
+  this->CellDataArraySelection->Delete();
+  this->PointDataArraySelection->Delete();
 }
 
 //-----------------------------------------------------------------------------
@@ -543,6 +568,76 @@ bool vtkAvtSTMDFileFormatAlgorithm::IsEvenlySpacedDataArray(vtkDataArray *data)
     }
   return valid;
 }
+
+//----------------------------------------------------------------------------
+int vtkAvtSTMDFileFormatAlgorithm::GetNumberOfPointArrays()
+{
+  return this->PointDataArraySelection->GetNumberOfArrays();
+}
+
+//----------------------------------------------------------------------------
+const char* vtkAvtSTMDFileFormatAlgorithm::GetPointArrayName(int index)
+{
+  return this->PointDataArraySelection->GetArrayName(index);
+}
+
+//----------------------------------------------------------------------------
+int vtkAvtSTMDFileFormatAlgorithm::GetPointArrayStatus(const char* name)
+{
+  return this->PointDataArraySelection->ArrayIsEnabled(name);
+}
+
+//----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::SetPointArrayStatus(const char* name, int status)
+{
+  if(status)
+    {
+    this->PointDataArraySelection->EnableArray(name);
+    }
+  else
+    {
+    this->PointDataArraySelection->DisableArray(name);
+    }
+}
+
+//----------------------------------------------------------------------------
+int vtkAvtSTMDFileFormatAlgorithm::GetNumberOfCellArrays()
+{
+  return this->CellDataArraySelection->GetNumberOfArrays();
+}
+
+//----------------------------------------------------------------------------
+const char* vtkAvtSTMDFileFormatAlgorithm::GetCellArrayName(int index)
+{
+  return this->CellDataArraySelection->GetArrayName(index);
+}
+
+//----------------------------------------------------------------------------
+int vtkAvtSTMDFileFormatAlgorithm::GetCellArrayStatus(const char* name)
+{
+  return this->CellDataArraySelection->ArrayIsEnabled(name);
+}
+
+//----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::SetCellArrayStatus(const char* name, int status)
+{
+  if(status)
+    {
+    this->CellDataArraySelection->EnableArray(name);
+    }
+  else
+    {
+    this->CellDataArraySelection->DisableArray(name);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::SelectionModifiedCallback(vtkObject*, unsigned long,
+                                             void* clientdata, void*)
+{
+  static_cast<vtkAvtSTMDFileFormatAlgorithm*>(clientdata)->Modified();
+}
+
 //-----------------------------------------------------------------------------
 void vtkAvtSTMDFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
 {
