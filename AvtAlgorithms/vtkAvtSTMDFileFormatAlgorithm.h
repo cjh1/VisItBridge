@@ -39,10 +39,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtMeshMetaData.h"
 
 
-class vtkDataSet;
+class vtkCallbackCommand;
 class vtkDataArray;
+class vtkDataArraySelection;
+class vtkDataSet;
 class vtkHierarchicalBoxDataSet;
 class vtkMultiBlockDataSet;
+
 
 //BTX
 class avtSTMDFileFormat;
@@ -56,6 +59,31 @@ public:
   static vtkAvtSTMDFileFormatAlgorithm *New();
   vtkTypeMacro(vtkAvtSTMDFileFormatAlgorithm,vtkCompositeDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
+
+  // Description:
+  // Get the data array selection tables used to configure which data
+  // arrays are loaded by the reader.
+  vtkGetObjectMacro(PointDataArraySelection, vtkDataArraySelection);
+  vtkGetObjectMacro(CellDataArraySelection, vtkDataArraySelection);
+
+  // Description:
+  // Get the number of point or cell arrays available in the input.
+  int GetNumberOfPointArrays();
+  int GetNumberOfCellArrays();
+
+  // Description:
+  // Get the name of the point or cell array with the given index in
+  // the input.
+  const char* GetPointArrayName(int index);
+  const char* GetCellArrayName(int index);
+
+  // Description:
+  // Get/Set whether the point or cell array with the given name is to
+  // be read.
+  int GetPointArrayStatus(const char* name);
+  int GetCellArrayStatus(const char* name);
+  void SetPointArrayStatus(const char* name, int status);
+  void SetCellArrayStatus(const char* name, int status);
 
 protected:
   vtkAvtSTMDFileFormatAlgorithm();
@@ -94,6 +122,20 @@ protected:
   //ETX
 
   bool IsEvenlySpacedDataArray(vtkDataArray *data);
+
+  void SetupDataArraySelections();
+
+  // Callback registered with the SelectionObserver.
+  static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,
+                                        void* clientdata, void* calldata);
+
+  // The array selections.
+  vtkDataArraySelection* PointDataArraySelection;
+  vtkDataArraySelection* CellDataArraySelection;
+
+  // The observer to modify this object when the array selections are
+  // modified.
+  vtkCallbackCommand* SelectionObserver;
 
   avtSTMDFileFormat *AvtFile;
   avtDatabaseMetaData *MetaData;
