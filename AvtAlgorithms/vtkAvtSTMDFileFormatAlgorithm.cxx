@@ -201,6 +201,8 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestInformation(vtkInformation *request,
     return 0;
     }
 
+  this->SetupDataArraySelections();
+
   //grab image extents etc if needed
 
   return 1;
@@ -433,7 +435,27 @@ void vtkAvtSTMDFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       //this mesh doesn't have this scalar property, go to next
       continue;
       }
+
     vtkstd::string name = scalarMeta.name;
+
+    //now check agianst what arrays the user has selected to load
+    bool selected = false;
+    if (scalarMeta.centering == AVT_ZONECENT)
+      {
+      //cell array
+      selected = this->GetCellArrayStatus(name.c_str());
+      }
+    else if (scalarMeta.centering == AVT_NODECENT)
+      {
+      //point array
+      selected = this->GetPointArrayStatus(name.c_str());
+      }
+    if (!selected)
+      {
+      //don't add the array since the user hasn't selected it
+      continue;
+      }
+
     vtkDataArray *scalar = this->AvtFile->GetVar(domain,name.c_str());
     if ( !scalar )
       {
@@ -458,6 +480,7 @@ void vtkAvtSTMDFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
         break;
       case AVT_NO_VARIABLE:
       case AVT_UNKNOWN_CENT:
+      default:
         break;
       }
     scalar->Delete();
@@ -474,6 +497,25 @@ void vtkAvtSTMDFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       continue;
       }
     vtkstd::string name = vectorMeta.name;
+
+    //now check agianst what arrays the user has selected to load
+    bool selected = false;
+    if (vectorMeta.centering == AVT_ZONECENT)
+      {
+      //cell array
+      selected = this->GetCellArrayStatus(name.c_str());
+      }
+    else if (vectorMeta.centering == AVT_NODECENT)
+      {
+      //point array
+      selected = this->GetPointArrayStatus(name.c_str());
+      }
+    if (!selected)
+      {
+      //don't add the array since the user hasn't selected it
+      continue;
+      }
+
     vtkDataArray *vector = this->AvtFile->GetVectorVar(domain,name.c_str());
     if ( !vector )
       {
@@ -569,6 +611,71 @@ bool vtkAvtSTMDFileFormatAlgorithm::IsEvenlySpacedDataArray(vtkDataArray *data)
   return valid;
 }
 
+//-----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::SetupDataArraySelections( )
+{
+  if (!this->MetaData)
+    {
+    return;
+    }
+  //go through the meta data and get all the scalar and vector property names
+  //add them to the point & cell selection arrays for user control if they don't already exist
+  int size = this->MetaData->GetNumScalars();
+  vtkstd::string name;
+  for ( int i=0; i < size; ++i)
+    {
+    const avtScalarMetaData scalarMetaData = this->MetaData->GetScalars(i);
+    name = scalarMetaData.name;
+    switch(scalarMetaData.centering)
+      {
+      case AVT_ZONECENT:
+        //cell property
+        if (!this->CellDataArraySelection->ArrayExists(name.c_str()))
+          {
+          this->CellDataArraySelection->EnableArray(name.c_str());
+          }
+        break;
+      case AVT_NODECENT:
+        //point based
+        if (!this->PointDataArraySelection->ArrayExists(name.c_str()))
+          {
+          this->PointDataArraySelection->EnableArray(name.c_str());
+          }
+        break;
+      case AVT_NO_VARIABLE:
+      case AVT_UNKNOWN_CENT:
+        break;
+      }
+
+    }
+
+  size = this->MetaData->GetNumVectors();
+  for ( int i=0; i < size; ++i)
+    {
+    const avtVectorMetaData vectorMetaData = this->MetaData->GetVectors(i);
+    name = vectorMetaData.name;
+    switch(vectorMetaData.centering)
+      {
+      case AVT_ZONECENT:
+        //cell property
+        if (!this->CellDataArraySelection->ArrayExists(name.c_str()))
+          {
+          this->CellDataArraySelection->EnableArray(name.c_str());
+          }
+        break;
+      case AVT_NODECENT:
+        //point based
+        if (!this->PointDataArraySelection->ArrayExists(name.c_str()))
+          {
+          this->PointDataArraySelection->EnableArray(name.c_str());
+          }
+        break;
+      case AVT_NO_VARIABLE:
+      case AVT_UNKNOWN_CENT:
+        break;
+      }
+    }
+}
 //----------------------------------------------------------------------------
 int vtkAvtSTMDFileFormatAlgorithm::GetNumberOfPointArrays()
 {

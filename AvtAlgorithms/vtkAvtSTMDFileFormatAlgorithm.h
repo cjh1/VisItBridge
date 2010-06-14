@@ -123,6 +123,7 @@ protected:
 
   bool IsEvenlySpacedDataArray(vtkDataArray *data);
 
+  void SetupDataArraySelections();
 
   // Callback registered with the SelectionObserver.
   static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,
@@ -135,8 +136,6 @@ protected:
   // The observer to modify this object when the array selections are
   // modified.
   vtkCallbackCommand* SelectionObserver;
-
-
 
   avtSTMDFileFormat *AvtFile;
   avtDatabaseMetaData *MetaData;
