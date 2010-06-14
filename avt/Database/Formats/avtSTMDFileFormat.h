@@ -68,18 +68,18 @@ class     avtIOInformation;
 //  Modifications:
 //
 //    Eric Brugger, Fri Dec  7 13:44:05 PST 2001
-//    I modified the class to handle the open file cache overflowing by 
+//    I modified the class to handle the open file cache overflowing by
 //    removing the earliest opened file when the cache overflows.
 //
 //    Hank Childs, Mon Mar 11 08:48:41 PST 2002
 //    Removed SetDatabaseMetaData since it is defined in the base class.
 //
-//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002 
-//    vtkScalars and vtkVectors have  been deprecated in VTK 4.0, 
+//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002
+//    vtkScalars and vtkVectors have  been deprecated in VTK 4.0,
 //    use vtkDataArray instead.
 //
-//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002 
-//    vtkScalars and vtkVectors have  been deprecated in VTK 4.0, 
+//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002
+//    vtkScalars and vtkVectors have  been deprecated in VTK 4.0,
 //    use vtkDataArray instead.
 //
 //    Mark C. Miller, Mon Feb 23 20:38:47 PST 2004
@@ -89,7 +89,7 @@ class     avtIOInformation;
 //    Added method, PopulateIOInformation
 //
 //    Mark C. Miller, Tue May 17 18:48:38 PDT 2005
-//    Added SetDatabaseMetaData and PopulateDatabaseMetaData. Removed GetCycle 
+//    Added SetDatabaseMetaData and PopulateDatabaseMetaData. Removed GetCycle
 //
 // ****************************************************************************
 
@@ -110,10 +110,17 @@ class DATABASE_API avtSTMDFileFormat : public avtFileFormat
     virtual void           SetDatabaseMetaData(avtDatabaseMetaData *md)
                                { metadata = md; PopulateDatabaseMetaData(metadata); };
 
-    void                   SetTimestep(int ts, int ns) 
+    void                   SetTimestep(int ts, int ns)
                                  { timestep = ts; nTimesteps = ns; };
 
     virtual const char    *GetFilename(void) { return filenames[0]; };
+
+    virtual vtkDataSet    *GetMesh(int time, int domain, const char *name)
+      {return GetMesh(domain,name);};
+    virtual vtkDataArray  *GetVar(int time, int domain, const char *name)
+      {return GetVar(domain,name);};
+    virtual vtkDataArray  *GetVectorVar(int time, int domain, const char *name)
+      {return GetVectorVar(domain,name);};
 
     virtual vtkDataSet    *GetMesh(int, const char *) = 0;
     virtual vtkDataArray  *GetVar(int, const char *) = 0;

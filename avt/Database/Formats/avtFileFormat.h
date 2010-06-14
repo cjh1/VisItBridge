@@ -56,6 +56,8 @@
 #include <avtDataSelection.h>
 #include <avtTypes.h>
 
+class vtkDataSet;
+class vtkDataArray;
 
 class     avtDatabaseMetaData;
 class     avtIOInformation;
@@ -85,7 +87,7 @@ class     avtVariableCache;
 //    Hank Childs, Sat Sep 20 09:04:49 PDT 2003
 //    Added support for tensors.
 //
-//    Mark C. Miller, 30Sep03, Added support for time varying sil/metadata 
+//    Mark C. Miller, 30Sep03, Added support for time varying sil/metadata
 //
 //    Mark C. Miller, Mon Feb  9 16:10:16 PST 2004
 //    Added method, ActivateTimestep
@@ -102,9 +104,9 @@ class     avtVariableCache;
 //    Added const members for invalid cycles/times. Changed class to use
 //    these symbols instead of -INT_MAX and -DBL_MAX
 //
-//    Kathleen Bonnell, Wed Jul 13 18:28:51 PDT 2005 
+//    Kathleen Bonnell, Wed Jul 13 18:28:51 PDT 2005
 //    Added bool to AddScalarVarToMetaData, in order to specify whether
-//    the var should be treated as ascii (default -- false). 
+//    the var should be treated as ascii (default -- false).
 //
 //    Mark C. Miller, Thu Jun 14 10:26:37 PDT 2007
 //    Moved implementations of GuessCycle/GuessTime to .C file. Added
@@ -208,6 +210,10 @@ class DATABASE_API avtFileFormat
     static int        GuessCycle(const char *fname, const char *re = 0);
     static double     GuessTime(const char *fname, const char *re = 0);
 
+    virtual vtkDataSet    *GetMesh(int time, int domain, const char *) = 0;
+    virtual vtkDataArray  *GetVar(int time, int domain, const char *) = 0;
+    virtual vtkDataArray  *GetVectorVar(int time, int domain, const char *) = 0;
+
   protected:
     avtVariableCache     *cache;
     avtDatabaseMetaData  *metadata;
@@ -218,7 +224,7 @@ class DATABASE_API avtFileFormat
     std::vector<int>      fileIndicesForDescriptorManager;
     bool                  strictMode;
 
-    // This data member is for file formats that do their 
+    // This data member is for file formats that do their
     // own domain decomposition.
     bool                  resultMustBeProducedOnlyOnThisProcessor;
 
@@ -250,10 +256,10 @@ class DATABASE_API avtFileFormat
     // the difference.
     //
     virtual int           GetCycleFromFilename(const char *f) const
-                              { if (f[0] == '\0') return FORMAT_INVALID_CYCLE; 
+                              { if (f[0] == '\0') return FORMAT_INVALID_CYCLE;
                                 return GuessCycle(f); };
     virtual double        GetTimeFromFilename(const char *f) const
-                              { if (f[0] == '\0') return FORMAT_INVALID_TIME; 
+                              { if (f[0] == '\0') return FORMAT_INVALID_TIME;
                                 return GuessTime(f); };
 
     void       AddMeshToMetaData(avtDatabaseMetaData *, std::string,

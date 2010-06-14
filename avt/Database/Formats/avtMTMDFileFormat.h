@@ -114,8 +114,8 @@ class DATABASE_API avtMTMDFileFormat : public avtFileFormat
     char                  *filename;
 
     // The second of these should really be pure virtual and the first
-    // non-existant. However, both are just virtual to maintain 
-    // backward compatibility with older MTXX plugins and to allow 
+    // non-existant. However, both are just virtual to maintain
+    // backward compatibility with older MTXX plugins and to allow
     // MTXX plugins to implement a time-qualified request to populate
     // database metadata.
     virtual void           PopulateDatabaseMetaData(avtDatabaseMetaData *md);
