@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkAMRBox.h"
 #include "vtkHierarchicalBoxDataSet.h"
 #include "vtkMultiBlockDataSet.h"
+#include "vtkMultiPieceDataSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
 #include "vtkStructuredGrid.h"
@@ -54,6 +55,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkPointData.h"
 
 
+#include "vtkUnstructuredGridRelevantPointsFilter.h"
+#include "vtkCleanPolyData.h"
+
 #include "avtSTMDFileFormat.h"
 #include "avtDomainNesting.h"
 #include "avtDatabaseMetaData.h"
@@ -62,7 +66,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtVectorMetaData.h"
 #include "TimingsManager.h"
 
+#include "limits.h"
+
 vtkStandardNewMacro(vtkAvtSTMDFileFormatAlgorithm);
+
+//-----------------------------------------------------------------------------
+class vtkAvtSTMDFileFormatAlgorithmInternal
+{
+public:
+  //basic POD class
+  vtkAvtSTMDFileFormatAlgorithmInternal();
+  ~vtkAvtSTMDFileFormatAlgorithmInternal();
+
+  double TimeRange[2];
+  unsigned int UpdatePiece;
+  unsigned int UpdateNumPieces;
+};
+
+//-----------------------------------------------------------------------------
+vtkAvtSTMDFileFormatAlgorithmInternal::vtkAvtSTMDFileFormatAlgorithmInternal()
+{
+  this->TimeRange[0] = 0.0;
+  this->TimeRange[1] = 0.0;
+
+  this->UpdatePiece = 0;
+  this->UpdateNumPieces = 0;
+}
+//-----------------------------------------------------------------------------
+vtkAvtSTMDFileFormatAlgorithmInternal::~vtkAvtSTMDFileFormatAlgorithmInternal()
+{
+
+}
 
 //-----------------------------------------------------------------------------
 vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
@@ -73,6 +107,9 @@ vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
   this->AvtFile = NULL;
   this->MetaData = NULL;
   this->Cache = NULL;
+
+  //set up internal class
+  this->Internal = new vtkAvtSTMDFileFormatAlgorithmInternal;
 
   this->OutputType = VTK_MULTIBLOCK_DATA_SET;
 
@@ -109,6 +146,11 @@ vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
   this->SelectionObserver->Delete();
   this->CellDataArraySelection->Delete();
   this->PointDataArraySelection->Delete();
+
+  if ( this->Internal )
+    {
+    delete this->Internal;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -200,10 +242,15 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestInformation(vtkInformation *request,
     {
     return 0;
     }
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
+  // Claim we can produce as many pieces as needed
+  outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(), -1);
+
+  //Set up ghost levels
+
+  //setup user selection of arrays to load
   this->SetupDataArraySelections();
-
-  //grab image extents etc if needed
 
   return 1;
 }
@@ -221,7 +268,12 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
   //we have to make sure the visit reader populates its cache
   this->AvtFile->ActivateTimestep(); //only 1 time step in ST files
 
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkInformation* outInfo = outputVector->GetInformationObject(0);
+
+  this->Internal->UpdatePiece =
+    outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER());
+  this->Internal->UpdateNumPieces =
+    outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES());
 
   if ( this->OutputType == VTK_HIERARCHICAL_BOX_DATA_SET )
     {
@@ -241,7 +293,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     int size = this->MetaData->GetNumMeshes();
     output->SetNumberOfBlocks( size );
 
-    vtkMultiBlockDataSet* tempMultiBlock = NULL;
+    vtkMultiPieceDataSet* tempData = NULL;
     for ( int i=0; i < size; ++i)
       {
       const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
@@ -249,19 +301,21 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
       switch(meshMetaData.meshType)
         {
+        case AVT_CSG_MESH:
+          vtkErrorMacro("Currently we do not support AVT_CSG_MESH.");
+          break;
         case AVT_AMR_MESH:
         case AVT_RECTILINEAR_MESH:
         case AVT_CURVILINEAR_MESH:
         case AVT_UNSTRUCTURED_MESH:
         case AVT_POINT_MESH:
         case AVT_SURFACE_MESH:
-        case AVT_CSG_MESH:
         default:
-          tempMultiBlock = vtkMultiBlockDataSet::New();
-          this->FillMultiBlock( tempMultiBlock, meshMetaData );
-          output->SetBlock(i,tempMultiBlock);
-          tempMultiBlock->Delete();
-          tempMultiBlock = NULL;
+          tempData = vtkMultiPieceDataSet::New();
+          this->FillBlock( tempData, meshMetaData );
+          output->SetBlock(i,tempData);
+          tempData->Delete();
+          tempData = NULL;
           break;
         }
       output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
@@ -290,6 +344,9 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     {
     return 0;
     }
+
+  int domainRange[2];
+  this->GetDomainRange( meshMetaData, domainRange );
 
   //number of levels in the AMR
   int numGroups = meshMetaData.numGroups;
@@ -347,53 +404,58 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     amr->SetNumberOfDataSets(i,numDataSets[i]);
     for (int j=0; j < numDataSets[i]; ++j)
       {
-      //get the rgrid from the VisIt reader
-      //so we have the origin/spacing/dims
-      rgrid = vtkRectilinearGrid::SafeDownCast(
-        this->AvtFile->GetMesh(meshIndex, name.c_str()));
+      //only load grids inside the domainRange for this processor
+      if ( meshIndex >= domainRange[0] &&
+        meshIndex < domainRange[1] )
+        {
+          //get the rgrid from the VisIt reader
+        //so we have the origin/spacing/dims
+        rgrid = vtkRectilinearGrid::SafeDownCast(
+          this->AvtFile->GetMesh(meshIndex, name.c_str()));
 
-      double origin[3];
-      origin[0] = rgrid->GetXCoordinates()->GetTuple1(0);
-      origin[1] = rgrid->GetYCoordinates()->GetTuple1(0);
-      origin[2] = rgrid->GetZCoordinates()->GetTuple1(0);
+        double origin[3];
+        origin[0] = rgrid->GetXCoordinates()->GetTuple1(0);
+        origin[1] = rgrid->GetYCoordinates()->GetTuple1(0);
+        origin[2] = rgrid->GetZCoordinates()->GetTuple1(0);
 
-      double spacing[3];
-      spacing[0] = ( rgrid->GetXCoordinates()->GetNumberOfTuples() > 2 ) ?
-        fabs( rgrid->GetXCoordinates()->GetTuple1(1) -
-        rgrid->GetXCoordinates()->GetTuple1(0)): 1;
+        double spacing[3];
+        spacing[0] = ( rgrid->GetXCoordinates()->GetNumberOfTuples() > 2 ) ?
+          fabs( rgrid->GetXCoordinates()->GetTuple1(1) -
+          rgrid->GetXCoordinates()->GetTuple1(0)): 1;
 
-      spacing[1] = ( rgrid->GetYCoordinates()->GetNumberOfTuples() > 2 ) ?
-        fabs( rgrid->GetYCoordinates()->GetTuple1(1) -
-        rgrid->GetYCoordinates()->GetTuple1(0)): 1;
+        spacing[1] = ( rgrid->GetYCoordinates()->GetNumberOfTuples() > 2 ) ?
+          fabs( rgrid->GetYCoordinates()->GetTuple1(1) -
+          rgrid->GetYCoordinates()->GetTuple1(0)): 1;
 
-      spacing[2] = ( rgrid->GetZCoordinates()->GetNumberOfTuples() > 2 ) ?
-        fabs( rgrid->GetZCoordinates()->GetTuple1(1) -
-        rgrid->GetZCoordinates()->GetTuple1(0)): 1;
+        spacing[2] = ( rgrid->GetZCoordinates()->GetNumberOfTuples() > 2 ) ?
+          fabs( rgrid->GetZCoordinates()->GetTuple1(1) -
+          rgrid->GetZCoordinates()->GetTuple1(0)): 1;
 
-      //set up the extents for the grid
-      int extents[6];
-      rgrid->GetExtent( extents );
+        //set up the extents for the grid
+        int extents[6];
+        rgrid->GetExtent( extents );
 
-      int dims[3];
-      rgrid->GetDimensions( dims );
+        int dims[3];
+        rgrid->GetDimensions( dims );
 
-      //don't need the rgrid anymoe
-      rgrid->Delete();
-      rgrid = NULL;
+        //don't need the rgrid anymoe
+        rgrid->Delete();
+        rgrid = NULL;
 
-      //create the dataset
-      vtkUniformGrid *grid = vtkUniformGrid::New();
-      grid->SetOrigin( origin );
-      grid->SetSpacing( spacing );
-      grid->SetDimensions( dims );
+        //create the dataset
+        vtkUniformGrid *grid = vtkUniformGrid::New();
+        grid->SetOrigin( origin );
+        grid->SetSpacing( spacing );
+        grid->SetDimensions( dims );
 
-      this->AssignProperties( grid, name, meshIndex );
+        this->AssignProperties( grid, name, meshIndex );
 
-      //now create the AMR Box
-      vtkAMRBox box(extents);
-      amr->SetDataSet(i,j,box,grid);
+        //now create the AMR Box
+        vtkAMRBox box(extents);
+        amr->SetDataSet(i,j,box,grid);
 
-      grid->Delete();
+        grid->Delete();
+        }
       ++meshIndex;
       }
     }
@@ -403,20 +465,62 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
 }
 
 //-----------------------------------------------------------------------------
-void vtkAvtSTMDFileFormatAlgorithm::FillMultiBlock(
-  vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData )
+void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
+  vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData )
 {
   vtkstd::string name = meshMetaData.name;
-  int subBlockSize = meshMetaData.numBlocks;
-  block->SetNumberOfBlocks( subBlockSize );
-  for ( int i=0; i < subBlockSize; ++i )
+
+  //set the number of pieces in the block
+  block->SetNumberOfPieces( meshMetaData.numBlocks );
+
+  int domainRange[2];
+  this->GetDomainRange( meshMetaData, domainRange );
+
+  for ( int i=domainRange[0]; i < domainRange[1]; ++i )
     {
     vtkDataSet *data = this->AvtFile->GetMesh( i, name.c_str() );
     if ( data )
       {
+      int points = data->GetNumberOfPoints();
       //place all the scalar&vector properties onto the data
       this->AssignProperties(data,name,i);
-      block->SetBlock(i,data);
+
+      //clean the mesh of all points that are not part of a cell
+      if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
+        {
+        vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::SafeDownCast(data);
+        if (!ugrid)
+          {
+          //well somebody messed up that visit reader implementation
+          block->SetPiece(i,data);
+          continue;
+          }
+
+        vtkUnstructuredGridRelevantPointsFilter *clean =
+            vtkUnstructuredGridRelevantPointsFilter::New();
+        clean->SetInput( ugrid );
+        clean->Update();
+        block->SetPiece(i,clean->GetOutput());
+        int updateSize = clean->GetOutput()->GetNumberOfPoints();
+        clean->Delete();
+        }
+      else if(meshMetaData.meshType == AVT_SURFACE_MESH)
+        {
+        vtkCleanPolyData *clean = vtkCleanPolyData::New();
+        clean->SetInput( data );
+        clean->ToleranceIsAbsoluteOn();
+        clean->SetAbsoluteTolerance(0.0);
+        clean->ConvertStripsToPolysOff();
+        clean->ConvertPolysToLinesOff();
+        clean->ConvertLinesToPointsOff();
+        clean->Update();
+        block->SetPiece(i,clean->GetOutput());
+        clean->Delete();
+        }
+      else
+        {
+        block->SetPiece(i,data);
+        }
       }
     data->Delete();
     }
@@ -612,6 +716,7 @@ bool vtkAvtSTMDFileFormatAlgorithm::IsEvenlySpacedDataArray(vtkDataArray *data)
 }
 
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
 void vtkAvtSTMDFileFormatAlgorithm::SetupDataArraySelections( )
 {
   if (!this->MetaData)
@@ -743,6 +848,24 @@ void vtkAvtSTMDFileFormatAlgorithm::SelectionModifiedCallback(vtkObject*, unsign
                                              void* clientdata, void*)
 {
   static_cast<vtkAvtSTMDFileFormatAlgorithm*>(clientdata)->Modified();
+}
+
+//----------------------------------------------------------------------------
+//determine which nodes will be read by this processor
+void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData &meshMetaData, int domain[2])
+{
+  int numBlock = meshMetaData.numBlocks;
+  domain[0] = 0;
+  domain[1] = numBlock;
+
+  //1 == load the whole data
+  if ( this->Internal->UpdateNumPieces > 1 )
+    {
+    //determine which domains in this mesh this processor is reponsible for
+    float percent = (1.0 / this->Internal->UpdateNumPieces) * numBlock;
+    domain[0] = percent * this->Internal->UpdatePiece;
+    domain[1] = (percent * this->Internal->UpdatePiece) + percent;
+    }
 }
 
 //-----------------------------------------------------------------------------
