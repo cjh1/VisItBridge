@@ -1,6 +1,8 @@
 PROJECT(AVTALGORITHMS)
 
 SET(SOURCES
+vtkAvtFileFormatAlgorithm.h
+vtkAvtFileFormatAlgorithm.cxx
 vtkAvtSTSDFileFormatAlgorithm.h
 vtkAvtSTSDFileFormatAlgorithm.cxx
 vtkAvtSTMDFileFormatAlgorithm.h
@@ -27,6 +29,7 @@ ${AVT_PIPELINE_SOURCE_DIR}/Pipeline
 ${AVT_PIPELINE_SOURCE_DIR}/Sinks
 ${AVT_PIPELINE_SOURCE_DIR}/Sources
 ${VISIT_SOURCE_DIR}/visit_vtk/full
+${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
 ADD_PARAVIEW_PLUGIN(AVTAlgorithms "1.0"

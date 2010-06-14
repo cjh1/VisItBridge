@@ -32,33 +32,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _vtkAvtSTSDFileFormatAlgorithm_h
 #define _vtkAvtSTSDFileFormatAlgorithm_h
-#include "vtkDataSetAlgorithm.h"
+#include "vtkAvtFileFormatAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
 
 //BTX
-class avtFileFormat;
+class avtSTSDFileFormat;
 class avtDatabaseMetaData;
+class avtVariableCache;
 //ETX
 
-class AVTALGORITHMS_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkDataSetAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkAvtFileFormatAlgorithm
 {
 public:
   static vtkAvtSTSDFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtSTSDFileFormatAlgorithm,vtkDataSetAlgorithm);
+  vtkTypeMacro(vtkAvtSTSDFileFormatAlgorithm,vtkAvtFileFormatAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
-
-  vtkSetStringMacro(FileName);
-  vtkGetStringMacro(FileName);
-  int CanReadFile(const char* fname);
 
 protected:
   vtkAvtSTSDFileFormatAlgorithm();
   ~vtkAvtSTSDFileFormatAlgorithm();
 
-  // convenience method
-  virtual int RequestInformation(vtkInformation* request,
-                                 vtkInformationVector** inputVector,
-                                 vtkInformationVector* outputVector);
+  //needed since we have to change the type we output
+  virtual int RequestDataObject(vtkInformation *, vtkInformationVector **,
+                                vtkInformationVector *);
 
   // Description:
   // This is called by the superclass.
@@ -66,13 +62,6 @@ protected:
   virtual int RequestData(vtkInformation* request,
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
-
-  char *FileName;
-
-//BTX
-  avtFileFormat *AvtFile;
-  avtDatabaseMetaData *MetaData;
-//ETX
 
 private:
   vtkAvtSTSDFileFormatAlgorithm(const vtkAvtSTSDFileFormatAlgorithm&);
