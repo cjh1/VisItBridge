@@ -716,7 +716,6 @@ bool vtkAvtSTMDFileFormatAlgorithm::IsEvenlySpacedDataArray(vtkDataArray *data)
 }
 
 //-----------------------------------------------------------------------------
-<<<<<<< HEAD
 void vtkAvtSTMDFileFormatAlgorithm::SetupDataArraySelections( )
 {
   if (!this->MetaData)
