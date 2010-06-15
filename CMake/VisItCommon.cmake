@@ -59,11 +59,12 @@ if(ARG_VISIT_READER_USES_OPTIONS)
 endif()
 
 #need to generate the VTK class wrapper
+string(SUBSTRING {ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
 configure_file(
-    ${VISIT_CMAKE_DIR}/VisIt${ARG_VISIT_READER_TYPE}.h.in
+    ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)  
 configure_file(
-    ${VISIT_CMAKE_DIR}/VisIt${ARG_VISIT_READER_TYPE}.cxx.in
+    ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.cxx.in
     ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.cxx @ONLY)
   
 #generate server manager xml file  

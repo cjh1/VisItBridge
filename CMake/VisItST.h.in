@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _@PLUGIN_NAME@_h
 #define _@PLUGIN_NAME@_h
 
-#include "vtkAvtSTSDFileFormatAlgorithm.h"
+#include "vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm.h"
 
 class @PLUGIN_NAME@ : public vtkAvtSTSDFileFormatAlgorithm
 {
