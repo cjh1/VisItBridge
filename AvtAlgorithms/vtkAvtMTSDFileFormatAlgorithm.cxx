@@ -163,6 +163,10 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         output->SetPiece(i,clean->GetOutput());
         clean->Delete();
         }
+      else
+        {
+        output->SetPiece(i,data);
+        }
       data->Delete();
       output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
       }

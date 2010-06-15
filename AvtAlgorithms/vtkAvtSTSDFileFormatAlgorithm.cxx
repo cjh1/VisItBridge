@@ -112,13 +112,9 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     return 0;
     }
 
-  //we have to make sure the visit reader populates its cache
-  this->AvtFile->ActivateTimestep(); //only 1 time step in ST files
-
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
   vtkMultiPieceDataSet *output = vtkMultiPieceDataSet::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
-
   if (!output)
     {
     vtkErrorMacro("Was unable to determine output type");
@@ -161,6 +157,10 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         clean->Update();
         output->SetPiece(i,clean->GetOutput());
         clean->Delete();
+        }
+      else
+        {
+        output->SetPiece(i,data);
         }
       data->Delete();
       output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());

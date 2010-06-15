@@ -173,9 +173,6 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     return 0;
     }
 
-  //we have to make sure the visit reader populates its cache
-  this->AvtFile->ActivateTimestep(); //only 1 time step in ST files
-
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
   this->Internal->UpdatePiece =
