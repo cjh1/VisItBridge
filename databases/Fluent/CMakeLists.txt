@@ -10,7 +10,8 @@ FluentPluginInfo.h
 FluentPluginInfo.C
 )
 
-ADD_VISIT_STMDREADER(VisItFluentReader "1.0"  
+ADD_VISIT_READER(VisItFluentReader "1.0"  
+  VISIT_READER_TYPE "STMD"
   VISIT_READER_NAME "avtFluentFileFormat"  
   VISIT_READER_FILE_PATTERN "cas"
   SERVER_SOURCES ${SOURCES}  

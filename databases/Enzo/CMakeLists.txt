@@ -5,7 +5,8 @@ avtEnzoFileFormat.h
 avtEnzoFileFormat.C
 )
 
-ADD_VISIT_STMDREADER(VisItEnzoReader "1.0"  
+ADD_VISIT_READER(VisItEnzoReader "1.0"  
+  VISIT_READER_TYPE "STMD"
   VISIT_READER_NAME "avtEnzoFileFormat"  
   VISIT_READER_FILE_PATTERN "hierarchy boundary"
   SERVER_SOURCES ${SOURCES}  
