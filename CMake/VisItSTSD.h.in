@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkAvtSTSDFileFormatAlgorithm.h
+   Module:    @PLUGIN_NAME@.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -30,41 +30,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 
-#ifndef _vtkAvtSTSDFileFormatAlgorithm_h
-#define _vtkAvtSTSDFileFormatAlgorithm_h
-#include "vtkAvtFileFormatAlgorithm.h"
-#include "vtkAvtAlgorithmsExport.h"
+#ifndef _@PLUGIN_NAME@_h
+#define _@PLUGIN_NAME@_h
 
-//BTX
-class avtSTSDFileFormat;
-class avtDatabaseMetaData;
-class avtVariableCache;
-//ETX
+#include "vtkAvtSTSDFileFormatAlgorithm.h"
 
-class AVTALGORITHMS_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkAvtFileFormatAlgorithm
+class @PLUGIN_NAME@ : public vtkAvtSTSDFileFormatAlgorithm
 {
 public:
-  static vtkAvtSTSDFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtSTSDFileFormatAlgorithm,vtkAvtFileFormatAlgorithm);
+  static @PLUGIN_NAME@ *New();
+  vtkTypeMacro(@PLUGIN_NAME@,vtkAvtSTSDFileFormatAlgorithm );
   void PrintSelf(ostream& os, vtkIndent indent);
+  vtkSetStringMacro(FileName);
+  vtkGetStringMacro(FileName);
+  int CanReadFile(const char* fname);
 
 protected:
-  vtkAvtSTSDFileFormatAlgorithm();
-  ~vtkAvtSTSDFileFormatAlgorithm();
+  @PLUGIN_NAME@();
+  ~@PLUGIN_NAME@();
 
-  //needed since we have to change the type we output
-  virtual int RequestDataObject(vtkInformation *, vtkInformationVector **,
-                                vtkInformationVector *);
-
-  // Description:
-  // This is called by the superclass.
-  // This is the method you should override.
-  virtual int RequestData(vtkInformation* request,
-                          vtkInformationVector** inputVector,
-                          vtkInformationVector* outputVector);
+  virtual bool InitializeAVTReader();
+  char *FileName;
 
 private:
-  vtkAvtSTSDFileFormatAlgorithm(const vtkAvtSTSDFileFormatAlgorithm&);
-  void operator = (const vtkAvtSTSDFileFormatAlgorithm&);
+  @PLUGIN_NAME@(const @PLUGIN_NAME@&);
+  void operator = (const @PLUGIN_NAME@&);
 };
 #endif

@@ -70,12 +70,12 @@ class     avtIOInformation;
 //    Hank Childs, Mon Mar 11 08:48:41 PST 2002
 //    Removed SetDatabaseMetaData since it is defined in the base class.
 //
-//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002  
-//    vtkScalars and vtkVectors have been deprecated in VTK 4.0, 
+//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002
+//    vtkScalars and vtkVectors have been deprecated in VTK 4.0,
 //    use vtkDataArray instead.
 //
-//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002  
-//    vtkScalars and vtkVectors have been deprecated in VTK 4.0, 
+//    Kathleen Bonnell, Mon Mar 18 17:22:30 PST 2002
+//    vtkScalars and vtkVectors have been deprecated in VTK 4.0,
 //    use vtkDataArray instead.
 //
 //    Brad Whitlock, Mon Oct 13 14:42:42 PST 2003
@@ -107,6 +107,13 @@ class DATABASE_API avtSTSDFileFormat : public avtFileFormat
                                             void *args, DestructorFunction &);
 
     virtual const char    *GetFilename(void) { return filename; };
+
+    virtual vtkDataSet    *GetMesh(int time, int domain, const char *name)
+      {return GetMesh(name);};
+    virtual vtkDataArray  *GetVar(int time, int domain, const char *name)
+      {return GetVar(name);};
+    virtual vtkDataArray  *GetVectorVar(int time, int domain, const char *name)
+      {return GetVectorVar(name);};
 
     virtual vtkDataSet    *GetMesh(const char *) = 0;
     virtual vtkDataArray  *GetVar(const char *) = 0;

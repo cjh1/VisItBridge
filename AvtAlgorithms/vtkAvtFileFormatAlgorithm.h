@@ -33,10 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
 #include "vtkAlgorithm.h"
+#include "vtkStdString.h"
+
+class vtkDataArraySelection;
+class vtkDataSet;
+class vtkCallbackCommand;
 
 //BTX
 class avtFileFormat;
 class avtDatabaseMetaData;
+class avtVariableCache;
 //ETX
 
 class VTK_EXPORT vtkAvtFileFormatAlgorithm : public vtkAlgorithm
@@ -46,9 +52,31 @@ public:
   vtkTypeMacro(vtkAvtFileFormatAlgorithm,vtkAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  vtkSetStringMacro(FileName);
-  vtkGetStringMacro(FileName);
-  int CanReadFile(const char* fname);
+  // Description:
+  // Get the data array selection tables used to configure which data
+  // arrays are loaded by the reader.
+  vtkGetObjectMacro(PointDataArraySelection, vtkDataArraySelection);
+  vtkGetObjectMacro(CellDataArraySelection, vtkDataArraySelection);
+
+  // Description:
+  // Get the number of point or cell arrays available in the input.
+  int GetNumberOfPointArrays();
+  int GetNumberOfCellArrays();
+
+  // Description:
+  // Get the name of the point or cell array with the given index in
+  // the input.
+  const char* GetPointArrayName(int index);
+  const char* GetCellArrayName(int index);
+
+  // Description:
+  // Get/Set whether the point or cell array with the given name is to
+  // be read.
+  int GetPointArrayStatus(const char* name);
+  int GetCellArrayStatus(const char* name);
+  void SetPointArrayStatus(const char* name, int status);
+  void SetCellArrayStatus(const char* name, int status);
+
 
   // Description:
   // see vtkAlgorithm for details
@@ -56,12 +84,25 @@ public:
                              vtkInformationVector**,
                              vtkInformationVector*);
 
-
 protected:
   vtkAvtFileFormatAlgorithm();
   ~vtkAvtFileFormatAlgorithm();
 
-  // convenience method
+  //the subclasses need to define these methods
+  virtual bool InitializeAVTReader();
+  virtual void CleanupAVTReader();
+
+  // Description:
+  // This is called by the superclass.
+  // This is the method you should override.
+  virtual int RequestDataObject(vtkInformation*,
+                                vtkInformationVector**,
+                                vtkInformationVector*);
+
+
+  // Description:
+  // This is called by the superclass.
+  // This is the method you should override.
   virtual int RequestInformation(vtkInformation* request,
                                  vtkInformationVector** inputVector,
                                  vtkInformationVector* outputVector);
@@ -82,13 +123,33 @@ protected:
 
   // see algorithm for more info
   virtual int FillOutputPortInformation(int port, vtkInformation* info);
-  virtual int FillInputPortInformation(int port, vtkInformation* info);
 
-  char *FileName;
+  void SetupDataArraySelections();
+
+  // Callback registered with the SelectionObserver.
+  static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,
+                                        void* clientdata, void* calldata);
+
+  //BTX
+  void AssignProperties( vtkDataSet *data, const vtkStdString &meshName,
+    const int &timestep, const int &domain );
+  //ETX
+
+
+  // The array selections.
+  vtkDataArraySelection* PointDataArraySelection;
+  vtkDataArraySelection* CellDataArraySelection;
+
+  // The observer to modify this object when the array selections are
+  // modified.
+  vtkCallbackCommand* SelectionObserver;
+
+  int OutputType;
 
 //BTX
   avtFileFormat *AvtFile;
   avtDatabaseMetaData *MetaData;
+  avtVariableCache *Cache;
 //ETX
 
 private:

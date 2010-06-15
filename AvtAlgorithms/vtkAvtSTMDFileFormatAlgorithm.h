@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _vtkAvtSTMDFileFormatAlgorithm_h
 #define _vtkAvtSTMDFileFormatAlgorithm_h
 
-#include "vtkCompositeDataSetAlgorithm.h"
+#include "vtkAvtFileFormatAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
 #include "vtkStdString.h"
 #include "avtMeshMetaData.h"
@@ -54,55 +54,20 @@ class avtDatabaseMetaData;
 class avtVariableCache;
 //ETX
 
-class AVTALGORITHMS_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkCompositeDataSetAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkAvtFileFormatAlgorithm
 {
 public:
   static vtkAvtSTMDFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtSTMDFileFormatAlgorithm,vtkCompositeDataSetAlgorithm);
+  vtkTypeMacro(vtkAvtSTMDFileFormatAlgorithm,vtkAvtFileFormatAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
-
-  // Description:
-  // Get the data array selection tables used to configure which data
-  // arrays are loaded by the reader.
-  vtkGetObjectMacro(PointDataArraySelection, vtkDataArraySelection);
-  vtkGetObjectMacro(CellDataArraySelection, vtkDataArraySelection);
-
-  // Description:
-  // Get the number of point or cell arrays available in the input.
-  int GetNumberOfPointArrays();
-  int GetNumberOfCellArrays();
-
-  // Description:
-  // Get the name of the point or cell array with the given index in
-  // the input.
-  const char* GetPointArrayName(int index);
-  const char* GetCellArrayName(int index);
-
-  // Description:
-  // Get/Set whether the point or cell array with the given name is to
-  // be read.
-  int GetPointArrayStatus(const char* name);
-  int GetCellArrayStatus(const char* name);
-  void SetPointArrayStatus(const char* name, int status);
-  void SetCellArrayStatus(const char* name, int status);
 
 protected:
   vtkAvtSTMDFileFormatAlgorithm();
   ~vtkAvtSTMDFileFormatAlgorithm();
 
-  //the subclasses need to define these methods
-  virtual bool InitializeAVTReader();
-  virtual void CleanupAVTReader();
-
-
   //needed since we have to change the type we output
   virtual int RequestDataObject(vtkInformation *, vtkInformationVector **,
                                 vtkInformationVector *);
-
-  // convenience method
-  virtual int RequestInformation(vtkInformation* request,
-                                 vtkInformationVector** inputVector,
-                                 vtkInformationVector* outputVector);
 
   // Description:
   // This is called by the superclass.
@@ -111,38 +76,16 @@ protected:
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
-  virtual int FillOutputPortInformation(int, vtkInformation *info);
-
 //BTX
   int FillAMR( vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData &meshMetaData,
     const int &domain);
   void FillBlock( vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData );
-  void AssignProperties( vtkDataSet *data, const vtkStdString &meshName, const int &domain);
-
   bool ValidAMR( const avtMeshMetaData &meshMetaData );
   void GetDomainRange(const avtMeshMetaData &meshMetaData, int domain[2]);
   //ETX
 
   bool IsEvenlySpacedDataArray(vtkDataArray *data);
 
-  void SetupDataArraySelections();
-
-  // Callback registered with the SelectionObserver.
-  static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,
-                                        void* clientdata, void* calldata);
-
-  // The array selections.
-  vtkDataArraySelection* PointDataArraySelection;
-  vtkDataArraySelection* CellDataArraySelection;
-
-  // The observer to modify this object when the array selections are
-  // modified.
-  vtkCallbackCommand* SelectionObserver;
-
-  avtSTMDFileFormat *AvtFile;
-  avtDatabaseMetaData *MetaData;
-  avtVariableCache *Cache;
-  int OutputType;
   //BTX
   vtkAvtSTMDFileFormatAlgorithmInternal *Internal;
   //ETX

@@ -73,12 +73,12 @@ class     avtIOInformation;
 //    Hank Childs, Mon Mar 11 08:48:41 PST 2002
 //    Removed SetDatabaseMetaData since it is defined in the base class.
 //
-//    Kathleen Bonnell, Mon Mar 18 17:15:28 PST 2002  
-//    vtkScalars and vtkVectors have been deprecated in VTK 4.0, 
+//    Kathleen Bonnell, Mon Mar 18 17:15:28 PST 2002
+//    vtkScalars and vtkVectors have been deprecated in VTK 4.0,
 //    use vtkDataArray instead.
 //
-//    Kathleen Bonnell, Mon Mar 18 17:15:28 PST 2002  
-//    vtkScalars and vtkVectors have been deprecated in VTK 4.0, 
+//    Kathleen Bonnell, Mon Mar 18 17:15:28 PST 2002
+//    vtkScalars and vtkVectors have been deprecated in VTK 4.0,
 //    use vtkDataArray instead.
 //
 //    Brad Whitlock, Mon Oct 13 14:14:21 PST 2003
@@ -116,6 +116,13 @@ class DATABASE_API avtMTSDFileFormat : public avtFileFormat
 
     virtual const char    *GetFilename(void) { return filenames[0]; };
 
+    virtual vtkDataSet    *GetMesh(int time, int domain, const char *name)
+      {return GetMesh(time,name);};
+    virtual vtkDataArray  *GetVar(int time, int domain, const char *name)
+      {return GetVar(time,name);};
+    virtual vtkDataArray  *GetVectorVar(int time, int domain, const char *name)
+      {return GetVectorVar(time,name);};
+
     virtual vtkDataSet    *GetMesh(int, const char *) = 0;
     virtual vtkDataArray  *GetVar(int, const char *) = 0;
     virtual vtkDataArray  *GetVectorVar(int, const char *);
@@ -132,8 +139,8 @@ class DATABASE_API avtMTSDFileFormat : public avtFileFormat
     int                    myDomain;
 
     // The second of these should really be pure virtual and the first
-    // non-existant. However, both are just virtual to maintain 
-    // backward compatibility with older MTXX plugins and to allow 
+    // non-existant. However, both are just virtual to maintain
+    // backward compatibility with older MTXX plugins and to allow
     // MTXX plugins to implement a time-qualified request to populate
     // database metadata.
     virtual void           PopulateDatabaseMetaData(avtDatabaseMetaData *md);
