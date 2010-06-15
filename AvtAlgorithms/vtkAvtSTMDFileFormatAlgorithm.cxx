@@ -391,19 +391,11 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
       if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
         {
         vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::SafeDownCast(data);
-        if (!ugrid)
-          {
-          //well somebody messed up that visit reader implementation
-          block->SetPiece(i,data);
-          continue;
-          }
-
         vtkUnstructuredGridRelevantPointsFilter *clean =
             vtkUnstructuredGridRelevantPointsFilter::New();
         clean->SetInput( ugrid );
         clean->Update();
         block->SetPiece(i,clean->GetOutput());
-        int updateSize = clean->GetOutput()->GetNumberOfPoints();
         clean->Delete();
         }
       else if(meshMetaData.meshType == AVT_SURFACE_MESH)
@@ -423,8 +415,8 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
         {
         block->SetPiece(i,data);
         }
+      data->Delete();
       }
-    data->Delete();
     }
 }
 
