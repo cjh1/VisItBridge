@@ -130,43 +130,6 @@ void vtkAvtFileFormatAlgorithm::CleanupAVTReader()
     }
 }
 
-//----------------------------------------------------------------------------
-int vtkAvtFileFormatAlgorithm::ProcessRequest(vtkInformation* request,
-                                         vtkInformationVector** inputVector,
-                                         vtkInformationVector* outputVector)
-{
-  // generate the data
-  if(request->Has(vtkDemandDrivenPipeline::REQUEST_DATA()))
-    {
-    return this->RequestData(request, inputVector, outputVector);
-    }
-
-  if(request->Has(vtkStreamingDemandDrivenPipeline::REQUEST_UPDATE_EXTENT()))
-    {
-    return this->RequestUpdateExtent(request, inputVector, outputVector);
-    }
-
-  // Create data object output
-  if(request->Has(vtkDemandDrivenPipeline::REQUEST_DATA_OBJECT()))
-    {
-    return this->RequestDataObject(request, inputVector, outputVector);
-    }
-
-  // execute information
-  if(request->Has(vtkDemandDrivenPipeline::REQUEST_INFORMATION()))
-    {
-    return this->RequestInformation(request, inputVector, outputVector);
-    }
-
-  return this->Superclass::ProcessRequest(request, inputVector, outputVector);
-}
-
-//-----------------------------------------------------------------------------
-int vtkAvtFileFormatAlgorithm::RequestDataObject(vtkInformation *request,
-      vtkInformationVector **inputVector, vtkInformationVector *outputVector)
-{
-  return 1;
-}
 
 //-----------------------------------------------------------------------------
 int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
@@ -185,6 +148,25 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
 
   //setup user selection of arrays to load
   this->SetupDataArraySelections();
+
+  //setup time information
+  if( this->AvtFile->FormatGetTime() != avtFileFormat::INVALID_TIME )
+    {
+    vtkstd::vector< double > timesteps;
+    this->AvtFile->FormatGetTimes( timesteps );
+    int numTimeValues = static_cast<int>(timesteps.size());
+    if ( numTimeValues > 0 )
+      {
+      outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
+                   &timesteps[0],numTimeValues);
+      double timeRange[2];
+      timeRange[0] = timesteps[0];
+      timeRange[1] = timesteps[numTimeValues-1];
+      outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
+                   timeRange, 2);
+      }
+    }
+
 
   return 1;
 }
