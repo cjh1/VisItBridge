@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vtkDataObject.h"
 #include "vtkDataSet.h"
+#include "vtkMultiPieceDataSet.h"
 #include "vtkPointSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
@@ -47,6 +48,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkCellData.h"
 #include "vtkFieldData.h"
 #include "vtkPointData.h"
+
+#include "vtkUnstructuredGridRelevantPointsFilter.h"
+#include "vtkCleanPolyData.h"
 
 #include "avtSTSDFileFormat.h"
 #include "avtDomainNesting.h"
@@ -62,7 +66,7 @@ vtkStandardNewMacro(vtkAvtSTSDFileFormatAlgorithm);
 //-----------------------------------------------------------------------------
 vtkAvtSTSDFileFormatAlgorithm::vtkAvtSTSDFileFormatAlgorithm()
 {
-  this->OutputType = VTK_UNSTRUCTURED_GRID;
+  this->OutputType = VTK_MULTIPIECE_DATA_SET;
 }
 
 //-----------------------------------------------------------------------------
@@ -80,41 +84,9 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
     return 0;
     }
 
-  int size = this->MetaData->GetNumMeshes();
-  if ( size > 1 )
-    {
-    vtkErrorMacro("STSD Files can only have a single domain");
-    return 0;
-    }
-
-  //determine if this is an AMR mesh
-  const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
-  switch(meshMetaData.meshType)
-    {
-    case AVT_CSG_MESH:
-      vtkErrorMacro("Currently we do not support AVT_CSG_MESH.");
-      break;
-    case AVT_AMR_MESH:
-      vtkErrorMacro("Unable to create a AMR mesh in a STSD");
-      break;
-    case AVT_RECTILINEAR_MESH:
-      this->OutputType = VTK_RECTILINEAR_GRID;
-      break;
-    case AVT_CURVILINEAR_MESH:
-      this->OutputType = VTK_STRUCTURED_GRID;
-      break;
-    case AVT_UNSTRUCTURED_MESH:
-    case AVT_POINT_MESH:
-      this->OutputType = VTK_UNSTRUCTURED_GRID;
-      break;
-    case AVT_SURFACE_MESH:
-    default:
-      this->OutputType = VTK_POLY_DATA;
-      break;
-    }
-
+  //STSD is a single mutlipiece dataset
   vtkInformation* info = outputVector->GetInformationObject(0);
-  vtkDataSet *output = vtkDataSet::SafeDownCast(
+  vtkMultiPieceDataSet *output = vtkMultiPieceDataSet::SafeDownCast(
     info->Get(vtkDataObject::DATA_OBJECT()));
 
   if ( output && output->GetDataObjectType() == this->OutputType )
@@ -123,25 +95,10 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
     }
   else if ( !output || output->GetDataObjectType() != this->OutputType )
     {
-    switch( this->OutputType )
-      {
-      case VTK_RECTILINEAR_GRID:
-        output = vtkRectilinearGrid::New();
-        break;
-      case VTK_STRUCTURED_GRID:
-        output = vtkStructuredGrid::New();
-        break;
-      case VTK_POLY_DATA:
-        output = vtkPolyData::New();
-        break;
-      case VTK_UNSTRUCTURED_GRID:
-      default:
-        output = vtkUnstructuredGrid::New();
-        break;
-      }
-    this->GetExecutive()->SetOutputData(0, output);
-    output->Delete();
+    output = vtkMultiPieceDataSet::New();
     }
+  this->GetExecutive()->SetOutputData(0, output);
+  output->Delete();
 
   return 1;
   }
@@ -159,7 +116,8 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
   this->AvtFile->ActivateTimestep(); //only 1 time step in ST files
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
-  vtkDataSet *output = vtkDataSet::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkMultiPieceDataSet *output = vtkMultiPieceDataSet::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   if (!output)
     {
@@ -167,19 +125,47 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     return 0;
     }
 
-  const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
-  vtkstd::string name = meshMetaData.name;
-  vtkDataSet *data = this->AvtFile->GetMesh(0, 0, name.c_str() );
+  int size = this->MetaData->GetNumMeshes();
+  output->SetNumberOfPieces( size );
 
-  if (!data)
+  vtkstd::string name;
+  for ( int i=0; i < size; ++i)
     {
-    vtkErrorMacro("Unable to construct a mesh");
-    return 0;
-    }
-  this->AssignProperties( data, name, 0, 0);
-  output->ShallowCopy(data);
-  data->Delete();
+    const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
+    name = meshMetaData.name;
+    vtkDataSet *data = this->AvtFile->GetMesh(0, 0, name.c_str() );
+    if ( data )
+      {
+      this->AssignProperties( data, name, 0, 0);
 
+       //clean the mesh of all points that are not part of a cell
+      if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
+        {
+        vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::SafeDownCast(data);
+        vtkUnstructuredGridRelevantPointsFilter *clean =
+            vtkUnstructuredGridRelevantPointsFilter::New();
+        clean->SetInput( ugrid );
+        clean->Update();
+        output->SetPiece(i,clean->GetOutput());
+        clean->Delete();
+        }
+      else if(meshMetaData.meshType == AVT_SURFACE_MESH)
+        {
+        vtkCleanPolyData *clean = vtkCleanPolyData::New();
+        clean->SetInput( data );
+        clean->ToleranceIsAbsoluteOn();
+        clean->SetAbsoluteTolerance(0.0);
+        clean->ConvertStripsToPolysOff();
+        clean->ConvertPolysToLinesOff();
+        clean->ConvertLinesToPointsOff();
+        clean->Update();
+        output->SetPiece(i,clean->GetOutput());
+        clean->Delete();
+        }
+      data->Delete();
+      output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      }
+    }
   this->CleanupAVTReader();
   return 1;
 }
