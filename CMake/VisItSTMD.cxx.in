@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    VisItSTMD.cxx
+   Module:    @PLUGIN_NAME@.cxx
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -40,6 +40,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtMeshMetaData.h"
 #include "avtVariableCache.h"
 
+#cmakedefine ARG_VISIT_READER_USES_OPTIONS
+
+#ifdef ARG_VISIT_READER_USES_OPTIONS
+#include "@ARG_VISIT_PLUGIN_INFO_HEADER@.h"
+#endif
+
+
 vtkStandardNewMacro(@PLUGIN_NAME@);
 
 //-----------------------------------------------------------------------------
@@ -64,8 +71,14 @@ int @PLUGIN_NAME@::CanReadFile(const char *fname)
     }
 
   try
-    {
+    {    
+#ifdef ARG_VISIT_READER_USES_OPTIONS
+    @ARG_VISIT_PLUGIN_INFO_CLASS@ *options = new @ARG_VISIT_PLUGIN_INFO_CLASS@();
+    this->AvtFile = new @ARG_VISIT_READER_NAME@(fname, options->GetReadOptions() );
+    delete options;
+#else
     this->AvtFile = new @ARG_VISIT_READER_NAME@(fname);
+#endif  
     ret = 1;
     }
   catch(...)
