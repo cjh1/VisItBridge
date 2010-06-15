@@ -35,11 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm.h"
 
-class @PLUGIN_NAME@ : public vtkAvtSTMDFileFormatAlgorithm
+class @PLUGIN_NAME@ : public vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm
 {
 public:
   static @PLUGIN_NAME@ *New();
-  vtkTypeMacro(@PLUGIN_NAME@,vtkAvtSTMDFileFormatAlgorithm );
+  vtkTypeMacro(@PLUGIN_NAME@,vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm );
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
