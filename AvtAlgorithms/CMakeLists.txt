@@ -3,6 +3,8 @@ PROJECT(AVTALGORITHMS)
 SET(SOURCES
 vtkAvtFileFormatAlgorithm.h
 vtkAvtFileFormatAlgorithm.cxx
+vtkAvtMTSDFileFormatAlgorithm.h
+vtkAvtMTSDFileFormatAlgorithm.cxx
 vtkAvtSTSDFileFormatAlgorithm.h
 vtkAvtSTSDFileFormatAlgorithm.cxx
 vtkAvtSTMDFileFormatAlgorithm.h

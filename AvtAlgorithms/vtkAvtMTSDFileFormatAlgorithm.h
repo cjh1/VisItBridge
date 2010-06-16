@@ -1,7 +1,7 @@
 /*=========================================================================
 
    Program: ParaView
-   Module:    vtkAvtSTSDFileFormatAlgorithm.h
+   Module:    vtkAvtMTSDFileFormatAlgorithm.h
 
    Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
    All rights reserved.
@@ -30,9 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
 
-#ifndef _vtkAvtSTSDFileFormatAlgorithm_h
-#define _vtkAvtSTSDFileFormatAlgorithm_h
-#include "vtkAvtFileFormatAlgorithm.h"
+#ifndef _vtkAvtMTSDFileFormatAlgorithm_h
+#define _vtkAvtMTSDFileFormatAlgorithm_h
+#include "vtkAvtSTSDFileFormatAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
 
 //BTX
@@ -40,20 +40,16 @@ class avtDatabaseMetaData;
 class avtVariableCache;
 //ETX
 
-class AVTALGORITHMS_EXPORT vtkAvtSTSDFileFormatAlgorithm : public vtkAvtFileFormatAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtMTSDFileFormatAlgorithm : public vtkAvtSTSDFileFormatAlgorithm
 {
 public:
-  static vtkAvtSTSDFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtSTSDFileFormatAlgorithm,vtkAvtFileFormatAlgorithm);
+  static vtkAvtMTSDFileFormatAlgorithm *New();
+  vtkTypeMacro(vtkAvtMTSDFileFormatAlgorithm,vtkAvtSTSDFileFormatAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
 protected:
-  vtkAvtSTSDFileFormatAlgorithm();
-  ~vtkAvtSTSDFileFormatAlgorithm();
-
-  //needed since we have to change the type we output
-  virtual int RequestDataObject(vtkInformation *, vtkInformationVector **,
-                                vtkInformationVector *);
+  vtkAvtMTSDFileFormatAlgorithm();
+  ~vtkAvtMTSDFileFormatAlgorithm();
 
   // Description:
   // This is called by the superclass.
@@ -63,7 +59,7 @@ protected:
                           vtkInformationVector* outputVector);
 
 private:
-  vtkAvtSTSDFileFormatAlgorithm(const vtkAvtSTSDFileFormatAlgorithm&);
-  void operator = (const vtkAvtSTSDFileFormatAlgorithm&);
+  vtkAvtMTSDFileFormatAlgorithm(const vtkAvtMTSDFileFormatAlgorithm&);
+  void operator = (const vtkAvtMTSDFileFormatAlgorithm&);
 };
 #endif

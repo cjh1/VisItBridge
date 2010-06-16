@@ -58,6 +58,18 @@
        </Documentation>
      </StringVectorProperty>
      
+     <!-- The following two properties magically send time information -->
+     <!-- to the animation panel. -->
+     <DoubleVectorProperty 
+         name="TimestepValues" 
+         repeatable="1"
+         information_only="1">
+       <TimeStepsInformationHelper/>
+     </DoubleVectorProperty>
+     <DoubleVectorProperty name="TimeRange" information_only="1">
+       <TimeRangeInformationHelper/>
+     </DoubleVectorProperty>
+     
      </SourceProxy>
   </ProxyGroup>  
 </ServerManagerConfiguration>

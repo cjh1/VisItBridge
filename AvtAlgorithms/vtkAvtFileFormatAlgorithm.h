@@ -32,12 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
-#include "vtkAlgorithm.h"
+#include "vtkCompositeDataSetAlgorithm.h"
 #include "vtkStdString.h"
 
 class vtkDataArraySelection;
 class vtkDataSet;
 class vtkCallbackCommand;
+class vtkInformation;
 
 //BTX
 class avtFileFormat;
@@ -45,11 +46,11 @@ class avtDatabaseMetaData;
 class avtVariableCache;
 //ETX
 
-class VTK_EXPORT vtkAvtFileFormatAlgorithm : public vtkAlgorithm
+class VTK_EXPORT vtkAvtFileFormatAlgorithm : public vtkCompositeDataSetAlgorithm
 {
 public:
   static vtkAvtFileFormatAlgorithm *New();
-  vtkTypeMacro(vtkAvtFileFormatAlgorithm,vtkAlgorithm);
+  vtkTypeMacro(vtkAvtFileFormatAlgorithm,vtkCompositeDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -77,13 +78,6 @@ public:
   void SetPointArrayStatus(const char* name, int status);
   void SetCellArrayStatus(const char* name, int status);
 
-
-  // Description:
-  // see vtkAlgorithm for details
-  virtual int ProcessRequest(vtkInformation*,
-                             vtkInformationVector**,
-                             vtkInformationVector*);
-
 protected:
   vtkAvtFileFormatAlgorithm();
   ~vtkAvtFileFormatAlgorithm();
@@ -91,14 +85,6 @@ protected:
   //the subclasses need to define these methods
   virtual bool InitializeAVTReader();
   virtual void CleanupAVTReader();
-
-  // Description:
-  // This is called by the superclass.
-  // This is the method you should override.
-  virtual int RequestDataObject(vtkInformation*,
-                                vtkInformationVector**,
-                                vtkInformationVector*);
-
 
   // Description:
   // This is called by the superclass.
@@ -125,6 +111,7 @@ protected:
   virtual int FillOutputPortInformation(int port, vtkInformation* info);
 
   void SetupDataArraySelections();
+  void SetupTemporalInformation(vtkInformation *outInfo);
 
   // Callback registered with the SelectionObserver.
   static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,

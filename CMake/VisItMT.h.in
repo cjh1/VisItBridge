@@ -33,13 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _@PLUGIN_NAME@_h
 #define _@PLUGIN_NAME@_h
 
-#include "vtkAvtSTSDFileFormatAlgorithm.h"
+#include "vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm.h"
 
-class @PLUGIN_NAME@ : public vtkAvtSTSDFileFormatAlgorithm
+class @PLUGIN_NAME@ : public vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm
 {
 public:
   static @PLUGIN_NAME@ *New();
-  vtkTypeMacro(@PLUGIN_NAME@,vtkAvtSTSDFileFormatAlgorithm );
+  vtkTypeMacro(@PLUGIN_NAME@,vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm );
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
