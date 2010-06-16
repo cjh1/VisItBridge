@@ -1,0 +1,15 @@
+PROJECT(VisItPixieReader)
+
+SET(SOURCES
+avtPixieFileFormat.h
+avtPixieFileFormat.C
+)
+
+ADD_VISIT_READER(VisItPixieReader "1.0"  
+  VISIT_READER_TYPE "MTSD"
+  VISIT_READER_NAME "avtPixieFileFormat"  
+  VISIT_READER_FILE_PATTERN "h5"
+  SERVER_SOURCES ${SOURCES}  
+  )
+
+TARGET_LINK_LIBRARIES(VisItPixieReader ${PARAVIEW_HDF5_LIBRARIES} AVTAlgorithms)
