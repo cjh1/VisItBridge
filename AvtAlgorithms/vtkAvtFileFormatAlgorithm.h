@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class vtkDataArraySelection;
 class vtkDataSet;
 class vtkCallbackCommand;
+class vtkInformation;
 
 //BTX
 class avtFileFormat;
@@ -110,6 +111,7 @@ protected:
   virtual int FillOutputPortInformation(int port, vtkInformation* info);
 
   void SetupDataArraySelections();
+  void SetupTemporalInformation(vtkInformation *outInfo);
 
   // Callback registered with the SelectionObserver.
   static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,

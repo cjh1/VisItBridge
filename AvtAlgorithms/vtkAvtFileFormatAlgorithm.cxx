@@ -141,68 +141,23 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
     }
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
-  // Claim we can produce as many pieces as needed
-  outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(), -1);
+  if ( this->MetaData->GetNumMeshes() > 0 )
+    {
+    int maxPieces = (this->MetaData->GetMeshes(0).numBlocks > 1)?
+      -1:1;
+    //only MD classes have blocks inside a mesh, and therefore
+    //we can use that to determine if we support reading on each processor
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(),
+      maxPieces);
+    }
 
   //Set up ghost levels
 
   //setup user selection of arrays to load
   this->SetupDataArraySelections();
 
-  //setup time information
-  int numTimeValues;
-  double timeRange[2];
-  vtkstd::vector< double > timesteps;
-  vtkstd::vector< int > cycles;
-
-  this->AvtFile->FormatGetTimes( timesteps );
-  this->AvtFile->FormatGetCycles( cycles );
-
-  bool hasTime = timesteps.size() > 0;
-  bool hasCycles = cycles.size() > 0;
-  bool hasTimeAndCycles = hasTime && hasCycles;
-
-  if (hasTimeAndCycles)
-    {
-    if ( timesteps.size()==cycles.size() )
-      {
-      numTimeValues = static_cast<int>(timesteps.size());
-      outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
-        &timesteps[0],numTimeValues);
-      timeRange[0] = timesteps[0];
-      timeRange[1] = timesteps[numTimeValues-1];
-      outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
-        timeRange, 2);
-      }
-    }
-  else if( hasTime )
-    {
-    numTimeValues = static_cast<int>(timesteps.size());
-
-    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
-      &timesteps[0],numTimeValues);
-    timeRange[0] = timesteps[0];
-    timeRange[1] = timesteps[numTimeValues-1];
-    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
-      timeRange, 2);
-    }
-  else if( hasCycles )
-    {
-    //convert the cycles over to time steps now
-    for ( unsigned int i=0; i < cycles.size(); ++i)
-      {
-      timesteps.push_back( static_cast<double>(cycles[i]) );
-      }
-
-    numTimeValues = static_cast<int>(timesteps.size());
-
-    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
-      &timesteps[0],numTimeValues);
-    timeRange[0] = timesteps[0];
-    timeRange[1] = timesteps[numTimeValues-1];
-    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
-      timeRange, 2);
-    }
+  //setup the timestep and cylce info
+  this->SetupTemporalInformation(outInfo);
 
 
   return 1;
@@ -355,6 +310,68 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
     }
 }
 
+
+
+
+
+//-----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::SetupTemporalInformation(
+  vtkInformation *outInfo)
+{
+
+  int numTimeValues;
+  double timeRange[2];
+  vtkstd::vector< double > timesteps;
+  vtkstd::vector< int > cycles;
+
+  this->AvtFile->FormatGetTimes( timesteps );
+  this->AvtFile->FormatGetCycles( cycles );
+
+  bool hasTime = timesteps.size() > 0;
+  bool hasCycles = cycles.size() > 0;
+  bool hasTimeAndCycles = hasTime && hasCycles;
+
+  //need to figure out the use case of when cycles and timesteps don't match
+  if (hasTimeAndCycles && timesteps.size()==cycles.size() )
+    {
+    //presume that timesteps and cycles are just duplicates of each other
+    numTimeValues = static_cast<int>(timesteps.size());
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
+      &timesteps[0],numTimeValues);
+    timeRange[0] = timesteps[0];
+    timeRange[1] = timesteps[numTimeValues-1];
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
+      timeRange, 2);
+    }
+  else if( hasTime )
+    {
+    numTimeValues = static_cast<int>(timesteps.size());
+
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
+      &timesteps[0],numTimeValues);
+    timeRange[0] = timesteps[0];
+    timeRange[1] = timesteps[numTimeValues-1];
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
+      timeRange, 2);
+    }
+  else if( hasCycles )
+    {
+    //convert the cycles over to time steps now
+    for ( unsigned int i=0; i < cycles.size(); ++i)
+      {
+      timesteps.push_back( static_cast<double>(cycles[i]) );
+      }
+
+    numTimeValues = static_cast<int>(timesteps.size());
+
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
+      &timesteps[0],numTimeValues);
+    timeRange[0] = timesteps[0];
+    timeRange[1] = timesteps[numTimeValues-1];
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
+      timeRange, 2);
+    }
+}
 
 //-----------------------------------------------------------------------------
 void vtkAvtFileFormatAlgorithm::SetupDataArraySelections( )
