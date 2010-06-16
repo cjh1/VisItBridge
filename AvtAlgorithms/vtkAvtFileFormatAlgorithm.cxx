@@ -150,21 +150,58 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
   this->SetupDataArraySelections();
 
   //setup time information
-  if( this->AvtFile->FormatGetTime() != avtFileFormat::INVALID_TIME )
+  int numTimeValues;
+  double timeRange[2];
+  vtkstd::vector< double > timesteps;
+  vtkstd::vector< int > cycles;
+
+  this->AvtFile->FormatGetTimes( timesteps );
+  this->AvtFile->FormatGetCycles( cycles );
+
+  bool hasTime = timesteps.size() > 0;
+  bool hasCycles = cycles.size() > 0;
+  bool hasTimeAndCycles = hasTime && hasCycles;
+
+  if (hasTimeAndCycles)
     {
-    vtkstd::vector< double > timesteps;
-    this->AvtFile->FormatGetTimes( timesteps );
-    int numTimeValues = static_cast<int>(timesteps.size());
-    if ( numTimeValues > 0 )
+    if ( timesteps.size()==cycles.size() )
       {
+      numTimeValues = static_cast<int>(timesteps.size());
       outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
-                   &timesteps[0],numTimeValues);
-      double timeRange[2];
+        &timesteps[0],numTimeValues);
       timeRange[0] = timesteps[0];
       timeRange[1] = timesteps[numTimeValues-1];
       outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
-                   timeRange, 2);
+        timeRange, 2);
       }
+    }
+  else if( hasTime )
+    {
+    numTimeValues = static_cast<int>(timesteps.size());
+
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
+      &timesteps[0],numTimeValues);
+    timeRange[0] = timesteps[0];
+    timeRange[1] = timesteps[numTimeValues-1];
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
+      timeRange, 2);
+    }
+  else if( hasCycles )
+    {
+    //convert the cycles over to time steps now
+    for ( unsigned int i=0; i < cycles.size(); ++i)
+      {
+      timesteps.push_back( static_cast<double>(cycles[i]) );
+      }
+
+    numTimeValues = static_cast<int>(timesteps.size());
+
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_STEPS(),
+      &timesteps[0],numTimeValues);
+    timeRange[0] = timesteps[0];
+    timeRange[1] = timesteps[numTimeValues-1];
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::TIME_RANGE(),
+      timeRange, 2);
     }
 
 
