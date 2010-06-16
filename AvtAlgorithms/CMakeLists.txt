@@ -5,6 +5,8 @@ vtkAvtFileFormatAlgorithm.h
 vtkAvtFileFormatAlgorithm.cxx
 vtkAvtMTSDFileFormatAlgorithm.h
 vtkAvtMTSDFileFormatAlgorithm.cxx
+vtkAvtMTMDFileFormatAlgorithm.h
+vtkAvtMTMDFileFormatAlgorithm.cxx
 vtkAvtSTSDFileFormatAlgorithm.h
 vtkAvtSTSDFileFormatAlgorithm.cxx
 vtkAvtSTMDFileFormatAlgorithm.h
