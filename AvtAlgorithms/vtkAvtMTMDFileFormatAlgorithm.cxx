@@ -52,7 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkUnstructuredGridRelevantPointsFilter.h"
 #include "vtkCleanPolyData.h"
 
-#include "avtMTSDFileFormat.h"
+#include "avtMTMDFileFormat.h"
 #include "avtDomainNesting.h"
 #include "avtDatabaseMetaData.h"
 #include "avtVariableCache.h"
@@ -113,7 +113,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
   //we have to make sure the visit reader populates its cache
   //with the proper timestep
-  avtMTSDFileFormat *mtsdFF = static_cast<avtMTSDFileFormat*>(this->AvtFile);
+  avtMTMDFileFormat *mtsdFF = static_cast<avtMTMDFileFormat*>(this->AvtFile);
   mtsdFF->ActivateTimestep( TimeStep );
 
 

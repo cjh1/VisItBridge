@@ -179,7 +179,7 @@ set(VISIT_COMMON_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/common/common/plugin
     ${CMAKE_CURRENT_SOURCE_DIR}/common/common/state
     ${CMAKE_CURRENT_SOURCE_DIR}/common/common/utility
-    )
+  )
     
 #watch out, you need to make sure common/parser is always in front of
 # python2.X includes
@@ -202,8 +202,9 @@ INCLUDE_DIRECTORIES(
   ${PARAVIEW_GUI_INCLUDE_DIRS}   
   ${VTK_INCLUDE_DIRS_SOURCE_TREE}
   ) 
-  
+ 
 add_subdirectory(common)
+add_subdirectory(third_party_builtin)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(AvtAlgorithms)
