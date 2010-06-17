@@ -113,8 +113,17 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
   //we have to make sure the visit reader populates its cache
   //with the proper timestep
-  avtMTMDFileFormat *mtsdFF = static_cast<avtMTMDFileFormat*>(this->AvtFile);
-  mtsdFF->ActivateTimestep( TimeStep );
+  try
+    {
+    avtMTMDFileFormat *temp = static_cast<avtMTMDFileFormat*>(this->AvtFile);
+    temp->ActivateTimestep( TimeStep );
+    }
+  catch(...)
+    {
+    vtkErrorMacro("Unable to cast the file to MTMDFileFormat");
+    return 0;
+    }
+
 
 
   this->UpdatePiece =
@@ -167,7 +176,6 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
       output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
       }
     }
-
   this->CleanupAVTReader();
   return 1;
 }

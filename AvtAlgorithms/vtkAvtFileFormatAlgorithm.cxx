@@ -220,7 +220,22 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       continue;
       }
 
-    vtkDataArray *scalar = this->AvtFile->GetVar(timestep,domain,name.c_str());
+    //some readers will throw exceptions when they can't find
+    //the file containing properties, so we have to ignore that property
+    vtkDataArray *scalar;
+    try
+      {
+      scalar = this->AvtFile->GetVar(timestep,domain,name.c_str());
+      }
+    catch(...)
+      {
+      if ( scalar )
+        {
+        scalar->Delete();
+        }
+      scalar = NULL;
+      }
+
     if ( !scalar )
       {
       //it seems that we had a bad array for this domain
@@ -280,7 +295,20 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       continue;
       }
 
-    vtkDataArray *vector = this->AvtFile->GetVectorVar(timestep,domain,name.c_str());
+    vtkDataArray *vector;
+    try
+      {
+      vector = this->AvtFile->GetVectorVar(timestep,domain,name.c_str());
+      }
+    catch(...)
+      {
+      if ( vector )
+        {
+        vector->Delete();
+        }
+      vector = NULL;
+      }
+
     if ( !vector )
       {
       //it seems that we had a bad array for this domain
@@ -324,8 +352,16 @@ void vtkAvtFileFormatAlgorithm::SetupTemporalInformation(
   vtkstd::vector< double > timesteps;
   vtkstd::vector< int > cycles;
 
-  this->AvtFile->FormatGetTimes( timesteps );
-  this->AvtFile->FormatGetCycles( cycles );
+  try
+    {
+    this->AvtFile->FormatGetTimes( timesteps );
+    this->AvtFile->FormatGetCycles( cycles );
+    }
+  catch(...)
+    {
+    //unable to get time or cycles
+    return;
+    }
 
   bool hasTime = timesteps.size() > 0;
   bool hasCycles = cycles.size() > 0;
