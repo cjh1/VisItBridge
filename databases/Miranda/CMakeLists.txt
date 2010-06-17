@@ -1,0 +1,27 @@
+PROJECT(VisItMirandaReader)
+
+SET(SOURCES
+avtMirandaFileFormat.C
+avtMirandaFileFormat.h
+avtMirandaOptions.C
+avtMirandaOptions.h
+MirandaPluginInfo.h
+MirandaPluginInfo.C
+MirandaEnginePluginInfo.C
+MirandaMDServerPluginInfo.C
+MirandaCommonPluginInfo.C
+)
+
+INCLUDE_DIRECTORIES(
+    ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0
+    )
+
+ADD_VISIT_READER(VisItMiranda "1.0" 
+  VISIT_READER_TYPE "MTMD"
+  VISIT_READER_NAME "avtMirandaFileFormat"   
+  VISIT_READER_FILE_PATTERN "mir raw"
+  VISIT_READER_USES_OPTIONS ON
+  SERVER_SOURCES ${SOURCES}
+  )
+
+TARGET_LINK_LIBRARIES(VisItMiranda AVTAlgorithms)

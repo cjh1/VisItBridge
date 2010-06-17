@@ -1,4 +1,4 @@
-PROJECT(VisItProteinDataBank)
+PROJECT(VisItProteinDataBankReader)
 
 SET(SOURCES
 avtProteinDataBankFileFormat.C
@@ -12,7 +12,7 @@ ProteinDataBankMDServerPluginInfo.C
 ProteinDataBankCommonPluginInfo.C
 )
 
-ADD_VISIT_READER(VisItProteinDataBank "1.0" 
+ADD_VISIT_READER(VisItProteinDataBankReader "1.0" 
   VISIT_READER_TYPE "STSD"
   VISIT_READER_NAME "avtProteinDataBankFileFormat"   
   VISIT_READER_FILE_PATTERN "ent pdb"
@@ -20,5 +20,5 @@ ADD_VISIT_READER(VisItProteinDataBank "1.0"
   SERVER_SOURCES ${SOURCES}
   )
 
-TARGET_LINK_LIBRARIES(VisItProteinDataBank AVTAlgorithms)
+TARGET_LINK_LIBRARIES(VisItProteinDataBankReader AVTAlgorithms)
 

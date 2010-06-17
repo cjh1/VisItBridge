@@ -48,7 +48,6 @@ class vtkMultiPieceDataSet;
 
 
 //BTX
-class vtkAvtSTMDFileFormatAlgorithmInternal;
 class avtSTMDFileFormat;
 class avtDatabaseMetaData;
 class avtVariableCache;
@@ -76,19 +75,19 @@ protected:
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
 
-//BTX
+  //BTX
   int FillAMR( vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData &meshMetaData,
-    const int &domain);
-  void FillBlock( vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData );
+    const int &timestep, const int &domain);
+  void FillBlock( vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData, const int &timestep);
   bool ValidAMR( const avtMeshMetaData &meshMetaData );
   void GetDomainRange(const avtMeshMetaData &meshMetaData, int domain[2]);
   //ETX
 
   bool IsEvenlySpacedDataArray(vtkDataArray *data);
 
-  //BTX
-  vtkAvtSTMDFileFormatAlgorithmInternal *Internal;
-  //ETX
+
+  unsigned int UpdatePiece;
+  unsigned int UpdateNumPieces;
 
 private:
   vtkAvtSTMDFileFormatAlgorithm(const vtkAvtSTMDFileFormatAlgorithm&);

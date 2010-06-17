@@ -47,5 +47,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # define AVTALGORITHMS_EXPORT
 #endif
 
+//Call a VisitMethod that returns a vtkObject
+//if the call throws an exception we delete the object
+//and set it to NULL
+#define CATCH_VISIT_EXCEPTIONS( vtkObj,function) \
+try \
+  { \
+  vtkObj = function; \
+  } \
+catch(...) \
+  { \
+  if ( vtkObj ) \
+    { \
+    vtkObj->Delete(); \
+    } \
+  vtkObj = NULL; \
+  }
+
 #endif //
 

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _vtkVisItReader_h
 #define _vtkVisItReader_h
 #include "vtkCompositeDataSetAlgorithm.h"
+#include "vtkAvtAlgorithmsExport.h"
 #include "vtkStdString.h"
 
 class vtkDataArraySelection;
@@ -46,7 +47,7 @@ class avtDatabaseMetaData;
 class avtVariableCache;
 //ETX
 
-class VTK_EXPORT vtkAvtFileFormatAlgorithm : public vtkCompositeDataSetAlgorithm
+class AVTALGORITHMS_EXPORT vtkAvtFileFormatAlgorithm : public vtkCompositeDataSetAlgorithm
 {
 public:
   static vtkAvtFileFormatAlgorithm *New();

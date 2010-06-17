@@ -67,49 +67,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 vtkStandardNewMacro(vtkAvtSTMDFileFormatAlgorithm);
 
 //-----------------------------------------------------------------------------
-class vtkAvtSTMDFileFormatAlgorithmInternal
-{
-public:
-  //basic POD class
-  vtkAvtSTMDFileFormatAlgorithmInternal();
-  ~vtkAvtSTMDFileFormatAlgorithmInternal();
-
-  double TimeRange[2];
-  unsigned int UpdatePiece;
-  unsigned int UpdateNumPieces;
-};
-
-//-----------------------------------------------------------------------------
-vtkAvtSTMDFileFormatAlgorithmInternal::vtkAvtSTMDFileFormatAlgorithmInternal()
-{
-  this->TimeRange[0] = 0.0;
-  this->TimeRange[1] = 0.0;
-
-  this->UpdatePiece = 0;
-  this->UpdateNumPieces = 0;
-}
-//-----------------------------------------------------------------------------
-vtkAvtSTMDFileFormatAlgorithmInternal::~vtkAvtSTMDFileFormatAlgorithmInternal()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
 {
-  //set up internal class
-  this->Internal = new vtkAvtSTMDFileFormatAlgorithmInternal;
-
+  this->UpdatePiece = 0;
+  this->UpdateNumPieces = 0;
   this->OutputType = VTK_MULTIBLOCK_DATA_SET;
 }
 
 //-----------------------------------------------------------------------------
 vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
 {
-  if ( this->Internal )
-    {
-    delete this->Internal;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -175,9 +142,9 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
-  this->Internal->UpdatePiece =
+  this->UpdatePiece =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER());
-  this->Internal->UpdateNumPieces =
+  this->UpdateNumPieces =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES());
 
   if ( this->OutputType == VTK_HIERARCHICAL_BOX_DATA_SET )
@@ -185,7 +152,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-    this->FillAMR( output, meshMetaData, 0 );
+    this->FillAMR( output, meshMetaData, 0, 0 );
 
     return 1;
     }
@@ -217,7 +184,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         case AVT_SURFACE_MESH:
         default:
           tempData = vtkMultiPieceDataSet::New();
-          this->FillBlock( tempData, meshMetaData );
+          this->FillBlock( tempData, meshMetaData, 0 );
           output->SetBlock(i,tempData);
           tempData->Delete();
           tempData = NULL;
@@ -234,7 +201,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 //-----------------------------------------------------------------------------
 int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
   vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData &meshMetaData,
-  const int &domain)
+  const int &timestep, const int &domain)
 {
   //we first need to determine if this AMR can be safely converted to a
   //ParaView AMR. What this means is that every dataset needs to have regular spacing
@@ -307,10 +274,16 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
       if ( meshIndex >= domainRange[0] &&
         meshIndex < domainRange[1] )
         {
-          //get the rgrid from the VisIt reader
+        //get the rgrid from the VisIt reader
         //so we have the origin/spacing/dims
-        rgrid = vtkRectilinearGrid::SafeDownCast(
-          this->AvtFile->GetMesh(0, meshIndex, name.c_str()));
+        CATCH_VISIT_EXCEPTIONS(rgrid,
+          vtkRectilinearGrid::SafeDownCast(
+          this->AvtFile->GetMesh(timestep, meshIndex, name.c_str())));
+        if ( !rgrid )
+          {
+          //downcast failed or an exception was thrown
+          continue;
+          }
 
         double origin[3];
         origin[0] = rgrid->GetXCoordinates()->GetTuple1(0);
@@ -347,7 +320,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
         grid->SetSpacing( spacing );
         grid->SetDimensions( dims );
 
-        this->AssignProperties( grid, name, 0, meshIndex);
+        this->AssignProperties( grid, name, timestep, meshIndex);
 
         //now create the AMR Box
         vtkAMRBox box(extents);
@@ -365,7 +338,8 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
 
 //-----------------------------------------------------------------------------
 void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
-  vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData )
+  vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData,
+  const int &timestep )
 {
   vtkstd::string name = meshMetaData.name;
 
@@ -377,12 +351,12 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
 
   for ( int i=domainRange[0]; i < domainRange[1]; ++i )
     {
-    vtkDataSet *data = this->AvtFile->GetMesh(0, i, name.c_str() );
+    vtkDataSet *data = this->AvtFile->GetMesh(timestep, i, name.c_str() );
     if ( data )
       {
       int points = data->GetNumberOfPoints();
       //place all the scalar&vector properties onto the data
-      this->AssignProperties(data,name,0,i);
+      this->AssignProperties(data,name,timestep,i);
 
       //clean the mesh of all points that are not part of a cell
       if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
@@ -491,12 +465,12 @@ void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData &meshMe
   domain[1] = numBlock;
 
   //1 == load the whole data
-  if ( this->Internal->UpdateNumPieces > 1 )
+  if ( this->UpdateNumPieces > 1 )
     {
     //determine which domains in this mesh this processor is reponsible for
-    float percent = (1.0 / this->Internal->UpdateNumPieces) * numBlock;
-    domain[0] = percent * this->Internal->UpdatePiece;
-    domain[1] = (percent * this->Internal->UpdatePiece) + percent;
+    float percent = (1.0 / this->UpdateNumPieces) * numBlock;
+    domain[0] = percent * this->UpdatePiece;
+    domain[1] = (percent * this->UpdatePiece) + percent;
     }
 }
 
