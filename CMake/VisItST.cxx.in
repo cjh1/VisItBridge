@@ -90,7 +90,7 @@ int @PLUGIN_NAME@::CanReadFile(const char *fname)
 }
 
 //-----------------------------------------------------------------------------
-bool @PLUGIN_NAME@::InitializeAVTReader( )
+bool @PLUGIN_NAME@::InitializeAVTReader(  const int&  )
 {
  if (!this->MetaData)
     {

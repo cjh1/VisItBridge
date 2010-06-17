@@ -90,7 +90,7 @@ int @PLUGIN_NAME@::CanReadFile(const char *fname)
 }
 
 //-----------------------------------------------------------------------------
-bool @PLUGIN_NAME@::InitializeAVTReader( )
+bool @PLUGIN_NAME@::InitializeAVTReader(  const int &timestep )
 {
  if (!this->MetaData)
     {
@@ -113,10 +113,10 @@ bool @PLUGIN_NAME@::InitializeAVTReader( )
         //we have to make sure the visit reader populates its cache
         //before activating a time step
         file->SetCache( this->Cache );
-        file->ActivateTimestep(0);
+        file->ActivateTimestep(timestep);
         
         //only fill database after choosing timestep to activate
-        file->SetDatabaseMetaData( this->MetaData, 0);
+        file->SetDatabaseMetaData( this->MetaData, timestep);
         }
       }
     else
