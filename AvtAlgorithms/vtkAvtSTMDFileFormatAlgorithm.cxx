@@ -274,10 +274,16 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
       if ( meshIndex >= domainRange[0] &&
         meshIndex < domainRange[1] )
         {
-          //get the rgrid from the VisIt reader
+        //get the rgrid from the VisIt reader
         //so we have the origin/spacing/dims
-        rgrid = vtkRectilinearGrid::SafeDownCast(
-          this->AvtFile->GetMesh(timestep, meshIndex, name.c_str()));
+        CATCH_VISIT_EXCEPTIONS(rgrid,
+          vtkRectilinearGrid::SafeDownCast(
+          this->AvtFile->GetMesh(timestep, meshIndex, name.c_str())));
+        if ( !rgrid )
+          {
+          //downcast failed or an exception was thrown
+          continue;
+          }
 
         double origin[3];
         origin[0] = rgrid->GetXCoordinates()->GetTuple1(0);

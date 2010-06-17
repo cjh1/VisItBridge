@@ -222,20 +222,9 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
 
     //some readers will throw exceptions when they can't find
     //the file containing properties, so we have to ignore that property
-    vtkDataArray *scalar;
-    try
-      {
-      scalar = this->AvtFile->GetVar(timestep,domain,name.c_str());
-      }
-    catch(...)
-      {
-      if ( scalar )
-        {
-        scalar->Delete();
-        }
-      scalar = NULL;
-      }
-
+    vtkDataArray *scalar = NULL;
+    CATCH_VISIT_EXCEPTIONS(scalar,
+      this->AvtFile->GetVar(timestep,domain,name.c_str()));
     if ( !scalar )
       {
       //it seems that we had a bad array for this domain
@@ -295,20 +284,9 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       continue;
       }
 
-    vtkDataArray *vector;
-    try
-      {
-      vector = this->AvtFile->GetVectorVar(timestep,domain,name.c_str());
-      }
-    catch(...)
-      {
-      if ( vector )
-        {
-        vector->Delete();
-        }
-      vector = NULL;
-      }
-
+    vtkDataArray *vector = NULL;
+    CATCH_VISIT_EXCEPTIONS(vector,
+      this->AvtFile->GetVectorVar(timestep,domain,name.c_str()));
     if ( !vector )
       {
       //it seems that we had a bad array for this domain

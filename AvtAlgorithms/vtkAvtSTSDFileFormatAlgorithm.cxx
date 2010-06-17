@@ -129,7 +129,10 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
     name = meshMetaData.name;
-    vtkDataSet *data = this->AvtFile->GetMesh(0, 0, name.c_str() );
+    vtkDataSet *data=NULL;
+    CATCH_VISIT_EXCEPTIONS(data,
+      this->AvtFile->GetMesh(0, 0, name.c_str()) );
+
     if ( data )
       {
       this->AssignProperties( data, name, 0, 0);
