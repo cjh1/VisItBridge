@@ -78,10 +78,6 @@ vtkAvtMTMDFileFormatAlgorithm::~vtkAvtMTMDFileFormatAlgorithm()
 int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         vtkInformationVector **inputVector, vtkInformationVector *outputVector)
   {
-  if (!this->InitializeAVTReader())
-    {
-    return 0;
-    }
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
   int tsLength =
@@ -89,8 +85,8 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
   double* steps =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
 
-  double TimeStep = 0;
-
+  double TimeStepValue = 0;
+  unsigned int TimeIndex = 0;
   // Check if a particular time was requested by the pipeline.
   // This overrides the ivar.
   if(outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS()) && tsLength>0)
@@ -102,29 +98,17 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
     // find the first time value larger than requested time value
     // this logic could be improved
-    int cnt = 0;
-    while (cnt < tsLength-1 && steps[cnt] < requestedTimeSteps[0])
+    while (TimeIndex < tsLength-1 && steps[TimeIndex] < requestedTimeSteps[0])
       {
-      cnt++;
+      TimeIndex++;
       }
-    TimeStep = steps[cnt];
+    TimeStepValue = steps[TimeIndex];
     }
 
-
-  //we have to make sure the visit reader populates its cache
-  //with the proper timestep
-  try
+  if (!this->InitializeAVTReader( TimeIndex ))
     {
-    avtMTMDFileFormat *temp = static_cast<avtMTMDFileFormat*>(this->AvtFile);
-    temp->ActivateTimestep( TimeStep );
-    }
-  catch(...)
-    {
-    vtkErrorMacro("Unable to cast the file to MTMDFileFormat");
     return 0;
     }
-
-
 
   this->UpdatePiece =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER());
@@ -136,7 +120,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-    this->FillAMR( output, meshMetaData, TimeStep, 0);
+    this->FillAMR( output, meshMetaData, TimeIndex, 0);
     return 1;
     }
 
@@ -167,7 +151,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         case AVT_SURFACE_MESH:
         default:
           tempData = vtkMultiPieceDataSet::New();
-          this->FillBlock( tempData, meshMetaData, TimeStep );
+          this->FillBlock( tempData, meshMetaData, TimeIndex );
           output->SetBlock(i,tempData);
           tempData->Delete();
           tempData = NULL;

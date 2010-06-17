@@ -83,8 +83,11 @@ protected:
   vtkAvtFileFormatAlgorithm();
   ~vtkAvtFileFormatAlgorithm();
 
-  //the subclasses need to define these methods
-  virtual bool InitializeAVTReader();
+  //helper method for none time aware readers
+  bool InitializeAVTReader(){ return InitializeAVTReader(0);};
+
+  //the visit reader wrapping will override the intialize method
+  virtual bool InitializeAVTReader( const int &timestep );
   virtual void CleanupAVTReader();
 
   // Description:

@@ -49,7 +49,7 @@ protected:
   @PLUGIN_NAME@();
   ~@PLUGIN_NAME@();
 
-  virtual bool InitializeAVTReader();
+  virtual bool InitializeAVTReader( const int& timestep );
   char *FileName;
 
 private:

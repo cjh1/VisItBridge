@@ -78,10 +78,6 @@ vtkAvtMTSDFileFormatAlgorithm::~vtkAvtMTSDFileFormatAlgorithm()
 int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         vtkInformationVector **inputVector, vtkInformationVector *outputVector)
   {
-  if (!this->InitializeAVTReader())
-    {
-    return 0;
-    }
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
   int tsLength =
@@ -89,8 +85,8 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
   double* steps =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
 
-  double TimeStep = 0;
-
+  double TimeStepValue = 0;
+  unsigned int TimeIndex = 0;
   // Check if a particular time was requested by the pipeline.
   // This overrides the ivar.
   if(outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS()) && tsLength>0)
@@ -102,20 +98,17 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
     // find the first time value larger than requested time value
     // this logic could be improved
-    int cnt = 0;
-    while (cnt < tsLength-1 && steps[cnt] < requestedTimeSteps[0])
+    while (TimeIndex < tsLength-1 && steps[TimeIndex] < requestedTimeSteps[0])
       {
-      cnt++;
+      TimeIndex++;
       }
-    TimeStep = steps[cnt];
+    TimeStepValue = steps[TimeIndex];
     }
 
-
-  //we have to make sure the visit reader populates its cache
-  //with the proper timestep
-  avtMTSDFileFormat *mtsdFF = static_cast<avtMTSDFileFormat*>(this->AvtFile);
-  mtsdFF->ActivateTimestep( TimeStep );
-
+  if (!this->InitializeAVTReader( TimeIndex ))
+    {
+    return 0;
+    }
 
   vtkMultiPieceDataSet *output = vtkMultiPieceDataSet::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
@@ -134,10 +127,10 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
     name = meshMetaData.name;
-    vtkDataSet *data = this->AvtFile->GetMesh(TimeStep, 0, name.c_str() );
+    vtkDataSet *data = this->AvtFile->GetMesh(TimeIndex, 0, name.c_str() );
     if ( data )
       {
-      this->AssignProperties( data, name, TimeStep, 0);
+      this->AssignProperties( data, name, TimeIndex, 0);
 
        //clean the mesh of all points that are not part of a cell
       if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)

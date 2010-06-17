@@ -102,7 +102,7 @@ vtkAvtFileFormatAlgorithm::~vtkAvtFileFormatAlgorithm()
 }
 
 //-----------------------------------------------------------------------------
-bool vtkAvtFileFormatAlgorithm::InitializeAVTReader()
+bool vtkAvtFileFormatAlgorithm::InitializeAVTReader( const int &timestep )
 {
   return false;
 }
