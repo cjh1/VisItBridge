@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vtkDataObject.h"
 #include "vtkDataSet.h"
-#include "vtkMultiPieceDataSet.h"
+#include "vtkMultiBlockDataSet.h"
 #include "vtkPointSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
@@ -66,7 +66,7 @@ vtkStandardNewMacro(vtkAvtSTSDFileFormatAlgorithm);
 //-----------------------------------------------------------------------------
 vtkAvtSTSDFileFormatAlgorithm::vtkAvtSTSDFileFormatAlgorithm()
 {
-  this->OutputType = VTK_MULTIPIECE_DATA_SET;
+  this->OutputType = VTK_MULTIBLOCK_DATA_SET;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,9 +84,8 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
     return 0;
     }
 
-  //STSD is a single mutlipiece dataset
   vtkInformation* info = outputVector->GetInformationObject(0);
-  vtkMultiPieceDataSet *output = vtkMultiPieceDataSet::SafeDownCast(
+  vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
     info->Get(vtkDataObject::DATA_OBJECT()));
 
   if ( output && output->GetDataObjectType() == this->OutputType )
@@ -95,7 +94,7 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
     }
   else if ( !output || output->GetDataObjectType() != this->OutputType )
     {
-    output = vtkMultiPieceDataSet::New();
+    output = vtkMultiBlockDataSet::New();
     }
   this->GetExecutive()->SetOutputData(0, output);
   output->Delete();
@@ -113,7 +112,7 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     }
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
-  vtkMultiPieceDataSet *output = vtkMultiPieceDataSet::SafeDownCast(
+  vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));
   if (!output)
     {
@@ -122,7 +121,7 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     }
 
   int size = this->MetaData->GetNumMeshes();
-  output->SetNumberOfPieces( size );
+  output->SetNumberOfBlocks( size );
 
   vtkstd::string name;
   for ( int i=0; i < size; ++i)
@@ -145,7 +144,7 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
             vtkUnstructuredGridRelevantPointsFilter::New();
         clean->SetInput( ugrid );
         clean->Update();
-        output->SetPiece(i,clean->GetOutput());
+        output->SetBlock(i,clean->GetOutput());
         clean->Delete();
         }
       else if(meshMetaData.meshType == AVT_SURFACE_MESH)
@@ -158,12 +157,12 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         clean->ConvertPolysToLinesOff();
         clean->ConvertLinesToPointsOff();
         clean->Update();
-        output->SetPiece(i,clean->GetOutput());
+        output->SetBlock(i,clean->GetOutput());
         clean->Delete();
         }
       else
         {
-        output->SetPiece(i,data);
+        output->SetBlock(i,data);
         }
       data->Delete();
       output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
