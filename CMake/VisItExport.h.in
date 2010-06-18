@@ -1,13 +1,13 @@
 /*=========================================================================
 
-   Program: ParaView
-   Module:    @PLUGIN_NAME@.h
+   Program:   ParaView
+   Module:    $RCSfile: @PLUGIN_NAME@Export.h.in,v $
 
-   Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
+   Copyright (c) 2005-2008 Sandia Corporation, Kitware Inc.
    All rights reserved.
 
    ParaView is a free software; you can redistribute it and/or modify it
-   under the terms of the ParaView license version 1.2.
+   under the terms of the ParaView license version 1.2. 
 
    See License_v1.2.txt for the full ParaView license.
    A copy of this license can be obtained by contacting
@@ -28,32 +28,24 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-========================================================================*/
+=========================================================================*/
 
-#ifndef _@PLUGIN_NAME@_h
-#define _@PLUGIN_NAME@_h
-#include "@PLUGIN_NAME@Export.h"
-#include "vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm.h"
+#ifndef _@PLUGIN_NAME@Export_h
+#define _@PLUGIN_NAME@Export_h
 
-class @PLUGIN_NAME@_EXPORT @PLUGIN_NAME@ : public vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm
-{
-public:
-  static @PLUGIN_NAME@ *New();
-  vtkTypeMacro(@PLUGIN_NAME@,vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm );
-  void PrintSelf(ostream& os, vtkIndent indent);
-  vtkSetStringMacro(FileName);
-  vtkGetStringMacro(FileName);
-  int CanReadFile(const char* fname);
-
-protected:
-  @PLUGIN_NAME@();
-  ~@PLUGIN_NAME@();
-
-  virtual bool InitializeAVTReader( const int& timestep );
-  char *FileName;
-
-private:
-  @PLUGIN_NAME@(const @PLUGIN_NAME@&);
-  void operator = (const @PLUGIN_NAME@&);
-};
+#ifndef BUILD_SHARED_LIBS
+#cmakedefine BUILD_SHARED_LIBS
 #endif
+
+#if defined(WIN32) && defined(BUILD_SHARED_LIBS)
+# if defined(@NAME@_EXPORTS)
+#   define @PLUGIN_NAME@_EXPORT __declspec(dllexport)
+# else
+#   define @PLUGIN_NAME@_EXPORT __declspec(dllimport)
+# endif
+#else
+# define @PLUGIN_NAME@_EXPORT
+#endif
+
+#endif //
+

@@ -61,6 +61,9 @@ MESSAGE(STATUS "Generating wrappings for ${ARG_VISIT_READER_NAME}")
 #need to generate the VTK class wrapper
 string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
 configure_file(
+    ${VISIT_CMAKE_DIR}/VisItExport.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)      
+configure_file(
     ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)  
 configure_file(
