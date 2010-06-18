@@ -12,10 +12,6 @@ MirandaMDServerPluginInfo.C
 MirandaCommonPluginInfo.C
 )
 
-INCLUDE_DIRECTORIES(
-    ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0
-    )
-
 ADD_VISIT_READER(VisItMiranda "1.0" 
   VISIT_READER_TYPE "MTMD"
   VISIT_READER_NAME "avtMirandaFileFormat"   

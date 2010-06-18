@@ -45,6 +45,7 @@ ${AVT_PIPELINE_SOURCE_DIR}/Sinks
 ${AVT_PIPELINE_SOURCE_DIR}/Sources
 ${VISIT_SOURCE_DIR}/visit_vtk/full
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
+${BOOST_INCLUDE_DIR}
 ${VTK_INCLUDE_DIRS}
 )
 
