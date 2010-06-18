@@ -7,7 +7,32 @@
         number_of_elements="1">
         <FileListDomain name="files"/>
       </StringVectorProperty>    
-    
+     
+     <StringVectorProperty 
+        name="MeshInfo"
+        information_only="1">
+        <ArraySelectionInformationHelper attribute_name="Mesh"/>
+     </StringVectorProperty>
+
+     <StringVectorProperty
+        name="MeshStatus"
+        label="Meshes"
+        command="SetMeshArrayStatus"
+        number_of_elements="2" 
+        repeat_command="1"
+        number_of_elements_per_command="2"
+        element_types="2 0"
+        information_property="MeshInfo"> 
+       <ArraySelectionDomain name="array_list">
+          <RequiredProperties>
+             <Property name="MeshInfo" function="ArrayList"/>
+          </RequiredProperties>
+       </ArraySelectionDomain>
+       <Documentation>
+         Select the meshes to be loaded from the dataset, if any.
+       </Documentation>
+     </StringVectorProperty>
+      
     <StringVectorProperty 
         name="CellArrayInfo"
         information_only="1">
@@ -57,7 +82,7 @@
          This property lists which point-centered arrays to read.
        </Documentation>
      </StringVectorProperty>
-     
+          
      <!-- The following two properties magically send time information -->
      <!-- to the animation panel. -->
      <DoubleVectorProperty 

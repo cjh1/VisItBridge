@@ -68,6 +68,7 @@ vtkAvtFileFormatAlgorithm::vtkAvtFileFormatAlgorithm()
 
   this->PointDataArraySelection = vtkDataArraySelection::New();
   this->CellDataArraySelection = vtkDataArraySelection::New();
+  this->MeshArraySelection = vtkDataArraySelection::New();
 
   // Setup the selection callback to modify this object when an array
   // selection is changed.
@@ -78,6 +79,8 @@ vtkAvtFileFormatAlgorithm::vtkAvtFileFormatAlgorithm()
   this->PointDataArraySelection->AddObserver(vtkCommand::ModifiedEvent,
                                              this->SelectionObserver);
   this->CellDataArraySelection->AddObserver(vtkCommand::ModifiedEvent,
+                                            this->SelectionObserver);
+  this->MeshArraySelection->AddObserver(vtkCommand::ModifiedEvent,
                                             this->SelectionObserver);
 
   //visit has this horrible singelton timer that is called in all algorithms
@@ -96,9 +99,12 @@ vtkAvtFileFormatAlgorithm::~vtkAvtFileFormatAlgorithm()
 
   this->CellDataArraySelection->RemoveObserver(this->SelectionObserver);
   this->PointDataArraySelection->RemoveObserver(this->SelectionObserver);
+  this->MeshArraySelection->RemoveObserver(this->SelectionObserver);
+
   this->SelectionObserver->Delete();
   this->CellDataArraySelection->Delete();
   this->PointDataArraySelection->Delete();
+  this->MeshArraySelection->Delete();
 }
 
 //-----------------------------------------------------------------------------
@@ -153,6 +159,8 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
 
   //Set up ghost levels
 
+  //setup user selection of meshes to load
+  this->SetupMeshSelections();
   //setup user selection of arrays to load
   this->SetupDataArraySelections();
 
@@ -452,6 +460,27 @@ void vtkAvtFileFormatAlgorithm::SetupDataArraySelections( )
       }
     }
 }
+
+//-----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::SetupMeshSelections( )
+{
+  if (!this->MetaData)
+    {
+    return;
+    }
+  //go through the meta data and get all the mesh names
+  int size = this->MetaData->GetNumMeshes();
+  vtkstd::string name;
+  for ( int i=0; i < size; ++i)
+    {
+    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);
+    name = meshMetaData->name;
+    if (!this->MeshArraySelection->ArrayExists(name.c_str()))
+      {
+      this->MeshArraySelection->EnableArray(name.c_str());
+      }
+    }
+}
 //----------------------------------------------------------------------------
 int vtkAvtFileFormatAlgorithm::GetNumberOfPointArrays()
 {
@@ -511,6 +540,37 @@ void vtkAvtFileFormatAlgorithm::SetCellArrayStatus(const char* name, int status)
   else
     {
     this->CellDataArraySelection->DisableArray(name);
+    }
+}
+
+//----------------------------------------------------------------------------
+int vtkAvtFileFormatAlgorithm::GetNumberOfMeshArrays()
+{
+  return this->MeshArraySelection->GetNumberOfArrays();
+}
+
+//----------------------------------------------------------------------------
+const char* vtkAvtFileFormatAlgorithm::GetMeshArrayName(int index)
+{
+  return this->MeshArraySelection->GetArrayName(index);
+}
+
+//----------------------------------------------------------------------------
+int vtkAvtFileFormatAlgorithm::GetMeshArrayStatus(const char* name)
+{
+  return this->MeshArraySelection->ArrayIsEnabled(name);
+}
+
+//----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::SetMeshArrayStatus(const char* name, int status)
+{
+  if(status)
+    {
+    this->MeshArraySelection->EnableArray(name);
+    }
+  else
+    {
+    this->MeshArraySelection->DisableArray(name);
     }
 }
 
