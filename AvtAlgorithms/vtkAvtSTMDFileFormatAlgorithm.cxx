@@ -351,7 +351,9 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
 
   for ( int i=domainRange[0]; i < domainRange[1]; ++i )
     {
-    vtkDataSet *data = this->AvtFile->GetMesh(timestep, i, name.c_str() );
+    vtkDataSet *data=NULL;
+    CATCH_VISIT_EXCEPTIONS(data,
+      this->AvtFile->GetMesh(timestep, i, name.c_str()) );
     if ( data )
       {
       int points = data->GetNumberOfPoints();
@@ -402,12 +404,12 @@ bool vtkAvtSTMDFileFormatAlgorithm::ValidAMR( const avtMeshMetaData &meshMetaDat
   for ( int i=0; i < meshMetaData.numBlocks; ++i )
     {
     //lets get the mesh for each amr box
-    rgrid = vtkRectilinearGrid::SafeDownCast(
-      this->AvtFile->GetMesh(0,i,name.c_str() )  );
+    vtkRectilinearGrid *rgrid = NULL;
+    CATCH_VISIT_EXCEPTIONS(rgrid, vtkRectilinearGrid::SafeDownCast(
+      this->AvtFile->GetMesh(0, i, name.c_str()) ) );
     if ( !rgrid )
       {
       //this is not an AMR that ParaView supports
-      rgrid->Delete();
       return false;
       }
 
