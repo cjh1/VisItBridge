@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 project(VisItBridgePlugin)
 FIND_PACKAGE(ParaView REQUIRED)
 
+#Setup the version since some files need this
+SET(VISIT_VERSION "2.0.0")
+    
 IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
@@ -13,9 +16,29 @@ set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(VISIT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(VISIT_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake )
 
+#include the visit install target and plugin function
+include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
+
+# Testing and dashboard setup
+option(BUILD_TESTING "Build VisItBridge Testing" ON)
+if(BUILD_TESTING)
+  set(VISIT_TEST_DIR ${VISIT_BINARY_DIR}/Testing/Temporary)
+  make_directory(${VISIT_TEST_DIR})
+  enable_testing()
+  include (CTest)
+endif(BUILD_TESTING)
+
+# Configure data directory
+FIND_PATH(VISIT_DATA_ROOT ViSiTBridge.readme
+  ${VISIT_SOURCE_DIR}/VisItBridgeData
+  ${VISIT_SOURCE_DIR}/../VisItBridgeData
+  $ENV{VISIT_DATA_ROOT}
+  )
+  
 #set up LIBRARY_OUTPUT_PATH
 set(LIBRARY_OUTPUT_PATH ${VISIT_BINARY_DIR}/bin ) 
 
+#set up MPI
 set(VISIT_PARALLEL ${VTK_USE_MPI})
 IF(VTK_USE_MPI)
 	INCLUDE(FindMPI)
@@ -24,9 +47,6 @@ IF(VTK_USE_MPI)
     )  
 ENDIF(VTK_USE_MPI)
 
-
-include(CTest)
-include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
 
 #block out most of the warnings in visit on windows
 IF (WIN32)
@@ -39,8 +59,50 @@ IF (WIN32)
 ENDIF(WIN32)  
 
 #-----------------------------------------------------------------------------
+# Setup ParaView and Common includes before the visit-config.h so that
+# we can use utilities like HDF5 from ParaView
+#-----------------------------------------------------------------------------
+
+
+# Set up easy to use includes for the common directory
+set(VISIT_COMMON_INCLUDES
+    ${CMAKE_CURRENT_BINARY_DIR}  
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Database
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Pipeline
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Plotter
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/comm
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/expr
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/icons
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/misc  
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/plugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/proxybase
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/state
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/utility
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/misc
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/plugin
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/state
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/utility
+  )
+  
+#watch out, you need to make sure common/parser is always in front of
+# python2.X includes
+INCLUDE_DIRECTORIES(
+  ${VISIT_COMMON_INCLUDES}
+  )
+INCLUDE(${PARAVIEW_USE_FILE}) 
+INCLUDE_DIRECTORIES(
+  ${VTK_INCLUDE_DIRS}
+  ${PARAVIEW_INCLUDE_DIRS}
+  ${PARAVIEW_GUI_INCLUDE_DIRS}   
+  ${VTK_INCLUDE_DIRS_SOURCE_TREE}
+  ) 
+SET(VTK_BINARY_DIR ${PARAVIEW_VTK_DIR} )   
+
+#-----------------------------------------------------------------------------
 # Setup Vars for visit-config.h
 #-----------------------------------------------------------------------------
+
 
 set(VISIT_DBIO_ONLY ON) #Build only visitconvert and engine plugins
 if(VISIT_DBIO_ONLY)
@@ -55,9 +117,6 @@ IF (NOT VISIT_COMPILER_FSTREAM_WORKAROUND)
    set(NO_SETBUF 1)
 ENDIF (NOT VISIT_COMPILER_FSTREAM_WORKAROUND)  
 
-#Setup the version since some files need this
-SET(VISIT_VERSION "2.0.0")
-    
 # Set the slash characters based on the platform
 IF(WIN32)
     SET(VISIT_SLASH_CHAR   "'\\\\'")
@@ -151,6 +210,24 @@ IF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
     ENDIF (HAVE_SOCKLEN_T)
 ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
 
+#-----------------------------------------------------------------------------
+# Setup some lib settings
+#-----------------------------------------------------------------------------
+
+#grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
+include(${VTK_SOURCE_DIR}/Cmake/vtkThirdParty.cmake)
+
+#setup HDF5
+set(HAVE_LIBHDF5 ${PARAVIEW_HDF5_LIBRARIES})
+
+# Set up boost (interval) library
+set(HAVE_BILIB 1)
+set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0    CACHE PATH "Path to boost lib")
+
+#setup ZLib
+VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)  
+VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
+
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
@@ -158,51 +235,7 @@ ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)    
-
-
-# Set up easy to use includes for the common directory
-set(VISIT_COMMON_INCLUDES
-    ${CMAKE_CURRENT_BINARY_DIR}  
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Database
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Pipeline
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/Exceptions/Plotter
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/comm
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/expr
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/icons
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/misc  
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/parser
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/plugin
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/proxybase
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/state
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/utility
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/misc
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/plugin
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/state
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/common/utility
-  )
-    
-#watch out, you need to make sure common/parser is always in front of
-# python2.X includes
-
-INCLUDE_DIRECTORIES(
-  ${VISIT_COMMON_INCLUDES}
-  )
-INCLUDE(${PARAVIEW_USE_FILE})  
-
-#grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
-SET(VTK_BINARY_DIR ${PARAVIEW_VTK_DIR} )
-INCLUDE(${VTK_SOURCE_DIR}/Cmake/vtkThirdParty.cmake)
-
-#setup ZLib
-VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)  
-VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
-INCLUDE_DIRECTORIES(
-  ${VTK_INCLUDE_DIRS}
-  ${PARAVIEW_INCLUDE_DIRS}
-  ${PARAVIEW_GUI_INCLUDE_DIRS}   
-  ${VTK_INCLUDE_DIRS_SOURCE_TREE}
-  ) 
- 
+     
 add_subdirectory(common)
 add_subdirectory(third_party_builtin)
 add_subdirectory(visit_vtk)
