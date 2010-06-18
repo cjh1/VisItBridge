@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkDataArraySelection.h"
 
 #include "vtkDataObject.h"
 #include "vtkDataSet.h"
@@ -121,6 +122,12 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     }
 
   int size = this->MetaData->GetNumMeshes();
+  if ( this->MeshArraySelection )
+    {
+    //we don't want NULL blocks to be displayed, so get the
+    //actual number of meshes the user wants
+    size = this->MeshArraySelection->GetNumberOfArraysEnabled();
+    }
   output->SetNumberOfBlocks( size );
 
   vtkstd::string name;
@@ -128,6 +135,14 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
     name = meshMetaData.name;
+
+    //before we get the mesh see if the user wanted to load this mesh
+    if (this->MeshArraySelection &&
+      !this->MeshArraySelection->ArrayIsEnabled( name.c_str() ) )
+      {
+      continue;
+      }
+
     vtkDataSet *data=NULL;
     CATCH_VISIT_EXCEPTIONS(data,
       this->AvtFile->GetMesh(0, 0, name.c_str()) );
