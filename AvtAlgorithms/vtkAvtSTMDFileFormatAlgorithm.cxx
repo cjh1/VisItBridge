@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSetAlgorithm.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkDataArraySelection.h"
 
 #include "vtkAMRBox.h"
 #include "vtkHierarchicalBoxDataSet.h"
@@ -147,7 +148,9 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
   this->UpdateNumPieces =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES());
 
-  if ( this->OutputType == VTK_HIERARCHICAL_BOX_DATA_SET )
+  if ( this->OutputType == VTK_HIERARCHICAL_BOX_DATA_SET
+    && this->MeshArraySelection
+    && this->MeshArraySelection->GetNumberOfArraysEnabled() == 1)
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
@@ -163,10 +166,17 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     int size = this->MetaData->GetNumMeshes();
+    if ( this->MeshArraySelection )
+      {
+      //we don't want NULL blocks to be displayed, so get the
+      //actual number of meshes the user wants
+      size = this->MeshArraySelection->GetNumberOfArraysEnabled();
+      }
     output->SetNumberOfBlocks( size );
 
     vtkMultiPieceDataSet* tempData = NULL;
-    for ( int i=0; i < size; ++i)
+    int blockIndex=0;
+    for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
       {
       const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
       vtkstd::string name = meshMetaData.name;
@@ -185,12 +195,13 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         default:
           tempData = vtkMultiPieceDataSet::New();
           this->FillBlock( tempData, meshMetaData, 0 );
-          output->SetBlock(i,tempData);
+          output->SetBlock(blockIndex,tempData);
           tempData->Delete();
           tempData = NULL;
           break;
         }
-      output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      output->GetMetaData(blockIndex)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      ++blockIndex;
       }
     }
 
