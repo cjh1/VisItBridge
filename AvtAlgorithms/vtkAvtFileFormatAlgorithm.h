@@ -64,20 +64,25 @@ public:
   // Get the number of point or cell arrays available in the input.
   int GetNumberOfPointArrays();
   int GetNumberOfCellArrays();
+  int GetNumberOfMeshArrays();
 
   // Description:
   // Get the name of the point or cell array with the given index in
   // the input.
   const char* GetPointArrayName(int index);
   const char* GetCellArrayName(int index);
+  const char* GetMeshArrayName(int index);
 
   // Description:
   // Get/Set whether the point or cell array with the given name is to
   // be read.
   int GetPointArrayStatus(const char* name);
   int GetCellArrayStatus(const char* name);
+  int GetMeshArrayStatus(const char* name);
+
   void SetPointArrayStatus(const char* name, int status);
   void SetCellArrayStatus(const char* name, int status);
+  void SetMeshArrayStatus(const char* name, int status);
 
 protected:
   vtkAvtFileFormatAlgorithm();
@@ -115,6 +120,7 @@ protected:
   virtual int FillOutputPortInformation(int port, vtkInformation* info);
 
   void SetupDataArraySelections();
+  void SetupMeshSelections();
   void SetupTemporalInformation(vtkInformation *outInfo);
 
   // Callback registered with the SelectionObserver.
@@ -130,6 +136,7 @@ protected:
   // The array selections.
   vtkDataArraySelection* PointDataArraySelection;
   vtkDataArraySelection* CellDataArraySelection;
+  vtkDataArraySelection* MeshArraySelection;
 
   // The observer to modify this object when the array selections are
   // modified.

@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkDataArraySelection.h"
 
 #include "vtkDataObject.h"
 #include "vtkDataSet.h"
@@ -120,13 +121,27 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     }
 
   int size = this->MetaData->GetNumMeshes();
+  if ( this->MeshArraySelection )
+    {
+    //we don't want NULL blocks to be displayed, so get the
+    //actual number of meshes the user wants
+    size = this->MeshArraySelection->GetNumberOfArraysEnabled();
+    }
   output->SetNumberOfBlocks( size );
 
   vtkstd::string name;
-  for ( int i=0; i < size; ++i)
+  int blockIndex=0;
+  for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
     name = meshMetaData.name;
+
+    //before we get the mesh see if the user wanted to load this mesh
+    if (this->MeshArraySelection &&
+      !this->MeshArraySelection->ArrayIsEnabled( name.c_str() ) )
+      {
+      continue;
+      }
 
     vtkDataSet *data = NULL;
     CATCH_VISIT_EXCEPTIONS(data,
@@ -143,7 +158,7 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
             vtkUnstructuredGridRelevantPointsFilter::New();
         clean->SetInput( ugrid );
         clean->Update();
-        output->SetBlock(i,clean->GetOutput());
+        output->SetBlock(blockIndex,clean->GetOutput());
         clean->Delete();
         }
       else if(meshMetaData.meshType == AVT_SURFACE_MESH)
@@ -156,15 +171,16 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         clean->ConvertPolysToLinesOff();
         clean->ConvertLinesToPointsOff();
         clean->Update();
-        output->SetBlock(i,clean->GetOutput());
+        output->SetBlock(blockIndex,clean->GetOutput());
         clean->Delete();
         }
       else
         {
-        output->SetBlock(i,data);
+        output->SetBlock(blockIndex,data);
         }
       data->Delete();
-      output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      output->GetMetaData(blockIndex)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      ++blockIndex;
       }
     }
   this->CleanupAVTReader();
