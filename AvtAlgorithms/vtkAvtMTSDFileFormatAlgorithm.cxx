@@ -130,7 +130,8 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
   output->SetNumberOfBlocks( size );
 
   vtkstd::string name;
-  for ( int i=0; i < size; ++i)
+  int blockIndex=0;
+  for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
     {
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
     name = meshMetaData.name;
@@ -155,7 +156,7 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
             vtkUnstructuredGridRelevantPointsFilter::New();
         clean->SetInput( ugrid );
         clean->Update();
-        output->SetBlock(i,clean->GetOutput());
+        output->SetBlock(blockIndex,clean->GetOutput());
         clean->Delete();
         }
       else if(meshMetaData.meshType == AVT_SURFACE_MESH)
@@ -168,15 +169,16 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         clean->ConvertPolysToLinesOff();
         clean->ConvertLinesToPointsOff();
         clean->Update();
-        output->SetBlock(i,clean->GetOutput());
+        output->SetBlock(blockIndex,clean->GetOutput());
         clean->Delete();
         }
       else
         {
-        output->SetBlock(i,data);
+        output->SetBlock(blockIndex,data);
         }
       data->Delete();
-      output->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      output->GetMetaData(blockIndex)->Set(vtkCompositeDataSet::NAME(),name.c_str());
+      ++blockIndex;
       }
     }
   this->CleanupAVTReader();
