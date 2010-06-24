@@ -99,6 +99,10 @@ ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VISIT_SOURCE_DIR}/avt/Pipeline/Data
 ${BOOST_INCLUDE_DIR}
 )
+#robert maynard: todo, find a better solution
+if(HAVE_BILIB)
+  add_definitions(-D __USE_ISOC99)
+endif(HAVE_BILIB)
 
 
 # Add link directories needed to use our libraries and VTK.
