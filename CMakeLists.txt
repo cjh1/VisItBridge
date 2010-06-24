@@ -224,10 +224,14 @@ set(HAVE_LIBHDF5 ${PARAVIEW_HDF5_LIBRARIES})
 set(HAVE_BILIB 1)
 set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0    CACHE PATH "Path to boost lib")
 
-#setup ZLib
+#setup non third party vtk utilities
+set(HAVE_LIBNETCDF 1)
+set(HAVE_NETCDF_H 1)
+set(HAVE_LIBEXODUSII 1)
+
+#setup vtk utilties
 VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)  
 VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
-
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
