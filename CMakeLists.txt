@@ -215,7 +215,7 @@ ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
 #-----------------------------------------------------------------------------
 
 #grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
-include(${VTK_SOURCE_DIR}/Cmake/vtkThirdParty.cmake)
+include(${VTK_SOURCE_DIR}/CMake/vtkThirdParty.cmake)
 
 #setup HDF5
 set(HAVE_LIBHDF5 ${PARAVIEW_HDF5_LIBRARIES})
@@ -228,6 +228,12 @@ set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0
 VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)  
 VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 
+# Setup SILO
+OPTION(USE_SILO "Use SILO library" OFF)
+IF(USE_SILO)
+  INCLUDE(${VISIT_CMAKE_DIR}/FindSILO.cmake)
+  SET(HAVE_LIBSILO ${SILO_FOUND})
+ENDIF(USE_SILO)
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
