@@ -1,6 +1,6 @@
 <ServerManagerConfiguration>  
   <ProxyGroup name="sources">
-    <SourceProxy name="@NAME@" class="@PLUGIN_NAME@">
+    <SourceProxy name="@XML_NAME@" class="@PLUGIN_NAME@">
       <StringVectorProperty
         name="FileName"
         command="SetFileName"

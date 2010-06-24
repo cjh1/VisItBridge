@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSet.h"
 
-#include "@ARG_VISIT_READER_NAME@.h"
+#include "@ARG_VISIT_INCLUDE_NAME@.h"
 #include "avtDatabaseMetaData.h"
 #include "avtMeshMetaData.h"
 #include "avtVariableCache.h"
