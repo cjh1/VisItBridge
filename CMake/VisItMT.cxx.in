@@ -110,13 +110,20 @@ bool @PLUGIN_NAME@::InitializeAVTReader(  const int &timestep )
         (this->AvtFile);
       if ( file )
         {
-        //we have to make sure the visit reader populates its cache
-        //before activating a time step
-        file->SetCache( this->Cache );
-        file->ActivateTimestep(timestep);
-        
-        //only fill database after choosing timestep to activate
-        file->SetDatabaseMetaData( this->MetaData, timestep);
+        try
+          {
+          //we have to make sure the visit reader populates its cache
+          //before activating a time step
+          file->SetCache( this->Cache );
+          file->ActivateTimestep(timestep);
+          
+          //only fill database after choosing timestep to activate
+          file->SetDatabaseMetaData( this->MetaData, timestep);
+          }
+        catch(...)
+          {
+          return false;
+          }
         }
       }
     else

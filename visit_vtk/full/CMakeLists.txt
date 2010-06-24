@@ -97,6 +97,7 @@ ${VISIT_BINARY_DIR}
 ${VISIT_SOURCE_DIR}/visit_vtk/full
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VISIT_SOURCE_DIR}/avt/Pipeline/Data
+${BOOST_INCLUDE_DIR}
 )
 
 
