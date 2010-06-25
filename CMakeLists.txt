@@ -142,6 +142,48 @@ ELSE(VISIT_STATIC)
 ENDIF(VISIT_STATIC)
 
 #-----------------------------------------------------------------------------
+# Setup lib settings
+#-----------------------------------------------------------------------------
+
+#grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
+include(${VTK_SOURCE_DIR}/Cmake/vtkThirdParty.cmake)
+
+
+# Set up boost (interval) library
+set(HAVE_BILIB 1)
+set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0    CACHE PATH "Path to boost lib")
+
+#setup non third party vtk utilities
+set(HAVE_LIBHDF5 ${PARAVIEW_HDF5_LIBRARIES})
+set(HAVE_LIBNETCDF 1)
+set(HAVE_NETCDF_H 1)
+set(HAVE_LIBEXODUSII 1)
+
+# Setup SILO
+option(USE_SILO "Use SILO library" OFF)
+if(USE_SILO)
+  find_package(SILO)
+  #needed by the visit configure header
+  set(HAVE_LIBSILO ${SILO_FOUND})  
+endif(USE_SILO)
+
+#setup zlib
+VTK_THIRD_PARTY_OPTION(ZLIB zlib)  
+VTK_THIRD_PARTY_INCLUDE(ZLIB zlib)
+
+#setup png
+VTK_THIRD_PARTY_OPTION(PNG png)
+VTK_THIRD_PARTY_INCLUDE(PNG png)
+
+if ( VTK_INCLUDE_DIRS_SYSTEM OR VTK_INCLUDE_DIRS_SOURCE_TREE ) 
+  INCLUDE_DIRECTORIES(
+    ${VTK_INCLUDE_DIRS_SYSTEM}
+    ${VTK_INCLUDE_DIRS_SOURCE_TREE}  
+    )
+  set(HAVE_ZLIB_H 1)  
+endif()
+
+#-----------------------------------------------------------------------------
 # Detect packages here. We could probably write macros that we can include from
 # elsewhere for this. 
 #-----------------------------------------------------------------------------
@@ -167,7 +209,6 @@ CHECK_INCLUDE_FILES (sys/time.h  HAVE_SYS_TIME_H)
 CHECK_INCLUDE_FILES (sys/types.h HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILES (sys/stat.h  HAVE_SYS_STAT_H)
 CHECK_INCLUDE_FILES (unistd.h    HAVE_UNISTD_H)
-CHECK_INCLUDE_FILES (zlib.h      HAVE_ZLIB_H)
 CHECK_INCLUDE_FILES (stdbool.h   HAVE_STDBOOL_H)
 
 # Check for type sizes, endian
@@ -210,31 +251,6 @@ IF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
     ENDIF (HAVE_SOCKLEN_T)
 ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
 
-#-----------------------------------------------------------------------------
-# Setup some lib settings
-#-----------------------------------------------------------------------------
-
-#grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
-include(${VTK_SOURCE_DIR}/CMake/vtkThirdParty.cmake)
-
-#setup HDF5
-set(HAVE_LIBHDF5 ${PARAVIEW_HDF5_LIBRARIES})
-
-# Set up boost (interval) library
-set(HAVE_BILIB 1)
-set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0    CACHE PATH "Path to boost lib")
-
-#setup ZLib
-VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)  
-VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
-
-# Setup SILO
-option(USE_SILO "Use SILO library" OFF)
-if(USE_SILO)
-  find_package(SILO)
-  #needed by the visit configure header
-  set(HAVE_LIBSILO ${SILO_FOUND})  
-endif(USE_SILO)
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
