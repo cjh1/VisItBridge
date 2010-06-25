@@ -229,11 +229,12 @@ VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)
 VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 
 # Setup SILO
-OPTION(USE_SILO "Use SILO library" OFF)
-IF(USE_SILO)
-  INCLUDE(${VISIT_CMAKE_DIR}/FindSILO.cmake)
-  SET(HAVE_LIBSILO ${SILO_FOUND})
-ENDIF(USE_SILO)
+option(USE_SILO "Use SILO library" OFF)
+if(USE_SILO)
+  find_package(SILO)
+  #needed by the visit configure header
+  set(HAVE_LIBSILO ${SILO_FOUND})  
+endif(USE_SILO)
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
