@@ -169,19 +169,18 @@ endif(USE_SILO)
 
 #setup zlib
 VTK_THIRD_PARTY_OPTION(ZLIB zlib)  
-VTK_THIRD_PARTY_INCLUDE(ZLIB zlib)
+VISIT_VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)
+if (VTK_USE_SYSTEM_ZLIB)
+  CHECK_INCLUDE_FILES (zlib.h      HAVE_ZLIB_H)  
+else()
+  #we are using vtkzlib, we don't need to check if we have it
+  set(HAVE_ZLIB_H 1) 
+endif()
 
 #setup png
 VTK_THIRD_PARTY_OPTION(PNG png)
-VTK_THIRD_PARTY_INCLUDE(PNG png)
+VISIT_VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 
-if ( VTK_INCLUDE_DIRS_SYSTEM OR VTK_INCLUDE_DIRS_SOURCE_TREE ) 
-  INCLUDE_DIRECTORIES(
-    ${VTK_INCLUDE_DIRS_SYSTEM}
-    ${VTK_INCLUDE_DIRS_SOURCE_TREE}  
-    )
-  set(HAVE_ZLIB_H 1)  
-endif()
 
 #-----------------------------------------------------------------------------
 # Detect packages here. We could probably write macros that we can include from
