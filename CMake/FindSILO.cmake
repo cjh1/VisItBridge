@@ -9,15 +9,9 @@
 #  SILO_LIBRARY, the full path to the silo library.
 #  SILO_INCLUDE_PATH, for CMake backward compatibility
 
-FIND_PATH( SILO_INCLUDE_DIR silo.h
-  /usr/local/include
-  /usr/include
-)
+FIND_PATH(SILO_INCLUDE_DIR silo.h)
 
-FIND_LIBRARY( SILO_LIBRARY silo
-  /usr/lib
-  /usr/local/lib
-)
+FIND_LIBRARY(SILO_LIBRARY silo)
 
 SET( SILO_FOUND "NO" )
 IF(SILO_INCLUDE_DIR)
