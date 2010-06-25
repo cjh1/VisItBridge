@@ -5,6 +5,19 @@ MACRO(VISIT_INSTALL_TARGETS)
     COMPONENT Runtime)              
 ENDMACRO(VISIT_INSTALL_TARGETS)
 
+MACRO(VISIT_VTK_THIRD_PARTY_INCLUDE upper lower)
+  if(VTK_USE_SYSTEM_${upper})
+    if(${upper}_INCLUDE_DIR)
+      include_directories(${${upper}_INCLUDE_DIR})
+    endif(${upper}_INCLUDE_DIR)
+  else(VTK_USE_SYSTEM_${upper})
+    include_directories(
+      ${VTK_BINARY_DIR}/Utilities/${lower}
+      ${VTK_SOURCE_DIR}/Utilities/${lower}
+    )
+  endif(VTK_USE_SYSTEM_${upper})
+ENDMACRO(VISIT_VTK_THIRD_PARTY_INCLUDE)
+
 FUNCTION(ADD_VISIT_READER NAME VERSION)
 set(PLUGIN_NAME "vtk${NAME}")
 set(PLUGIN_VERSION "${VERSION}")
