@@ -60,33 +60,15 @@ vtkStandardNewMacro(@PLUGIN_NAME@);
 {
   this->SetFileName(0);
 }
+
 //-----------------------------------------------------------------------------
 int @PLUGIN_NAME@::CanReadFile(const char *fname)
 {
-  int ret = 0;
-  if ( this->AvtFile )
-    {
-    delete this->AvtFile;
-    this->AvtFile = NULL;
-    }
-
-  try
-    {    
-#ifdef ARG_VISIT_READER_USES_OPTIONS
-    @ARG_VISIT_PLUGIN_INFO_CLASS@ *options = new @ARG_VISIT_PLUGIN_INFO_CLASS@();
-    this->AvtFile = new @ARG_VISIT_READER_NAME@(fname, options->GetReadOptions() );
-    delete options;
-#else
-    this->AvtFile = new @ARG_VISIT_READER_NAME@(fname);
-#endif  
-    ret = 1;
-    }
-  catch(...)
-    {
-    this->AvtFile = NULL;
-    ret = 0;
-    }
-  return ret;
+  
+  //make sure everything is NULL
+  this->SetFileName( fname );
+  this->CleanupAVTReader();  
+  return InitializeAVTReader( 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -103,28 +85,42 @@ bool @PLUGIN_NAME@::InitializeAVTReader(  const int&  )
     }
 
   if (!this->AvtFile)
-    {
-    if (this->CanReadFile(this->FileName))
+    {     
+    try
+      {    
+#ifdef ARG_VISIT_READER_USES_OPTIONS      
+      @ARG_VISIT_PLUGIN_INFO_CLASS@ *options = 
+        new @ARG_VISIT_PLUGIN_INFO_CLASS@();
+      this->AvtFile = new @ARG_VISIT_READER_NAME@(
+        this->FileName, options->GetReadOptions() );
+      delete options;
+#else
+      this->AvtFile = new @ARG_VISIT_READER_NAME@(this->FileName);
+#endif        
+      }
+    catch(...)
       {
-      @ARG_VISIT_READER_NAME@ *file = dynamic_cast<@ARG_VISIT_READER_NAME@*>
-        (this->AvtFile);
-      if ( file )
+      this->AvtFile = NULL;
+      return false;
+      }          
+    @ARG_VISIT_READER_NAME@ *file = dynamic_cast<@ARG_VISIT_READER_NAME@*>
+      (this->AvtFile);
+    if ( file )
+      {
+      //we have to make sure the visit reader populates its cache
+      //before activating a time step
+      try
         {
-        //we have to make sure the visit reader populates its cache
-        //before activating a time step
-        try
-          {
-          file->SetCache( this->Cache );
-          file->ActivateTimestep();
-        
-          //only fill database after choosing timestep to activate
-          file->SetDatabaseMetaData( this->MetaData );
-          }
-        catch(...)
-          {
-          return false;
-          }
+        file->SetCache( this->Cache );
+        file->ActivateTimestep();
+      
+        //only fill database after choosing timestep to activate
+        file->SetDatabaseMetaData( this->MetaData );
         }
+      catch(...)
+        {
+        return false;
+        }      
       }
     else
       {
