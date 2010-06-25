@@ -146,7 +146,7 @@ foreach( index RANGE ${NUM_READERS})
     #need to set up the vars needed by the configures
     string(REGEX REPLACE "^avt|FileFormat$" "" TEMP_NAME ${ARG_VISIT_READER_NAME})
     set(PLUGIN_NAME "vtk${TEMP_NAME}Reader")
-    set(XML_NAME "VisIt${NAME}Reader")
+    set(XML_NAME "VisIt${TEMP_NAME}Reader")
     
     #need to generate the VTK class wrapper
     string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
