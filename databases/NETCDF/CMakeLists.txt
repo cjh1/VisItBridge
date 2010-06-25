@@ -18,7 +18,6 @@ NETCDFFileObject.C
 )
 
 #needed by cmake to properly generate the correct readers in the interface collection
-#the order specified here is the order the readers are attempted to be created in
 #for each reader in the interface we need: name, type, and name of header it is defined in
 set(READER_NAMES
 avtADAPTFileFormat
