@@ -164,6 +164,7 @@ option(USE_SILO "Use SILO library" OFF)
 if(USE_SILO)
   find_package(SILO)
   #needed by the visit configure header
+  include_directories(${SILO_INCLUDE_DIR})
   set(HAVE_LIBSILO ${SILO_FOUND})  
 endif(USE_SILO)
 
