@@ -41,11 +41,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtVariableCache.h"
 
 #cmakedefine ARG_VISIT_READER_USES_OPTIONS
-
 #ifdef ARG_VISIT_READER_USES_OPTIONS
 #include "@ARG_VISIT_PLUGIN_INFO_HEADER@.h"
 #endif
 
+#cmakedefine VISIT_READER_USES_INTERFACE
+#ifdef VISIT_READER_USES_INTERFACE
+#include "@PLUGIN_NAME@@ARG_VISIT_INTERFACE_FILE@.h"
+#endif
 
 vtkStandardNewMacro(@PLUGIN_NAME@);
 
@@ -64,7 +67,13 @@ vtkStandardNewMacro(@PLUGIN_NAME@);
 //-----------------------------------------------------------------------------
 int @PLUGIN_NAME@::CanReadFile(const char *fname)
 {
-  
+#ifdef VISIT_READER_USES_INTERFACE
+  if (!@ARG_VISIT_INTERFACE_CALL@)
+    {
+    return 0;
+    }
+#endif  
+    
   //make sure everything is NULL
   this->SetFileName( fname );
   this->CleanupAVTReader();  

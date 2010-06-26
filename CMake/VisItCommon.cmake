@@ -48,7 +48,7 @@ PV_PLUGIN_PARSE_ARGUMENTS(ARG
 #check reader types
 string(REGEX MATCH "^[SM]T[SM]D$" VALID_READER_TYPE ${ARG_VISIT_READER_TYPE})
 
-if (!VALID_READER_TYPE)
+if ( NOT VALID_READER_TYPE)
   MESSAGE(FATAL_ERROR "Invalid Reader Type. Valid Types are STSD, STMD, MTSD, MTMD")
 endif()
 
@@ -122,12 +122,19 @@ set(INTERFACE_VERSION "${VERSION}")
 set(ARG_VISIT_READER_NAMES)
 set(ARG_VISIT_READER_TYPES)
 set(ARG_VISIT_READER_INCLUDES)
+set(ARG_VISIT_INTERFACE_CALL)
+set(ARG_VISIT_INTERFACE_FILE)
+set(ARG_VISIT_INTERFACE_EXEMPT_CLASSES)
 set(ARG_VISIT_READER_FILE_PATTERN)
 set(ARG_SERVER_SOURCES)
-
+    
 PV_PLUGIN_PARSE_ARGUMENTS(ARG 
-  "VISIT_READER_NAMES;VISIT_READER_TYPES;VISIT_READER_INCLUDES;VISIT_READER_FILE_PATTERN;SERVER_SOURCES"
+  "VISIT_READER_NAMES;VISIT_READER_TYPES;VISIT_READER_INCLUDES;VISIT_INTERFACE_CALL;VISIT_INTERFACE_FILE;VISIT_INTERFACE_EXEMPT_CLASSES;VISIT_READER_FILE_PATTERN;SERVER_SOURCES"
     "" ${ARGN} )   
+    
+if ( NOT ARG_VISIT_INTERFACE_CALL OR NOT ARG_VISIT_INTERFACE_FILE )
+  MESSAGE(FATAL_ERROR "The macro file for the file interface needs to be defined.")
+endif()
     
 message(STATUS "Generating wrappings for ${INTERFACE_NAME}")    
 VISIT_PLUGIN_INCLUDES()    
@@ -142,23 +149,41 @@ foreach( index RANGE ${NUM_READERS})
     list(GET ARG_VISIT_READER_NAMES ${index} ARG_VISIT_READER_NAME)
     list(GET ARG_VISIT_READER_TYPES ${index} ARG_VISIT_READER_TYPE)
     list(GET ARG_VISIT_READER_INCLUDES ${index} ARG_VISIT_INCLUDE_NAME)
-    
+        
     #need to set up the vars needed by the configures
     string(REGEX REPLACE "^avt|FileFormat$" "" TEMP_NAME ${ARG_VISIT_READER_NAME})
     set(PLUGIN_NAME "vtk${TEMP_NAME}Reader")
     set(XML_NAME "VisIt${TEMP_NAME}Reader")
-    
+            
     #need to generate the VTK class wrapper
     string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
+    
+    #determine if this file is exempt from the interface CanReadFile macro
+    set(VISIT_READER_USES_INTERFACE 1)
+    list(FIND ARG_INTERFACE_EXEMPT_CLASSES ${ARG_VISIT_READER_NAME} EXEMPT_READER)
+    if ( EXEMPT_READER EQUAL -1 )
+        set(VISIT_READER_USES_INTERFACE 0)
+    endif()
+    
+    #we have to configure the macro file 
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_VISIT_INTERFACE_FILE}.h
+        ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}${ARG_VISIT_INTERFACE_FILE}.h @ONLY)  
+    
+    #configure the declspec header
     configure_file(
         ${VISIT_CMAKE_DIR}/VisItExport.h.in
         ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)      
+    
+    #configure the header and implementation
     configure_file(
         ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.h.in
         ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)  
     configure_file(
         ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.cxx.in
         ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.cxx @ONLY)
+        
+      
       
     #generate server manager xml file  
     configure_file(
