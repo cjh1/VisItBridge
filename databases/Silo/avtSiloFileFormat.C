@@ -139,7 +139,7 @@ static void TranslateSiloWedgeToVTKWedge(const int *, vtkIdType [6]);
 static void TranslateSiloPyramidToVTKPyramid(const int *, vtkIdType [5]);
 static void TranslateSiloTetrahedronToVTKTetrahedron(const int *,
                                                      vtkIdType [4]);
-static bool TetIsInverted(const int *siloTetrahedron,
+static bool TetIsInverted(const vtkIdType *siloTetrahedron,
                             vtkUnstructuredGrid *ugrid);
 
 static void ArbInsertArbitrary(vtkUnstructuredGrid *ugrid,
@@ -8378,7 +8378,7 @@ avtSiloFileFormat::ReadInConnectivity(vtkUnstructuredGrid *ugrid,
 
     vtkIdTypeArray *cellLocations = vtkIdTypeArray::New();
     cellLocations->SetNumberOfValues(numCells);
-    int *cl = cellLocations->GetPointer(0);
+    vtkIdType *cl = cellLocations->GetPointer(0);
 
     int currentIndex = 0;
     int zoneIndex = 0;
@@ -8521,7 +8521,7 @@ avtSiloFileFormat::ReadInConnectivity(vtkUnstructuredGrid *ugrid,
                     if (firstTet)
                     {
                         firstTet = false;
-                        tetsAreInverted = TetIsInverted(nodelist, ugrid);
+                        tetsAreInverted = TetIsInverted((vtkIdType*)nodelist, ugrid);
                         static bool haveIssuedWarning = false;
                         if (tetsAreInverted)
                         {
@@ -8816,7 +8816,7 @@ QuadFaceIsTwisted(vtkUnstructuredGrid *ugrid, int *nids)
 //
 // ****************************************************************************
 static void
-ArbInsertTet(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
+ArbInsertTet(vtkUnstructuredGrid *ugrid, vtkIdType *nids, unsigned int ocdata[2],
     vector<int> *cellReMap)
 {
     // Use the 'TetIsInverted' method here to determine whether this tet
@@ -8824,7 +8824,7 @@ ArbInsertTet(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
     // affirmative response means that the Tet is 'ok' for VTK.
     if (!TetIsInverted(nids, ugrid))
     {
-        int tmp = nids[0];
+        vtkIdType tmp = nids[0];
         nids[0] = nids[1];
         nids[1] = tmp;
     }
@@ -8844,7 +8844,7 @@ ArbInsertTet(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
 //
 // ****************************************************************************
 static void
-ArbInsertPyramid(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
+ArbInsertPyramid(vtkUnstructuredGrid *ugrid, vtkIdType *nids, unsigned int ocdata[2],
     vector<int> *cellReMap)
 {
     // The nodes of the pyramid are given in the order that the
@@ -8861,7 +8861,7 @@ ArbInsertPyramid(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
     // the base quad of the pyramid. The last node is the 5th node of the
     // pyramid.  Again, an affirmative from TetIsInverted means order
     // is ok for VTK
-    int tmpnids[5];
+    vtkIdType tmpnids[5];
     tmpnids[0] = nids[0];
     tmpnids[1] = nids[1];
     tmpnids[2] = nids[2];
@@ -8895,7 +8895,7 @@ ArbInsertPyramid(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
 //
 // ****************************************************************************
 static void
-ArbInsertWedge(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
+ArbInsertWedge(vtkUnstructuredGrid *ugrid, vtkIdType *nids, unsigned int ocdata[2],
     vector<int> *cellReMap)
 {
     // The nodes of a wedge are specified such that the first
@@ -8918,7 +8918,7 @@ ArbInsertWedge(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
 
     // VTK's node order is such that a right hand rule normal
     // to the other triangular end points inward.
-    int tmpnids[4];
+    vtkIdType tmpnids[4];
     tmpnids[0] = nids[3];
     tmpnids[1] = nids[4];
     tmpnids[2] = nids[5];
@@ -8948,7 +8948,7 @@ ArbInsertWedge(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
 //
 // ****************************************************************************
 static void
-ArbInsertHex(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
+ArbInsertHex(vtkUnstructuredGrid *ugrid, vtkIdType *nids, unsigned int ocdata[2],
     vector<int> *cellReMap)
 {
     // The nodes for a hex are specified here such that the
@@ -8960,7 +8960,7 @@ ArbInsertHex(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
     // the VTK ordering, right hand rule on the first 4 nodes
     // defines an INward normal while on the last 4 defines
     // an outward normal.
-    int tmpnids[4];
+    vtkIdType tmpnids[4];
     tmpnids[0] = nids[0]; // first 3 nodes from first quad
     tmpnids[1] = nids[1];
     tmpnids[2] = nids[2];
@@ -8969,7 +8969,7 @@ ArbInsertHex(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
     {
         // Reverse the order of the first 4 nodes by swaping the
         // ends and the middle nodes.
-        int tmp = nids[3];
+        vtkIdType tmp = nids[3];
         nids[3] = nids[0];
         nids[0] = tmp;
         tmp = nids[2];
@@ -8984,7 +8984,7 @@ ArbInsertHex(vtkUnstructuredGrid *ugrid, int *nids, unsigned int ocdata[2],
     {
         // Reverse the order of the last 4 nodes by swaping the
         // ends and the middle nodes.
-        int tmp = nids[7];
+        vtkIdType tmp = nids[7];
         nids[7] = nids[4];
         nids[4] = tmp;
         tmp = nids[6];
@@ -9095,7 +9095,7 @@ ArbInsertArbitrary(vtkUnstructuredGrid *ugrid, DBphzonelist *phzl, int gz,
         {
             if (c == newcellcnt-1 && ncnt%2)
             {
-                int nids[4];
+                vtkIdType nids[4];
                 nids[0] =  phzl->nodelist[nloff+botcur];
                 nids[1] =  phzl->nodelist[nloff+botlast];
                 nids[2] =  phzl->nodelist[nloff+toplast];
@@ -9104,7 +9104,7 @@ ArbInsertArbitrary(vtkUnstructuredGrid *ugrid, DBphzonelist *phzl, int gz,
             }
             else
             {
-                int nids[5];
+                vtkIdType nids[5];
                 nids[0] =  phzl->nodelist[nloff+botcur];
                 nids[1] =  phzl->nodelist[nloff+botlast];
                 nids[2] =  phzl->nodelist[nloff+toplast];
@@ -9294,7 +9294,7 @@ avtSiloFileFormat::ReadInArbConnectivity(const char *meshname,
 
             }
 
-            int nids[8];
+            vtkIdType nids[8];
             map<int, int>::iterator it;
             if (isNotZooElement)                // Arbitrary
             {
@@ -13338,7 +13338,7 @@ TranslateSiloTetrahedronToVTKTetrahedron(const int *siloTetrahedron,
 // ****************************************************************************
 
 bool
-TetIsInverted(const int *siloTetrahedron, vtkUnstructuredGrid *ugrid)
+TetIsInverted(const vtkIdType *siloTetrahedron, vtkUnstructuredGrid *ugrid)
 {
     //
     // initialize set of 4 points of tet
