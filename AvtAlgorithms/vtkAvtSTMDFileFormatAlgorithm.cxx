@@ -183,9 +183,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
       switch(meshMetaData.meshType)
         {
-        case AVT_CSG_MESH:
-          vtkErrorMacro("Currently we do not support AVT_CSG_MESH.");
-          break;
+        case AVT_CSG_MESH:          
         case AVT_AMR_MESH:
         case AVT_RECTILINEAR_MESH:
         case AVT_CURVILINEAR_MESH:
