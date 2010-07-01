@@ -146,7 +146,7 @@ ENDIF(VISIT_STATIC)
 #-----------------------------------------------------------------------------
 
 #grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
-include(${VTK_SOURCE_DIR}/Cmake/vtkThirdParty.cmake)
+include(${VTK_SOURCE_DIR}/CMake/vtkThirdParty.cmake)
 
 
 # Set up boost (interval) library
