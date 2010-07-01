@@ -250,7 +250,6 @@ IF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
     ENDIF (HAVE_SOCKLEN_T)
 ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
 
-
 #-----------------------------------------------------------------------------
 # Create visit-config.h
 #-----------------------------------------------------------------------------
