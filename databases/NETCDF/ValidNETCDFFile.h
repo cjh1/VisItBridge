@@ -37,16 +37,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "@ARG_VISIT_INCLUDE_NAME@.h"
 #cmakedefine VISIT_READER_USES_INTERFACE  
 
-bool ValidNETCDFFile(const char *fname)
-  {
-  bool valid = true;
-#ifdef VISIT_READER_USES_INTERFACE
-  NETCDFFileObject *f = new NETCDFFileObject(fname);  
-  valid = @ARG_VISIT_READER_NAME@::Identify(f);  
-  delete f;  
-#endif    
-  return valid;
-  }
-
+namespace @PLUGIN_NAME@@ARG_VISIT_INTERFACE_FILE@
+{
+  bool ValidNETCDFFile(const char *fname)
+    {
+    bool valid = true;
+  #ifdef VISIT_READER_USES_INTERFACE
+    NETCDFFileObject *f = new NETCDFFileObject(fname);  
+    valid = @ARG_VISIT_READER_NAME@::Identify(f);  
+    delete f;  
+  #endif    
+    return valid;
+    }
+}
 #endif
 

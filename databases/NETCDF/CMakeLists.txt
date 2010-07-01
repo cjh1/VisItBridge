@@ -12,7 +12,7 @@ set(INTERFACE_MACRO_CALL "ValidNETCDFFile(fname)")
 set(INTERFACE_MACRO_FILE "ValidNETCDFFile") #needs to be a .h
 SET(INTERFACE_EXEMPT_CLASSES
   "avtBasic_STSD_NETCDFFileFormat" #catch-all class so it doesn't have a method to call
-)  
+) 
   
 SET(SOURCES
 avtBasicNETCDFFileFormat.C
