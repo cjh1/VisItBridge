@@ -135,6 +135,7 @@ PV_PLUGIN_PARSE_ARGUMENTS(ARG
 if ( NOT ARG_VISIT_INTERFACE_CALL OR NOT ARG_VISIT_INTERFACE_FILE )
   MESSAGE(FATAL_ERROR "The macro file for the file interface needs to be defined.")
 endif()
+
     
 message(STATUS "Generating wrappings for ${INTERFACE_NAME}")    
 VISIT_PLUGIN_INCLUDES()    
@@ -158,12 +159,13 @@ foreach( index RANGE ${NUM_READERS})
     #need to generate the VTK class wrapper
     string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
     
-    #determine if this file is exempt from the interface CanReadFile macro
-    set(VISIT_READER_USES_INTERFACE 1)
-    list(FIND ARG_INTERFACE_EXEMPT_CLASSES ${ARG_VISIT_READER_NAME} EXEMPT_READER)
+    #determine if this file is exempt from the interface CanReadFile macro    
+    list(FIND ARG_VISIT_INTERFACE_EXEMPT_CLASSES ${ARG_VISIT_READER_NAME} EXEMPT_READER)
     if ( EXEMPT_READER EQUAL -1 )
-        set(VISIT_READER_USES_INTERFACE 0)
-    endif()
+      set(VISIT_READER_USES_INTERFACE ON)
+    else()
+      set(VISIT_READER_USES_INTERFACE OFF)    
+    endif()    
     
     #we have to configure the macro file 
     configure_file(
