@@ -148,6 +148,13 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
       const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
       vtkstd::string name = meshMetaData.name;
 
+      //before we get the mesh see if the user wanted to load this mesh
+      if (this->MeshArraySelection &&
+        !this->MeshArraySelection->ArrayIsEnabled( name.c_str() ) )
+        {
+        continue;
+        }
+
       switch(meshMetaData.meshType)
         {
         case AVT_CSG_MESH:          
