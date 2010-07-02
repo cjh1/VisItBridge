@@ -43,12 +43,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkCellData.h"
 #include "vtkFieldData.h"
 #include "vtkPointData.h"
+#include "vtkFloatArray.h"
 
-#include "avtFileFormat.h"
-#include "avtDomainNesting.h"
 #include "avtDatabaseMetaData.h"
-#include "avtVariableCache.h"
+#include "avtDomainNesting.h"
+#include "avtFileFormat.h"
+#include "avtMaterial.h"
+#include "avtMaterialMetaData.h"
 #include "avtScalarMetaData.h"
+#include "avtVariableCache.h"
 #include "avtVectorMetaData.h"
 #include "TimingsManager.h"
 
@@ -69,6 +72,7 @@ vtkAvtFileFormatAlgorithm::vtkAvtFileFormatAlgorithm()
   this->PointDataArraySelection = vtkDataArraySelection::New();
   this->CellDataArraySelection = vtkDataArraySelection::New();
   this->MeshArraySelection = vtkDataArraySelection::New();
+  this->MaterialArraySelection = vtkDataArraySelection::New();
 
   // Setup the selection callback to modify this object when an array
   // selection is changed.
@@ -81,6 +85,8 @@ vtkAvtFileFormatAlgorithm::vtkAvtFileFormatAlgorithm()
   this->CellDataArraySelection->AddObserver(vtkCommand::ModifiedEvent,
                                             this->SelectionObserver);
   this->MeshArraySelection->AddObserver(vtkCommand::ModifiedEvent,
+                                            this->SelectionObserver);
+  this->MaterialArraySelection->AddObserver(vtkCommand::ModifiedEvent,
                                             this->SelectionObserver);
 
   //visit has this horrible singelton timer that is called in all algorithms
@@ -100,11 +106,13 @@ vtkAvtFileFormatAlgorithm::~vtkAvtFileFormatAlgorithm()
   this->CellDataArraySelection->RemoveObserver(this->SelectionObserver);
   this->PointDataArraySelection->RemoveObserver(this->SelectionObserver);
   this->MeshArraySelection->RemoveObserver(this->SelectionObserver);
+  this->MaterialArraySelection->RemoveObserver(this->SelectionObserver);
 
   this->SelectionObserver->Delete();
   this->CellDataArraySelection->Delete();
   this->PointDataArraySelection->Delete();
   this->MeshArraySelection->Delete();
+  this->MaterialArraySelection->Delete();
 }
 
 //-----------------------------------------------------------------------------
@@ -163,6 +171,9 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
   this->SetupMeshSelections();
   //setup user selection of arrays to load
   this->SetupDataArraySelections();
+
+  //setup the materials that are on all the meshes
+  this->SetupMaterialSelections();
 
   //setup the timestep and cylce info
   this->SetupTemporalInformation(outInfo);
@@ -322,11 +333,111 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       }
     vector->Delete();
     }
+
+  //now call the materials
+  this->AssignMaterials( data, meshName, timestep, domain);
 }
 
+//-----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data, 
+  const vtkStdString &meshName, const int &timestep, const int &domain )
+{
+  //now we check for materials
+  int size = this->MetaData->GetNumMaterials(); 
+  void_ref_ptr vr;
+  avtMaterial *material = NULL;
+  for ( int i=0; i < size; ++i)
+    {
+    const avtMaterialMetaData* materialMetaData = this->MetaData->GetMaterial(i);
+    if ( meshName != materialMetaData->meshName )
+      {
+      continue;
+      }    
+        
+    vtkstd::string name = materialMetaData->name;
+    //lets first try and see if the data has been cached
+    //get the aux data from the cache for the material
+    vr = this->Cache->GetVoidRef(name.c_str(),
+                    AUXILIARY_DATA_MATERIAL, timestep, domain);
+    material = reinterpret_cast<avtMaterial*>(*vr);
+    if ( !material)
+      {
+      //data wasn't cached! time to ask dataset itself
+      DestructorFunction df;
+      void* ref = this->AvtFile->GetAuxiliaryData(name.c_str(),timestep,domain,
+        AUXILIARY_DATA_MATERIAL,NULL,df);
+      if ( !ref )
+        {
+        continue;
+        }
+
+      //add the material to the cache
+      vr = void_ref_ptr(ref,df);
+      this->Cache->CacheVoidRef(name.c_str(),AUXILIARY_DATA_MATERIAL, timestep, domain, vr );
+      material = reinterpret_cast<avtMaterial*>(*vr);
+      if ( !material)      
+        {
+        continue;
+        }
+      }    
+    
+    //decompose the material class into a collection of float arrays
+    //that we will than push into vtkFloatArrays and place on the dataset
+    int numCells = material->GetNZones();
+    int mats = material->GetNMaterials();
+    float** materials = new float*[mats];
+    for ( int i=0; i < mats; ++i)
+      {
+      materials[i] = new float[numCells];
+      for ( int j=0; j > numCells; ++j)
+        {
+        materials[i][j] = 0.0;
+        }
+      }
 
 
+    const int *matlist = material->GetMatlist();
+    const int *mixMat = material->GetMixMat();
+    const int *mixNext = material->GetMixNext();
+    const float *mixValues = material->GetMixVF();
+    for ( int i=0; i < numCells; ++i)
+      {
+      if ( matlist[i] >= 0 )
+        {
+        //this material is pure
+        materials[matlist[i]][i] = 1.0;
+        }
+      else
+        {
+        float sum = 0.0;
+        int lookupIndex = (matlist[i]+1) * -1;
+        while ( sum < 1.0 )
+          {
+          materials[mixMat[lookupIndex]][i] = mixValues[lookupIndex];
+          sum += mixValues[lookupIndex];
+          if ( mixNext[lookupIndex] == 0 )
+            {
+            //just in case a material doesn't sum up to 100
+            break;
+            }
+          lookupIndex = mixNext[lookupIndex]-1;
+          }
+        }
+      }
 
+    //we now have all our arrays loaded with the material mixtures
+    //time to pass them to vtk
+    stringVector mNames = materialMetaData->materialNames;
+    for ( int i=0; i < mNames.size(); ++i)
+      {
+      vtkFloatArray* tempMaterial = vtkFloatArray::New();
+      tempMaterial->SetName( mNames.at(i).c_str() );
+      tempMaterial->SetArray(materials[i],numCells,0);
+      data->GetCellData()->AddArray( tempMaterial );
+      tempMaterial->Delete();
+      }
+    }
+}
 
 //-----------------------------------------------------------------------------
 void vtkAvtFileFormatAlgorithm::SetupTemporalInformation(
@@ -404,6 +515,7 @@ void vtkAvtFileFormatAlgorithm::SetupDataArraySelections( )
     }
   //go through the meta data and get all the scalar and vector property names
   //add them to the point & cell selection arrays for user control if they don't already exist
+  //by default all properties are disabled
   int size = this->MetaData->GetNumScalars();
   vtkstd::string name;
   for ( int i=0; i < size; ++i)
@@ -416,14 +528,14 @@ void vtkAvtFileFormatAlgorithm::SetupDataArraySelections( )
         //cell property
         if (!this->CellDataArraySelection->ArrayExists(name.c_str()))
           {
-          this->CellDataArraySelection->EnableArray(name.c_str());
+          this->CellDataArraySelection->DisableArray(name.c_str());
           }
         break;
       case AVT_NODECENT:
         //point based
         if (!this->PointDataArraySelection->ArrayExists(name.c_str()))
           {
-          this->PointDataArraySelection->EnableArray(name.c_str());
+          this->PointDataArraySelection->DisableArray(name.c_str());
           }
         break;
       case AVT_NO_VARIABLE:
@@ -444,14 +556,14 @@ void vtkAvtFileFormatAlgorithm::SetupDataArraySelections( )
         //cell property
         if (!this->CellDataArraySelection->ArrayExists(name.c_str()))
           {
-          this->CellDataArraySelection->EnableArray(name.c_str());
+          this->CellDataArraySelection->DisableArray(name.c_str());
           }
         break;
       case AVT_NODECENT:
         //point based
         if (!this->PointDataArraySelection->ArrayExists(name.c_str()))
           {
-          this->PointDataArraySelection->EnableArray(name.c_str());
+          this->PointDataArraySelection->DisableArray(name.c_str());
           }
         break;
       case AVT_NO_VARIABLE:
@@ -469,18 +581,52 @@ void vtkAvtFileFormatAlgorithm::SetupMeshSelections( )
     return;
     }
   //go through the meta data and get all the mesh names
+  //by default all meshes are disabled but the first one
   int size = this->MetaData->GetNumMeshes();
   vtkstd::string name;
   for ( int i=0; i < size; ++i)
     {
     const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);
     name = meshMetaData->name;
-    if (!this->MeshArraySelection->ArrayExists(name.c_str()))
+    if ( i == 0 && !this->MeshArraySelection->ArrayExists(name.c_str()))
       {
       this->MeshArraySelection->EnableArray(name.c_str());
       }
+    else if (!this->MeshArraySelection->ArrayExists(name.c_str()))
+      {      
+      this->MeshArraySelection->DisableArray(name.c_str());
+      }
     }
 }
+
+
+//-----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::SetupMaterialSelections()
+{
+  if (!this->MetaData)
+    {
+    return;
+    }
+  //go through the meta data and get all the material names  
+  int size = this->MetaData->GetNumMaterials();
+  vtkstd::string name;
+  for ( int i=0; i < size; ++i)
+    {
+    const avtMaterialMetaData* matMetaData = this->MetaData->GetMaterial(i);
+    //we are going to decompose the material into a separate array for each 
+    //component in the material collection.    
+    stringVector materials = matMetaData->materialNames;
+    for ( int j=0; j < materials.size(); ++j )
+      {
+      name = materials.at(j);
+      if (!this->MaterialArraySelection->ArrayExists(name.c_str()))
+        {
+        this->MaterialArraySelection->DisableArray(name.c_str());
+        }    
+      }    
+    }
+}
+
 //----------------------------------------------------------------------------
 int vtkAvtFileFormatAlgorithm::GetNumberOfPointArrays()
 {
@@ -575,6 +721,37 @@ void vtkAvtFileFormatAlgorithm::SetMeshArrayStatus(const char* name, int status)
 }
 
 //----------------------------------------------------------------------------
+int vtkAvtFileFormatAlgorithm::GetNumberOfMaterialArrays()
+{
+  return this->MaterialArraySelection->GetNumberOfArrays();
+}
+
+//----------------------------------------------------------------------------
+const char* vtkAvtFileFormatAlgorithm::GetMaterialArrayName(int index)
+{
+  return this->MaterialArraySelection->GetArrayName(index);
+}
+
+//----------------------------------------------------------------------------
+int vtkAvtFileFormatAlgorithm::GetMaterialArrayStatus(const char* name)
+{
+  return this->MaterialArraySelection->ArrayIsEnabled(name);
+}
+
+//----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::SetMaterialArrayStatus(const char* name, int status)
+{
+  if(status)
+    {
+    this->MaterialArraySelection->EnableArray(name);
+    }
+  else
+    {
+    this->MaterialArraySelection->DisableArray(name);
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkAvtFileFormatAlgorithm::SelectionModifiedCallback(vtkObject*, unsigned long,
                                              void* clientdata, void*)
 {
@@ -586,6 +763,7 @@ void vtkAvtFileFormatAlgorithm::SelectionModifiedCallback(vtkObject*, unsigned l
 void vtkAvtFileFormatAlgorithm::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
+   os << indent << "Output Type: " << this->OutputType << "\n";
 }
 
 

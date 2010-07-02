@@ -53,18 +53,13 @@ public:
   static vtkAvtFileFormatAlgorithm *New();
   vtkTypeMacro(vtkAvtFileFormatAlgorithm,vtkCompositeDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
-
-  // Description:
-  // Get the data array selection tables used to configure which data
-  // arrays are loaded by the reader.
-  vtkGetObjectMacro(PointDataArraySelection, vtkDataArraySelection);
-  vtkGetObjectMacro(CellDataArraySelection, vtkDataArraySelection);
-
+  
   // Description:
   // Get the number of point or cell arrays available in the input.
   int GetNumberOfPointArrays();
   int GetNumberOfCellArrays();
   int GetNumberOfMeshArrays();
+  int GetNumberOfMaterialArrays();
 
   // Description:
   // Get the name of the point or cell array with the given index in
@@ -72,6 +67,7 @@ public:
   const char* GetPointArrayName(int index);
   const char* GetCellArrayName(int index);
   const char* GetMeshArrayName(int index);
+  const char* GetMaterialArrayName(int index);
 
   // Description:
   // Get/Set whether the point or cell array with the given name is to
@@ -79,10 +75,12 @@ public:
   int GetPointArrayStatus(const char* name);
   int GetCellArrayStatus(const char* name);
   int GetMeshArrayStatus(const char* name);
+  int GetMaterialArrayStatus(const char* name);
 
   void SetPointArrayStatus(const char* name, int status);
   void SetCellArrayStatus(const char* name, int status);
   void SetMeshArrayStatus(const char* name, int status);
+  void SetMaterialArrayStatus(const char* name, int status);
 
 protected:
   vtkAvtFileFormatAlgorithm();
@@ -119,8 +117,11 @@ protected:
   // see algorithm for more info
   virtual int FillOutputPortInformation(int port, vtkInformation* info);
 
+  //methods that setup selection arrays that the client will interact with
   void SetupDataArraySelections();
   void SetupMeshSelections();
+  void SetupMaterialSelections();
+
   void SetupTemporalInformation(vtkInformation *outInfo);
 
   // Callback registered with the SelectionObserver.
@@ -130,6 +131,8 @@ protected:
   //BTX
   void AssignProperties( vtkDataSet *data, const vtkStdString &meshName,
     const int &timestep, const int &domain );
+  void AssignMaterials( vtkDataSet *data, const vtkStdString &meshName,
+    const int &timestep, const int &domain );
   //ETX
 
 
@@ -137,6 +140,7 @@ protected:
   vtkDataArraySelection* PointDataArraySelection;
   vtkDataArraySelection* CellDataArraySelection;
   vtkDataArraySelection* MeshArraySelection;
+  vtkDataArraySelection* MaterialArraySelection;
 
   // The observer to modify this object when the array selections are
   // modified.
