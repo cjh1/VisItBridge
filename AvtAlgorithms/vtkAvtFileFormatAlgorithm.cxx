@@ -389,7 +389,7 @@ void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data,
     for ( int i=0; i < mats; ++i)
       {
       materials[i] = new float[numCells];
-      for ( int j=0; j > numCells; ++j)
+      for ( int j=0; j < numCells; ++j)
         {
         materials[i][j] = 0.0;
         }
