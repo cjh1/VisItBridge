@@ -32,6 +32,31 @@
          Select the meshes to be loaded from the dataset, if any.
        </Documentation>
      </StringVectorProperty>
+     
+     <StringVectorProperty 
+        name="MaterialInfo"
+        information_only="1">
+        <ArraySelectionInformationHelper attribute_name="Material"/>
+     </StringVectorProperty>
+
+     <StringVectorProperty
+        name="MaterialStatus"
+        label="Materials"
+        command="SetMaterialArrayStatus"
+        number_of_elements="2" 
+        repeat_command="1"
+        number_of_elements_per_command="2"
+        element_types="2 0"
+        information_property="MaterialInfo"> 
+       <ArraySelectionDomain name="array_list">
+          <RequiredProperties>
+             <Property name="MaterialInfo" function="ArrayList"/>
+          </RequiredProperties>
+       </ArraySelectionDomain>
+       <Documentation>
+         Select the Materiales to be loaded from the dataset, if any.
+       </Documentation>
+     </StringVectorProperty>     
       
     <StringVectorProperty 
         name="CellArrayInfo"
