@@ -390,11 +390,10 @@ void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data,
       {
       materials[i] = new float[numCells];
       for ( int j=0; j < numCells; ++j)
-        {
-        materials[i][j] = 0.0;
+        {        
+        materials[i][j] = -1.0;
         }
       }
-
 
     const int *matlist = material->GetMatlist();
     const int *mixMat = material->GetMixMat();
@@ -430,11 +429,16 @@ void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data,
     stringVector mNames = materialMetaData->materialNames;
     for ( int i=0; i < mNames.size(); ++i)
       {
-      vtkFloatArray* tempMaterial = vtkFloatArray::New();
-      tempMaterial->SetName( mNames.at(i).c_str() );
-      tempMaterial->SetArray(materials[i],numCells,0);
-      data->GetCellData()->AddArray( tempMaterial );
-      tempMaterial->Delete();
+      //TODO: change this so that we check selection enabled before we
+      //decompose the avtMaterial class
+      if ( this->MaterialArraySelection->ArrayIsEnabled(mNames.at(i).c_str()) )
+        {
+        vtkFloatArray* tempMaterial = vtkFloatArray::New();
+        tempMaterial->SetName( mNames.at(i).c_str() );
+        tempMaterial->SetArray(materials[i],numCells,0);
+        data->GetCellData()->AddArray( tempMaterial );
+        tempMaterial->Delete();
+        }
       }
     }
 }
