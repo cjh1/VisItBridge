@@ -106,6 +106,11 @@ class DATABASE_API avtMTSDFileFormat : public avtFileFormat
                            avtMTSDFileFormat(const char * const *, int);
     virtual               ~avtMTSDFileFormat();
 
+    virtual void          *GetAuxiliaryData(const char *var, int time, 
+                              int domain, const char *type, void *args,
+                              DestructorFunction &df)
+      {return GetAuxiliaryData(var,time,type,args,df);};
+
     virtual void          *GetAuxiliaryData(const char *var, int,
                                             const char *type, void *args,
                                             DestructorFunction &);

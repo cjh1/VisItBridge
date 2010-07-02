@@ -181,6 +181,13 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
       const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
       vtkstd::string name = meshMetaData.name;
 
+      //before we get the mesh see if the user wanted to load this mesh
+      if (this->MeshArraySelection &&
+        !this->MeshArraySelection->ArrayIsEnabled( name.c_str() ) )
+        {
+        continue;
+        }
+
       switch(meshMetaData.meshType)
         {
         case AVT_CSG_MESH:          
@@ -227,6 +234,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
   int numGroups = meshMetaData.numGroups;
   amr->SetNumberOfLevels(numGroups);
 
+  //TODO: if the cache doesn't have the results we can ask the file format itself
   //determine the ratio for each level
   void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData.name.c_str(),
                     AUXILIARY_DATA_DOMAIN_NESTING_INFORMATION,

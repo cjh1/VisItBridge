@@ -99,6 +99,10 @@ class DATABASE_API avtSTMDFileFormat : public avtFileFormat
                            avtSTMDFileFormat(const char * const *, int);
     virtual               ~avtSTMDFileFormat();
 
+    virtual void          *GetAuxiliaryData(const char *var, int time, 
+                              int domain, const char *type, void *args,
+                              DestructorFunction &df)
+      {return GetAuxiliaryData(var,domain,type,args,df);};
     virtual void          *GetAuxiliaryData(const char *var, int,
                                             const char *type, void *args,
                                             DestructorFunction &);

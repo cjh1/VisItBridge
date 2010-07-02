@@ -51,6 +51,7 @@
 #include <string>
 #include <vector>
 
+#include <void_ref_ptr.h>
 #include <array_ref_ptr.h>
 
 #include <avtDataSelection.h>
@@ -136,7 +137,6 @@ class DATABASE_API avtFileFormat
                           avtFileFormat();
     virtual              ~avtFileFormat();
 
-
     virtual void          ActivateTimestep(void);
 
     virtual void          FreeUpResources(void);
@@ -213,6 +213,10 @@ class DATABASE_API avtFileFormat
     virtual vtkDataSet    *GetMesh(int time, int domain, const char *) = 0;
     virtual vtkDataArray  *GetVar(int time, int domain, const char *) = 0;
     virtual vtkDataArray  *GetVectorVar(int time, int domain, const char *) = 0;
+    virtual void          *GetAuxiliaryData(const char *var, int time, 
+                              int domain, const char *type, void *args,
+                              DestructorFunction &df)=0;
+
 
   protected:
     avtVariableCache     *cache;

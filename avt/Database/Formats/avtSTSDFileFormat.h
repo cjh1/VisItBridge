@@ -103,6 +103,11 @@ class DATABASE_API avtSTSDFileFormat : public avtFileFormat
 
     void                   SetTimestep(int ts) { timestep = ts; };
     void                   SetDomain(int dom) { domain = dom; };
+
+    virtual void          *GetAuxiliaryData(const char *var, int time, 
+                              int domain, const char *type, void *args,
+                              DestructorFunction &df)
+      {return GetAuxiliaryData(var,type,args,df);};
     virtual void          *GetAuxiliaryData(const char *var, const char *type,
                                             void *args, DestructorFunction &);
 
