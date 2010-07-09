@@ -54,6 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vtkUnstructuredGridRelevantPointsFilter.h"
 #include "vtkCleanPolyData.h"
+#include "vtkCSGGrid.h"
 
 #include "avtSTMDFileFormat.h"
 #include "avtDomainNesting.h"
@@ -190,7 +191,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
       switch(meshMetaData.meshType)
         {
-        case AVT_CSG_MESH:          
+        case AVT_CSG_MESH:
         case AVT_AMR_MESH:
         case AVT_RECTILINEAR_MESH:
         case AVT_CURVILINEAR_MESH:
@@ -373,7 +374,6 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
       this->AvtFile->GetMesh(timestep, i, name.c_str()) );
     if ( data )
       {
-      int points = data->GetNumberOfPoints();
       //place all the scalar&vector properties onto the data
       this->AssignProperties(data,name,timestep,i);
 
@@ -400,6 +400,24 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
         clean->Update();
         block->SetPiece(i,clean->GetOutput());
         clean->Delete();
+        }
+      else if(meshMetaData.meshType == AVT_CSG_MESH)
+        {
+        //basic uniform csg support
+        int blockIndex = i;
+        int csgRegion = 0;
+        this->MetaData->ConvertCSGDomainToBlockAndRegion(name.c_str(),
+                                                &blockIndex, &csgRegion);
+        vtkCSGGrid *csgGrid = vtkCSGGrid::SafeDownCast(data);
+        const double *bounds = csgGrid->GetBounds();
+        vtkDataSet *csgResult = csgGrid->DiscretizeSpace( csgRegion, 0.01,
+            bounds[0], bounds[1], bounds[2],
+            bounds[3], bounds[4], bounds[5]);
+        if ( csgResult )
+          {
+          block->SetPiece(i,csgResult );
+          csgResult->Delete();
+          }
         }
       else
         {

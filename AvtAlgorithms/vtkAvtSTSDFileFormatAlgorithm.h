@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkAvtFileFormatAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
 
+class vtkMultiBlockDataSet;
+
 //BTX
 class avtDatabaseMetaData;
 class avtVariableCache;
@@ -61,6 +63,8 @@ protected:
   virtual int RequestData(vtkInformation* request,
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
+
+  virtual void FillMultiBlock(vtkMultiBlockDataSet *output, const int &timestep);
 
 private:
   vtkAvtSTSDFileFormatAlgorithm(const vtkAvtSTSDFileFormatAlgorithm&);

@@ -1,6 +1,7 @@
 PROJECT(VisItSilo)
 
 SET(SOURCES
+avtSiloWriter.C
 avtSiloFileFormat.C
 avtSiloFileFormat.h
 avtSiloOptions.C
