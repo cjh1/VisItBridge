@@ -52,6 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vtkUnstructuredGridRelevantPointsFilter.h"
 #include "vtkCleanPolyData.h"
+#include "vtkCSGGrid.h"
 
 #include "avtSTSDFileFormat.h"
 #include "avtDomainNesting.h"
@@ -121,6 +122,13 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     return 0;
     }
 
+  this->FillMultiBlock(output, 0);
+  this->CleanupAVTReader();
+  return 1;
+}
+
+void vtkAvtSTSDFileFormatAlgorithm::FillMultiBlock(vtkMultiBlockDataSet *output, const int &timestep)
+{
   int size = this->MetaData->GetNumMeshes();
   if ( this->MeshArraySelection )
     {
@@ -146,11 +154,11 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
     vtkDataSet *data=NULL;
     CATCH_VISIT_EXCEPTIONS(data,
-      this->AvtFile->GetMesh(0, 0, name.c_str()) );
+      this->AvtFile->GetMesh(timestep, 0, name.c_str()) );
 
     if ( data )
       {
-      this->AssignProperties( data, name, 0, 0);
+      this->AssignProperties( data, name, timestep, 0);
 
        //clean the mesh of all points that are not part of a cell
       if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
@@ -176,6 +184,24 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
         output->SetBlock(blockIndex,clean->GetOutput());
         clean->Delete();
         }
+      else if(meshMetaData.meshType == AVT_CSG_MESH)
+        {
+        //basic uniform csg support
+        int blockIndex = i;
+        int csgRegion = 0;
+        this->MetaData->ConvertCSGDomainToBlockAndRegion(name.c_str(),
+                                                &blockIndex, &csgRegion);
+        vtkCSGGrid *csgGrid = vtkCSGGrid::SafeDownCast(data);
+        const double *bounds = csgGrid->GetBounds();
+        vtkDataSet *csgResult = csgGrid->DiscretizeSpace( csgRegion, 0.01,
+            bounds[0], bounds[1], bounds[2],
+            bounds[3], bounds[4], bounds[5]);
+        if ( csgResult )
+          {
+          output->SetBlock(i,csgResult );
+          csgResult->Delete();
+          }
+        }
       else
         {
         output->SetBlock(blockIndex,data);
@@ -185,8 +211,8 @@ int vtkAvtSTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
       ++blockIndex;
       }
     }
-  this->CleanupAVTReader();
-  return 1;
+
+
 }
 
 //-----------------------------------------------------------------------------
