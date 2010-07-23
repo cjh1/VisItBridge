@@ -44,7 +44,7 @@ class vtkDataArray;
 class vtkDataArraySelection;
 class vtkDataSet;
 class vtkHierarchicalBoxDataSet;
-class vtkMultiPieceDataSet;
+class vtkMultiBlockDataSet;
 
 
 //BTX
@@ -76,9 +76,15 @@ protected:
                           vtkInformationVector* outputVector);
 
   //BTX
-  int FillAMR( vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData &meshMetaData,
-    const int &timestep, const int &domain);
-  void FillBlock( vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData, const int &timestep);
+  int FillAMR( vtkHierarchicalBoxDataSet *amr, 
+                         const avtMeshMetaData &meshMetaData,
+                         const int &timestep, const int &domain);
+  void FillBlock( vtkMultiBlockDataSet *block, 
+                         const avtMeshMetaData &meshMetaData,
+                         const int &timestep);
+  void FillBlockWithCSG( vtkMultiBlockDataSet *block, 
+                         const avtMeshMetaData &meshMetaData,
+                         const int &timestep );
   bool ValidAMR( const avtMeshMetaData &meshMetaData );
   void GetDomainRange(const avtMeshMetaData &meshMetaData, int domain[2]);
   //ETX

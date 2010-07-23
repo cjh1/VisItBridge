@@ -39,7 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkAMRBox.h"
 #include "vtkHierarchicalBoxDataSet.h"
 #include "vtkMultiBlockDataSet.h"
-#include "vtkMultiPieceDataSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
 #include "vtkStructuredGrid.h"
@@ -141,7 +140,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
       }
 
     output->SetNumberOfBlocks( size );
-    vtkMultiPieceDataSet* tempData = NULL;
+    vtkMultiBlockDataSet* tempData = NULL;
     int blockIndex=0;
     for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
       {
@@ -165,7 +164,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         case AVT_POINT_MESH:
         case AVT_SURFACE_MESH:
         default:
-          tempData = vtkMultiPieceDataSet::New();
+          tempData = vtkMultiBlockDataSet::New();
           this->FillBlock( tempData, meshMetaData, TimeIndex );
           output->SetBlock(blockIndex,tempData);
           tempData->Delete();
