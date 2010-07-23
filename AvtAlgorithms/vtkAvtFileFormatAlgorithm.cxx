@@ -221,7 +221,7 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
 
     vtkstd::string name = scalarMeta.name;
 
-    //now check agianst what arrays the user has selected to load
+    //now check against what arrays the user has selected to load
     bool selected = false;
     if (scalarMeta.centering == AVT_ZONECENT)
       {

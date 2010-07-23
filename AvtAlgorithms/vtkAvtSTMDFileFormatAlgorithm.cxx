@@ -41,7 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkAMRBox.h"
 #include "vtkHierarchicalBoxDataSet.h"
 #include "vtkMultiBlockDataSet.h"
-#include "vtkMultiPieceDataSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
 #include "vtkStructuredGrid.h"
@@ -175,7 +174,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
       }
     output->SetNumberOfBlocks( size );
 
-    vtkMultiPieceDataSet* tempData = NULL;
+    vtkMultiBlockDataSet* tempData = NULL;
     int blockIndex=0;
     for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
       {
@@ -199,7 +198,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         case AVT_POINT_MESH:
         case AVT_SURFACE_MESH:
         default:
-          tempData = vtkMultiPieceDataSet::New();
+          tempData = vtkMultiBlockDataSet::New();
           this->FillBlock( tempData, meshMetaData, 0 );
           output->SetBlock(blockIndex,tempData);
           tempData->Delete();
@@ -356,13 +355,24 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
 
 //-----------------------------------------------------------------------------
 void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
-  vtkMultiPieceDataSet *block, const avtMeshMetaData &meshMetaData,
+  vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData,
   const int &timestep )
 {
+  if ( meshMetaData.meshType == AVT_CSG_MESH )
+    {
+    //CSG meshes do not act like any other block
+    //so it has a seperate method.
+    this->FillBlockWithCSG(block, meshMetaData, timestep );
+    return;
+    }
+
   vtkstd::string name = meshMetaData.name;
+  
+  //block names 
+  stringVector blockNames = meshMetaData.blockNames;
 
   //set the number of pieces in the block
-  block->SetNumberOfPieces( meshMetaData.numBlocks );
+  block->SetNumberOfBlocks( meshMetaData.numBlocks );
 
   int domainRange[2];
   this->GetDomainRange( meshMetaData, domainRange );
@@ -374,8 +384,9 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
       this->AvtFile->GetMesh(timestep, i, name.c_str()) );
     if ( data )
       {
-      //place all the scalar&vector properties onto the data
+      
       this->AssignProperties(data,name,timestep,i);
+      
 
       //clean the mesh of all points that are not part of a cell
       if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
@@ -385,7 +396,7 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
             vtkUnstructuredGridRelevantPointsFilter::New();
         clean->SetInput( ugrid );
         clean->Update();
-        block->SetPiece(i,clean->GetOutput());
+        block->SetBlock(i,clean->GetOutput());
         clean->Delete();
         }
       else if(meshMetaData.meshType == AVT_SURFACE_MESH)
@@ -398,36 +409,55 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
         clean->ConvertPolysToLinesOff();
         clean->ConvertLinesToPointsOff();
         clean->Update();
-        block->SetPiece(i,clean->GetOutput());
+        block->SetBlock(i,clean->GetOutput());
         clean->Delete();
-        }
-      else if(meshMetaData.meshType == AVT_CSG_MESH)
-        {
-        //basic uniform csg support
-        int blockIndex = i;
-        int csgRegion = 0;
-        this->MetaData->ConvertCSGDomainToBlockAndRegion(name.c_str(),
-                                                &blockIndex, &csgRegion);
-        vtkCSGGrid *csgGrid = vtkCSGGrid::SafeDownCast(data);
-        const double *bounds = csgGrid->GetBounds();
-        vtkDataSet *csgResult = csgGrid->DiscretizeSpace( csgRegion, 0.01,
-            bounds[0], bounds[1], bounds[2],
-            bounds[3], bounds[4], bounds[5]);
-        if ( csgResult )
-          {
-          block->SetPiece(i,csgResult );
-          csgResult->Delete();
-          }
-        }
+        }      
       else
-        {
-        block->SetPiece(i,data);
+        {      
+        block->SetBlock(i,data);
         }
+      block->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),
+                                 blockNames.at(i).c_str());
       data->Delete();
       }
     }
 }
 
+//-----------------------------------------------------------------------------
+void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
+  vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData,
+  const int &timestep )
+{
+
+  vtkstd::string meshName = meshMetaData.name;
+
+  int domainRange[2];
+  this->GetDomainRange( meshMetaData, domainRange );
+
+  for ( int i=domainRange[0]; i < domainRange[1]; ++i )
+    {    
+    //basic uniform csg support
+    int blockIndex = i;
+    int csgRegion = 0;        
+    this->MetaData->ConvertCSGDomainToBlockAndRegion(meshName.c_str(),
+      &blockIndex, &csgRegion); 
+
+    vtkDataSet *data=NULL;
+    CATCH_VISIT_EXCEPTIONS(data,
+      this->AvtFile->GetMesh(timestep, i, meshName.c_str()) );
+
+    vtkCSGGrid *csgGrid = vtkCSGGrid::SafeDownCast(data);
+    const double *bounds = csgGrid->GetBounds();
+    vtkDataSet *csgResult = csgGrid->DiscretizeSpace( blockIndex, 0.01,
+      bounds[0], bounds[1], bounds[2],
+      bounds[3], bounds[4], bounds[5]);
+    if ( csgResult )
+      {          
+      block->SetBlock(i,csgResult );
+      csgResult->Delete();
+      }
+    }
+}
 //-----------------------------------------------------------------------------
 bool vtkAvtSTMDFileFormatAlgorithm::ValidAMR( const avtMeshMetaData &meshMetaData )
 {
@@ -504,7 +534,7 @@ void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData &meshMe
   //1 == load the whole data
   if ( this->UpdateNumPieces > 1 )
     {
-    //determine which domains in this mesh this processor is reponsible for
+    //determine which domains in this mesh this processor is responsible for
     float percent = (1.0 / this->UpdateNumPieces) * numBlock;
     domain[0] = percent * this->UpdatePiece;
     domain[1] = (percent * this->UpdatePiece) + percent;
