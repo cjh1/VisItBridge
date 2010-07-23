@@ -368,8 +368,9 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
 
   vtkstd::string name = meshMetaData.name;
   
-  //block names 
+  //block names   
   stringVector blockNames = meshMetaData.blockNames;
+  int numBlockNames = blockNames.size();
 
   //set the number of pieces in the block
   block->SetNumberOfBlocks( meshMetaData.numBlocks );
@@ -383,10 +384,8 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
     CATCH_VISIT_EXCEPTIONS(data,
       this->AvtFile->GetMesh(timestep, i, name.c_str()) );
     if ( data )
-      {
-      
+      {      
       this->AssignProperties(data,name,timestep,i);
-      
 
       //clean the mesh of all points that are not part of a cell
       if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
@@ -416,8 +415,11 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
         {      
         block->SetBlock(i,data);
         }
-      block->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),
+      if ( i < numBlockNames)
+        {
+        block->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),
                                  blockNames.at(i).c_str());
+        }
       data->Delete();
       }
     }
@@ -428,8 +430,13 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
   vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData,
   const int &timestep )
 {
+  //this still does not support multi-block csg meshes
 
   vtkstd::string meshName = meshMetaData.name;
+
+  //block names   
+  stringVector blockNames = meshMetaData.blockNames;
+  int numBlockNames = blockNames.size();
 
   int domainRange[2];
   this->GetDomainRange( meshMetaData, domainRange );
@@ -444,17 +451,24 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
 
     vtkDataSet *data=NULL;
     CATCH_VISIT_EXCEPTIONS(data,
-      this->AvtFile->GetMesh(timestep, i, meshName.c_str()) );
-
+      this->AvtFile->GetMesh(timestep, i, meshName.c_str()) );    
     vtkCSGGrid *csgGrid = vtkCSGGrid::SafeDownCast(data);
-    const double *bounds = csgGrid->GetBounds();
-    vtkDataSet *csgResult = csgGrid->DiscretizeSpace( blockIndex, 0.01,
-      bounds[0], bounds[1], bounds[2],
-      bounds[3], bounds[4], bounds[5]);
-    if ( csgResult )
-      {          
-      block->SetBlock(i,csgResult );
-      csgResult->Delete();
+    if ( csgGrid )
+      {
+      const double *bounds = csgGrid->GetBounds();
+      vtkDataSet *csgResult = csgGrid->DiscretizeSpace( csgRegion, 0.01,
+        bounds[0], bounds[1], bounds[2],
+        bounds[3], bounds[4], bounds[5]);
+      if ( csgResult )
+        {          
+        block->SetBlock(i, csgResult );
+        csgResult->Delete();
+        if ( i < numBlockNames)
+          {
+          block->GetMetaData(i)->Set(vtkCompositeDataSet::NAME(),
+                                 blockNames.at(i).c_str());
+          }
+        }
       }
     }
 }
