@@ -18,23 +18,7 @@ set(VISIT_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake )
 
 #include the visit install target and plugin function
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
-
-# Testing and dashboard setup
-option(BUILD_TESTING "Build VisItBridge Testing" ON)
-if(BUILD_TESTING)
-  set(VISIT_TEST_DIR ${VISIT_BINARY_DIR}/Testing/Temporary)
-  make_directory(${VISIT_TEST_DIR})
-  enable_testing()
-  include (CTest)
-endif(BUILD_TESTING)
-
-# Configure data directory
-FIND_PATH(VISIT_DATA_ROOT ViSiTBridge.readme
-  ${VISIT_SOURCE_DIR}/VisItBridgeData
-  ${VISIT_SOURCE_DIR}/../VisItBridgeData
-  $ENV{VISIT_DATA_ROOT}
-  )
-  
+ 
 #set up LIBRARY_OUTPUT_PATH
 set(LIBRARY_OUTPUT_PATH ${VISIT_BINARY_DIR}/bin ) 
 
@@ -145,10 +129,6 @@ ENDIF(VISIT_STATIC)
 # Setup lib settings
 #-----------------------------------------------------------------------------
 
-#grab the third party macros from vtk, also have to recreate the VTK_BINARY_DIR variable
-include(${VTK_SOURCE_DIR}/CMake/vtkThirdParty.cmake)
-
-
 # Set up boost (interval) library
 set(HAVE_BILIB 1)
 set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0    CACHE PATH "Path to boost lib")
@@ -160,26 +140,16 @@ set(HAVE_NETCDF_H 1)
 set(HAVE_LIBEXODUSII 1)
 
 # Setup SILO
-option(USE_SILO "Use SILO library" OFF)
-if(USE_SILO)
-  find_package(SILO)
+if(PARAVIEW_USE_SILO)
   #needed by the visit configure header
   include_directories(${SILO_INCLUDE_DIR})
   set(HAVE_LIBSILO ${SILO_FOUND})  
-endif(USE_SILO)
+endif(PARAVIEW_USE_SILO)
 
 #setup zlib
-VTK_THIRD_PARTY_OPTION(ZLIB zlib)  
-VISIT_VTK_THIRD_PARTY_INCLUDE(ZLIB vtkzlib)
-if (VTK_USE_SYSTEM_ZLIB)
-  CHECK_INCLUDE_FILES (zlib.h      HAVE_ZLIB_H)  
-else()
-  #we are using vtkzlib, we don't need to check if we have it
-  set(HAVE_ZLIB_H 1) 
-endif()
+include_directories(${VTK_ZLIB_INCLUDE_DIRS})
 
 #setup png
-VTK_THIRD_PARTY_OPTION(PNG png)
 VISIT_VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 
 
