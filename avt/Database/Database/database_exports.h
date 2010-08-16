@@ -39,7 +39,7 @@
 #ifndef DATABASE_EXPORTS_H
 #define DATABASE_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTDATABASE_EXPORTS) || defined(avtdatabase_ser_EXPORTS) || defined(avtdatabase_par_EXPORTS)
 #define DATABASE_API __declspec(dllexport)
 #else

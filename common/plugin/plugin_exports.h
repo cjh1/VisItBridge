@@ -39,7 +39,7 @@
 #ifndef PLUGIN_EXPORTS_H
 #define PLUGIN_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # if defined(PLUGIN_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define PLUGIN_API  __declspec(dllexport)
 #   define PLUGIN_API2 __declspec(dllexport)

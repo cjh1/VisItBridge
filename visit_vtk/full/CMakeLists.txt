@@ -40,6 +40,7 @@
 #   a rounding scheme is available. 
 #
 #****************************************************************************/
+project(visit_vtk)
 
 SET(VISIT_VTK_SOURCES
 InitVTK.C
@@ -113,7 +114,7 @@ get_directory_property(tmp_include_dirs INCLUDE_DIRECTORIES)
 set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
   "${VISIT_SOURCE_DIR}/parser;${tmp_include_dirs}")
 
-  ADD_LIBRARY(visit_vtk ${VISIT_VTK_SOURCES})
+ADD_LIBRARY(visit_vtk ${VISIT_VTK_SOURCES})
 TARGET_LINK_LIBRARIES(visit_vtk lightweight_visit_vtk vtkGraphics vtkImaging vtktiff)
 
 VISIT_INSTALL_TARGETS(visit_vtk)

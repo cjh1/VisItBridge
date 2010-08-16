@@ -39,7 +39,7 @@
 #ifndef AVTFILTERS_EXPORTS_H
 #define AVTFILTERS_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTFILTERS_EXPORTS) || defined(avtfilters_ser_EXPORTS) || defined(avtfilters_par_EXPORTS)
 #define AVTFILTERS_API __declspec(dllexport)
 #else

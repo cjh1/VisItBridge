@@ -39,7 +39,7 @@
 #ifndef EXPRESSION_EXPORTS_H
 #define EXPRESSION_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTEXPRESSION_EXPORTS) || defined(avtexpressions_ser_EXPORTS) || defined(avtexpressions_par_EXPORTS)
 #define EXPRESSION_API __declspec(dllexport)
 #else

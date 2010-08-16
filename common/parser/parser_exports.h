@@ -39,7 +39,7 @@
 #ifndef PARSER_EXPORTS_H
 #define PARSER_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(_WIN32) && (BUILD_SHARED_LIBS)
 # if defined(PARSER_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define PARSER_API  __declspec(dllexport)
 #   define PARSER_API2 __declspec(dllexport)

@@ -39,8 +39,8 @@
 #ifndef MISC_EXPORTS_H
 #define MISC_EXPORTS_H
 
-#if defined(_WIN32)
-# if defined(MISC_EXPORTS) || defined(visitcommon_EXPORTS)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
+#if defined(MISC_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define MISC_API  __declspec(dllexport)
 #   define MISC_API2 __declspec(dllexport)
 # else

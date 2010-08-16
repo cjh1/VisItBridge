@@ -39,7 +39,7 @@
 #ifndef STATE_EXPORTS_H
 #define STATE_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # if defined(STATE_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define STATE_API __declspec(dllexport)
 # else

@@ -39,7 +39,7 @@
 #ifndef VISWINDOW_EXPORTS_H
 #define VISWINDOW_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(VISWINDOW_EXPORTS) || defined(avtviswindow_ser_EXPORTS) || defined(avtviswindow_par_EXPORTS)
 #define VISWINDOW_API  __declspec(dllexport)
 #define VISWINDOW_API2 __declspec(dllexport)

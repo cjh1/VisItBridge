@@ -62,7 +62,7 @@
 // ****************************************************************************
 // Method: ParentProcess::ParentProcess
 //
-// Purpose: 
+// Purpose:
 //   Constructor for the ParentProcess class. This method reads
 //   through the list of arguments given to it and removes any
 //   having to do with the setup of sockets. It then uses the
@@ -70,9 +70,9 @@
 //
 // Arguments:
 //
-// Returns:    
+// Returns:
 //
-// Note:       
+// Note:
 //    Note that in this class, -rport corresponds to write instead
 //    of read and vice-versa. This is because we're now on tbe other
 //    side of the socket and have to reverse.
@@ -114,7 +114,7 @@ ParentProcess::ParentProcess() : version(VISIT_VERSION), localUserName()
 // ****************************************************************************
 // Method: ParentProcess::~ParentProcess
 //
-// Purpose: 
+// Purpose:
 //   Destructor for the ParentProcess class. It closes any open file
 //   descriptors.
 //
@@ -188,7 +188,7 @@ ParentProcess::~ParentProcess()
 // ****************************************************************************
 // Method: ParentProcess::SetVersion
 //
-// Purpose: 
+// Purpose:
 //   Sets the version string reported back to RemoteProcess.
 //
 // Arguments:
@@ -198,7 +198,7 @@ ParentProcess::~ParentProcess()
 // Creation:   Thu Apr 26 15:59:26 PST 2001
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -210,7 +210,7 @@ ParentProcess::SetVersion(const std::string &ver)
 // ****************************************************************************
 // Method: ParentProcess::Connect
 //
-// Purpose: 
+// Purpose:
 //   Reads the command line arguments and removes -rhost, -rport,
 //  -wport. Once these arguments have been read, it uses the
 //   information that was passed to create sockets to talk to the
@@ -222,16 +222,16 @@ ParentProcess::SetVersion(const std::string &ver)
 //    createSockets : Set this to true if you want the routine to
 //                    create sockets as it digests the command line
 //                    arguments. This was added to support parallel.
-// Returns:    
+// Returns:
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Fri Jul 21 16:44:46 PST 2000
 //
 // Modifications:
 //    Jeremy Meredith, Tue Aug  8 13:49:42 PDT 2000
-//    Changed it to allow more than one read/write socket.   
+//    Changed it to allow more than one read/write socket.
 //
 //    Brad Whitlock, Wed Nov 1 14:28:27 PST 2000
 //    I made it ignore more than one well-formed occurrance of
@@ -259,13 +259,13 @@ ParentProcess::SetVersion(const std::string &ver)
 //    Brad Whitlock, Tue Jan 17 14:26:09 PST 2006
 //    Added debug logging.
 //
-//    Kathleen Bonnell, Wed Aug  8 14:48:58 PDT 2007 
+//    Kathleen Bonnell, Wed Aug  8 14:48:58 PDT 2007
 //    Search for '-rawmap' which can replace '-host' with some implementations
 //    of openmpi (mpirun translates the -host arg passed to visit, and sends
 //    out '-rawmap 1 <hostname>').
 //
-//    Kathleen Bonnell, Thu Aug  9 10:12:18 PDT 2007 
-//    Moved '-rawmap' test to just after '-host' test. 
+//    Kathleen Bonnell, Thu Aug  9 10:12:18 PDT 2007
+//    Moved '-rawmap' test to just after '-host' test.
 //
 //    Brad Whitlock, Tue Apr 14 15:13:07 PDT 2009
 //    I made it return true if any connections were created.
@@ -283,7 +283,7 @@ ParentProcess::Connect(int numRead, int numWrite, int *argc, char **argv[],
     int  i, deleteCount = 0, port = 0;
 
     // Log the arguments.
-    debug5 << mName << "Called with (numRead=" << numRead 
+    debug5 << mName << "Called with (numRead=" << numRead
            << ", numWrite=" << numWrite
            << ", argc=" << *argc
            << ", argv={";
@@ -429,7 +429,7 @@ ParentProcess::Connect(int numRead, int numWrite, int *argc, char **argv[],
 // ****************************************************************************
 // Method: ParentProcess::ExchangeTypeRepresentations
 //
-// Purpose: 
+// Purpose:
 //   Exchanges the machine's type representation with that of the
 //   machine on the other end of the sockets. It then puts that
 //   type representation into the write sockets. Conversion is disabled
@@ -485,7 +485,7 @@ ParentProcess::ExchangeTypeRepresentations(int failCode)
                            header.GetSocketKey(), failCode);
 
         // Now that we have the type representation for the remote machine,
-        // if it is the same as the local type representation, turn off 
+        // if it is the same as the local type representation, turn off
         // conversion in the write connections. Otherwise, set it into all
         // of the write sockets.
         if(local == header.GetTypeRepresentation())
@@ -515,14 +515,14 @@ ParentProcess::ExchangeTypeRepresentations(int failCode)
 // ****************************************************************************
 // Method: ParentProcess::GetHostName
 //
-// Purpose: 
+// Purpose:
 //   Returns the host name on which the parent process is running.
 //
 // Programmer: Brad Whitlock
 // Creation:   Fri Jul 21 15:26:34 PST 2000
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 const std::string &
@@ -578,7 +578,7 @@ ParentProcess::GetApparentHostName()
 // ****************************************************************************
 // Method: ParentProcess::GetUserName
 //
-// Purpose: 
+// Purpose:
 //   Returns the user name.
 //
 // Returns:    The user name.
@@ -587,7 +587,7 @@ ParentProcess::GetApparentHostName()
 // Creation:   Thu Apr 11 15:43:34 PST 2002
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 std::string
@@ -615,7 +615,7 @@ ParentProcess::GetTheUserName() const
 // ****************************************************************************
 // Method: ParentProcess::GetReadConnection
 //
-// Purpose: 
+// Purpose:
 //   Gets a pointer to the i'th read connection.
 //
 // Arguments:
@@ -623,13 +623,13 @@ ParentProcess::GetTheUserName() const
 //
 // Returns:    A pointer to the i'th read connection, or 0.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Oct 5 18:36:52 PST 2000
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 Connection *
@@ -641,7 +641,7 @@ ParentProcess::GetReadConnection(int i) const
 // ****************************************************************************
 // Method: ParentProcess::GetWriteConnection
 //
-// Purpose: 
+// Purpose:
 //   Gets a pointer to the i'th write connection.
 //
 // Arguments:
@@ -649,13 +649,13 @@ ParentProcess::GetReadConnection(int i) const
 //
 // Returns:    A pointer to the i'th write connection, or 0.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Oct 5 18:36:52 PST 2000
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 Connection *
@@ -667,17 +667,17 @@ ParentProcess::GetWriteConnection(int i) const
 // ****************************************************************************
 // Method: ParentProcess::GetClientSocketDescriptor
 //
-// Purpose: 
+// Purpose:
 //   Connects to a socket on the parent process. It uses the hostname
 //   that was specified with the -rhost argument and the port number
 //   is passed in.
 //
 // Arguments:
 //
-// Returns:    
+// Returns:
 //   A socket descriptor if successful, -1 if not successful.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Fri Jul 21 15:11:55 PST 2000
@@ -698,16 +698,16 @@ ParentProcess::GetWriteConnection(int i) const
 //   Hank Childs, Wed Dec 19 08:51:45 PST 2007
 //   Added print statement.
 //
-//   Kathleen Bonnell, Thu Mar 20 08:02:44 PDT 2008 
+//   Kathleen Bonnell, Thu Mar 20 08:02:44 PDT 2008
 //   Added possbile IP resolution failure to the error message for non-windows.
 //
 //   Jeremy Meredith, Tue Jun 24 11:09:25 EDT 2008
 //   Added error text to connect failure message via strerror.
 //
-//   Kathleen Bonnell, Wed Sep 10 11:16:00 PDT 2008 
-//   Restructured to allow looping over all ips in h_addr_list until a 
+//   Kathleen Bonnell, Wed Sep 10 11:16:00 PDT 2008
+//   Restructured to allow looping over all ips in h_addr_list until a
 //   connection is completed, or there are no more ips.
-// 
+//
 // ****************************************************************************
 
 int
@@ -727,9 +727,9 @@ ParentProcess::GetClientSocketDescriptor(int port)
     if (hp == NULL)
         return -1;
 
-    // 
+    //
     // Create a socket.
-    // 
+    //
     debug5 << mName << "Creating a socket" << endl;
 #ifdef _WIN32
     s = socket(AF_INET, SOCK_STREAM, 0);
@@ -739,10 +739,10 @@ ParentProcess::GetClientSocketDescriptor(int port)
         return -1;
     }
 
-    // Disable the Nagle algorithm 
+    // Disable the Nagle algorithm
     debug5 << mName << "Setting socket options" << endl;
     int opt = 1;
-    if(setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (const char FAR *)&opt, 
+    if(setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (const char FAR *)&opt,
                   sizeof(int)) == SOCKET_ERROR)
     {
         LogWindowsSocketError(mName, "setsockopt");
@@ -754,7 +754,7 @@ ParentProcess::GetClientSocketDescriptor(int port)
         return -1;
     }
 
-    // Disable the Nagle algorithm 
+    // Disable the Nagle algorithm
     debug5 << mName << "Setting socket options" << endl;
     int opt = 1;
     setsockopt(s, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(int));
@@ -770,7 +770,7 @@ ParentProcess::GetClientSocketDescriptor(int port)
         memcpy(&(server.sin_addr), hp->h_addr_list[i], hp->h_length);
         server.sin_family = hp->h_addrtype;
         server.sin_port = htons(port);
-    
+
 
         debug5 << mName << "Calling connect" << endl;
         debug5 << "(If you see no messages after this one, VisIt was not\n"
@@ -810,7 +810,7 @@ ParentProcess::GetClientSocketDescriptor(int port)
 // ****************************************************************************
 // Method: ParentProcess::GetHostInfo
 //
-// Purpose: 
+// Purpose:
 //   Gets the host information using the hostName string. This is
 //   broken out from GetClientSocketDescriptor so the host information
 //   only has to be queried one time.
@@ -821,7 +821,7 @@ ParentProcess::GetClientSocketDescriptor(int port)
 // Modifications:
 //   Brad Whitlock, Fri May 12 11:50:15 PDT 2006
 //   Added more extensive debug logging for the Windows platform.
-//   
+//
 // ****************************************************************************
 
 void
@@ -845,7 +845,7 @@ ParentProcess::GetHostInfo()
 // ****************************************************************************
 // Method: ParentProcess::GetLocalUserName
 //
-// Purpose: 
+// Purpose:
 //   Gets the local user's name.
 //
 // Returns:    A reference to the local user name.

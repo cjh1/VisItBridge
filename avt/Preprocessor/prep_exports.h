@@ -39,7 +39,7 @@
 #ifndef PREP_EXPORTS_H
 #define PREP_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #ifdef PREP_EXPORTS
 #define PREP_API __declspec(dllexport)
 #else

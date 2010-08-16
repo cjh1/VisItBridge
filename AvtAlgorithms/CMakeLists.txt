@@ -1,4 +1,4 @@
-PROJECT(AVTALGORITHMS)
+PROJECT(vtkVisItAVTAlgorithms)
 
 SET(SOURCES
 vtkAvtFileFormatAlgorithm.h
@@ -12,9 +12,15 @@ vtkAvtSTSDFileFormatAlgorithm.cxx
 vtkAvtSTMDFileFormatAlgorithm.h
 vtkAvtSTMDFileFormatAlgorithm.cxx
 )
-
+#########################################################################
+SET (dynamicHeaders "${dynamicHeaders};${PVFilters_BINARY_DIR}/vtkPVFiltersConfig.h")
+CONFIGURE_FILE(${PVFilters_SOURCE_DIR}/vtkPVFiltersConfig.h.in
+  ${PVFilters_BINARY_DIR}/vtkPVFiltersConfig.h
+  ESCAPE_QUOTES)
+  
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/vtkAvtAlgorithmsExport.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
+ set(dynamicHeaders "$dynamicHeaders;${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
 
 INCLUDE_DIRECTORIES(
 ${CMAKE_CURRENT_SOURCE_DIR}
@@ -36,8 +42,9 @@ ${VISIT_SOURCE_DIR}/visit_vtk/full
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
-ADD_PARAVIEW_PLUGIN(AVTAlgorithms "1.0"
-  SERVER_MANAGER_SOURCES ${SOURCES}
-  )
+ADD_LIBRARY(vtkVisItAVTAlgorithms ${SOURCES})
+TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk vtkPVServerManager)
 
-TARGET_LINK_LIBRARIES(AVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk)
+#Install
+#-------------------------------------------------------------------------------------------------
+VISIT_INSTALL_TARGETS(vtkVisItAVTAlgorithms "${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")

@@ -39,7 +39,7 @@
 #ifndef PROXYBASE_EXPORTS_H
 #define PROXYBASE_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # if defined(PROXYBASE_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define PROXYBASE_API __declspec(dllexport)
 # else

@@ -33,12 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _vtkAvtAlgorithmsExport_h
 #define _vtkAvtAlgorithmsExport_h
 
-#ifndef BUILD_SHARED_LIBS
-#cmakedefine BUILD_SHARED_LIBS
-#endif
-
-#if defined(WIN32) && defined(BUILD_SHARED_LIBS)
-# if defined(AVTAlgorithms_EXPORTS)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
+# if defined(vtkVisItAVTAlgorithms_EXPORTS)
 #   define AVTALGORITHMS_EXPORT __declspec(dllexport)
 # else
 #   define AVTALGORITHMS_EXPORT __declspec(dllimport)

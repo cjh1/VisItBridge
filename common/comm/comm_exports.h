@@ -39,7 +39,7 @@
 #ifndef COMM_EXPORTS_H
 #define COMM_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # define DESCRIPTOR unsigned int
 # if defined(COMM_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define COMM_API  __declspec(dllexport)

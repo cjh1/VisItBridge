@@ -39,7 +39,7 @@
 #ifndef DBATTS_EXPORTS_H
 #define DBATTS_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTDBATTS_EXPORTS) || defined(avtdbatts_EXPORTS)
 #define DBATTS_API __declspec(dllexport)
 #else

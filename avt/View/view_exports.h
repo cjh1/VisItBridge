@@ -39,7 +39,7 @@
 #ifndef AVTVIEW_EXPORTS_H
 #define AVTVIEW_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTVIEW_EXPORTS) || defined(avtview_EXPORTS)
 #define AVTVIEW_API __declspec(dllexport)
 #else

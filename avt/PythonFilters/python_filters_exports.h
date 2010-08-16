@@ -39,7 +39,7 @@
 #ifndef AVTPYTHON_FILTERS_EXPORTS_H
 #define AVTPYTHON_FILTERS_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTPYTHONFILTERS_EXPORTS) || defined(avtpythonfilters_ser_EXPORTS) || defined(avtpythonfilters_par_EXPORTS) 
 #define AVTPYTHON_FILTERS_API __declspec(dllexport)
 #else

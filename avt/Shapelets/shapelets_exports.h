@@ -39,7 +39,7 @@
 #ifndef AVTSHAPELETS_EXPORTS_H
 #define AVTSHAPELETS_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTSHAPELETS_EXPORTS) || defined(avtshapelets_EXPORTS)
 #define AVTSHAPELETS_API __declspec(dllexport)
 #else

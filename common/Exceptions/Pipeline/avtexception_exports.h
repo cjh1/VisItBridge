@@ -39,7 +39,7 @@
 #ifndef AVTEXCEPTION_EXPORTS_H
 #define AVTEXCEPTION_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # if defined(AVTEXCEPTION_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define AVTEXCEPTION_API __declspec(dllexport)
 # else

@@ -39,7 +39,7 @@
 #ifndef Operator_PLUGIN_EXPORTS_H
 #define Operator_PLUGIN_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # define OP_EXPORT __declspec(dllexport)
 #else
 # if __GNUC__ >= 4

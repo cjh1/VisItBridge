@@ -7,9 +7,8 @@ avtEnzoFileFormat.C
 
 ADD_VISIT_READER(VisItEnzoReader "1.0"  
   VISIT_READER_TYPE "STMD"
-  VISIT_READER_NAME "avtEnzoFileFormat"  
-  VISIT_READER_FILE_PATTERN "hierarchy boundary"
-  SERVER_SOURCES ${SOURCES}  
-  )
+  VISIT_READER_NAME "avtEnzoFileFormat"    
+  SERVER_SOURCES ${SOURCES}    
+  ) 
 
-TARGET_LINK_LIBRARIES(VisItEnzoReader ${PARAVIEW_HDF5_LIBRARIES} AVTAlgorithms)
+TARGET_LINK_LIBRARIES(VisItEnzoReader ${PARAVIEW_HDF5_LIBRARIES} vtkVisItAVTAlgorithms)  

@@ -39,7 +39,7 @@
 #ifndef MIR_EXPORTS_H
 #define MIR_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTMIR_EXPORTS) || defined(avtmir_ser_EXPORTS) || defined(avtmir_par_EXPORTS)
 #define MIR_API __declspec(dllexport)
 #else

@@ -39,7 +39,7 @@
 #ifndef PLOTTER_EXPORTS_H
 #define PLOTTER_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTPLOTTER_EXPORTS) || defined(avtplotter_ser_EXPORTS) || defined(avtplotter_par_EXPORTS)
 #define PLOTTER_API __declspec(dllexport)
 #else

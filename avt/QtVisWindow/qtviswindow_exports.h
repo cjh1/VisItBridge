@@ -39,7 +39,7 @@
 #ifndef QTVISWINDOW_EXPORTS_H
 #define QTVISWINDOW_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTQTVISWINDOW_EXPORTS) || defined (avtqtviswindow_EXPORTS)
 #define QTVISWINDOW_API __declspec(dllexport)
 #else

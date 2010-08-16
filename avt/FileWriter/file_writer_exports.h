@@ -39,7 +39,7 @@
 #ifndef AVTFILEWRITER_EXPORTS_H
 #define AVTFILEWRITER_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTWRITER_EXPORTS) || defined(avtwriter_ser_EXPORTS) || defined(avtwriter_par_EXPORTS)
 #define AVTFILEWRITER_API __declspec(dllexport)
 #else

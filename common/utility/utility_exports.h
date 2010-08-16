@@ -39,7 +39,7 @@
 #ifndef UTILITY_EXPORTS_H
 #define UTILITY_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 # if defined(UTILITY_EXPORTS) || defined(visitcommon_EXPORTS)
 #   define UTILITY_API __declspec(dllexport)
 # else

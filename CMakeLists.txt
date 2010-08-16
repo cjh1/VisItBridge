@@ -11,10 +11,21 @@ IF (COMMAND cmake_policy)
 ENDIF (COMMAND cmake_policy)
 
 #set up some vars we need to compile
-set(BUILD_SHARED_LIBS ${PARAVIEW_BUILD_SHARED_LIBS})
+set(VISIT_STATIC)
+if (BUILD_SHARED_LIBS)
+  set(VISIT_STATIC 0)  
+  add_definitions(-DVISIT_BUILD_SHARED_LIBS)
+else(VISIT_STATIC)
+  set(VISIT_STATIC 1)
+  add_definitions(-DVISIT_STATIC -DGLEW_STATIC)
+endif()
+
 set(VISIT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(VISIT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(VISIT_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake )
+
+#include the visit cmake directory on the cmake search path
+SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${VISIT_CMAKE_DIR})
 
 #include the visit install target and plugin function
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
@@ -32,11 +43,11 @@ ENDIF(VTK_USE_MPI)
 #block out most of the warnings in visit on windows
 IF (WIN32)
   ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
-  IF ("${VISIT_MSVC_VERSION}" STREQUAL "MSVC80")
+  IF (MSVC_VERSION GREATER 1400)
       ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
       ADD_DEFINITIONS(-D_SCL_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
       ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
-  ENDIF ("${VISIT_MSVC_VERSION}" STREQUAL "MSVC80")
+  ENDIF (MSVC_VERSION GREATER 1400)
 ENDIF(WIN32)  
 
 #-----------------------------------------------------------------------------
@@ -109,7 +120,11 @@ ENDIF(WIN32)
 
 # Check for plugin extension
 IF(VISIT_STATIC)
-    SET(VISIT_PLUGIN_EXTENSION   ".a")
+  IF(WIN32)
+    SET(VISIT_PLUGIN_EXTENSION   ".dll")
+  ELSE(WIN32)
+    SET(VISIT_PLUGIN_EXTENSION   ".lib")    
+  ENDIF(WIN32)
 ELSE(VISIT_STATIC)
     IF(WIN32)
         SET(VISIT_PLUGIN_EXTENSION   ".dll")
@@ -231,4 +246,3 @@ add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(AvtAlgorithms)
 add_subdirectory(databases)
-

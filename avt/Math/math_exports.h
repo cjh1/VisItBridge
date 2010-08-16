@@ -39,7 +39,7 @@
 #ifndef MATH_EXPORTS_H
 #define MATH_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTMATH_EXPORTS) || defined(avtmath_EXPORTS)
 #define MATH_API __declspec(dllexport)
 #else

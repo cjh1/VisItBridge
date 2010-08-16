@@ -39,7 +39,7 @@
 #ifndef AVTDDF_EXPORTS_H
 #define AVTDDF_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTDDF_EXPORTS) || defined(avtddf_ser_EXPORTS) || defined(avtddf_par_EXPORTS) 
 #define AVTDDF_API __declspec(dllexport)
 #else

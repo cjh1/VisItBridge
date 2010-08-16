@@ -39,7 +39,7 @@
 #ifndef QUERY_EXPORTS_H
 #define QUERY_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTQUERY_EXPORTS) || defined(avtquery_ser_EXPORTS) || defined(avtquery_par_EXPORTS)
 #define QUERY_API __declspec(dllexport)
 #else

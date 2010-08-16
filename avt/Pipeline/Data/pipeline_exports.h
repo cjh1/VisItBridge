@@ -39,7 +39,7 @@
 #ifndef PIPELINE_EXPORTS_H
 #define PIPELINE_EXPORTS_H
 
-#if defined(_WIN32)
+#if defined(WIN32) && defined(VISIT_BUILD_SHARED_LIBS)
 #if defined(AVTPIPELINE_EXPORTS) || defined(avtpipeline_ser_EXPORTS) || defined(avtpipeline_par_EXPORTS)
 #define PIPELINE_API __declspec(dllexport)
 #else

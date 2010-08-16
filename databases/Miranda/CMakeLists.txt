@@ -14,10 +14,9 @@ MirandaCommonPluginInfo.C
 
 ADD_VISIT_READER(VisItMiranda "1.0" 
   VISIT_READER_TYPE "MTMD"
-  VISIT_READER_NAME "avtMirandaFileFormat"   
-  VISIT_READER_FILE_PATTERN "mir raw"
+  VISIT_READER_NAME "avtMirandaFileFormat"     
   VISIT_READER_USES_OPTIONS ON
   SERVER_SOURCES ${SOURCES}
   )
 
-TARGET_LINK_LIBRARIES(VisItMiranda AVTAlgorithms)
+TARGET_LINK_LIBRARIES(VisItMiranda vtkVisItAVTAlgorithms)

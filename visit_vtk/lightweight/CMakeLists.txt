@@ -37,6 +37,7 @@
 # Modifications:
 #
 #****************************************************************************/
+project(lightweight_visit_vtk)
 
 SET(LIGHTWEIGHT_VISIT_VTK_SOURCES
 ClipCasesHex.C  
