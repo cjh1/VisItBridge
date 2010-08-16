@@ -19,9 +19,6 @@ set(VISIT_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake )
 #include the visit install target and plugin function
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
  
-#set up LIBRARY_OUTPUT_PATH
-set(LIBRARY_OUTPUT_PATH ${VISIT_BINARY_DIR}/bin ) 
-
 #set up MPI
 set(VISIT_PARALLEL ${VTK_USE_MPI})
 IF(VTK_USE_MPI)
