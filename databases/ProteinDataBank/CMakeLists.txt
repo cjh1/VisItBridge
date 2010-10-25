@@ -1,4 +1,3 @@
-PROJECT(VisItProteinDataBankReader)
 
 SET(SOURCES
 avtProteinDataBankFileFormat.C
@@ -18,6 +17,4 @@ ADD_VISIT_READER(VisItProteinDataBankReader "1.0"
   VISIT_READER_USES_OPTIONS ON
   SERVER_SOURCES ${SOURCES}
   )
-
-TARGET_LINK_LIBRARIES(VisItProteinDataBankReader vtkVisItAVTAlgorithms)
 

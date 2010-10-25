@@ -1,4 +1,3 @@
-PROJECT(VisItFluentReader)
 
 SET(SOURCES
 avtFluentFileFormat.h
@@ -10,4 +9,3 @@ ADD_VISIT_READER(VisItFluentReader "1.0"
   VISIT_READER_NAME "avtFluentFileFormat"    
   SERVER_SOURCES ${SOURCES}  
   )
-target_link_libraries(VisItFluentReader vtkVisItAVTAlgorithms) 

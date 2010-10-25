@@ -1,4 +1,3 @@
-PROJECT(VisItPixieReader)
 
 SET(SOURCES
 avtPixieFileFormat.h
@@ -10,5 +9,3 @@ ADD_VISIT_READER(VisItPixieReader "1.0"
   VISIT_READER_NAME "avtPixieFileFormat"    
   SERVER_SOURCES ${SOURCES}  
   )
-
-TARGET_LINK_LIBRARIES(VisItPixieReader ${PARAVIEW_HDF5_LIBRARIES} vtkVisItAVTAlgorithms)

@@ -43,7 +43,7 @@ ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
 ADD_LIBRARY(vtkVisItAVTAlgorithms ${SOURCES})
-TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk vtkPVServerManager)
+TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk)
 
 #Install
 #-------------------------------------------------------------------------------------------------

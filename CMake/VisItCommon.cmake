@@ -78,6 +78,7 @@ MACRO(VISIT_READER_INCLUDES)
   include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${vtkVisItAVTAlgorithms_BINARY_DIR}
     ${vtkVisItAVTAlgorithms_SOURCE_DIR}
     ${VISIT_COMMON_INCLUDES}
@@ -127,10 +128,7 @@ FUNCTION(ADD_VISIT_READER NAME VERSION)
   if(NOT ARG_VISIT_INCLUDE_NAME)
     set(ARG_VISIT_INCLUDE_NAME ${ARG_VISIT_READER_NAME})
   endif()
-
-  MESSAGE(STATUS "Generating wrappings for ${PLUGIN_NAME}")
-  VISIT_READER_INCLUDES()
-
+ 
   if(ARG_VISIT_READER_USES_OPTIONS)
     #determine the name of the plugin info class by removing the 
     #avt from the start and the FileFormat from the back
@@ -144,20 +142,32 @@ FUNCTION(ADD_VISIT_READER NAME VERSION)
   string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
   configure_file(
       ${VISIT_CMAKE_DIR}/VisItExport.h.in
-      ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)      
+      ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)      
   configure_file(
       ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.h.in
-      ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)  
+      ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)  
   configure_file(
       ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.cxx.in
-      ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.cxx @ONLY)
+      ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.cxx @ONLY)
   
   set(reader_sources
-  ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.cxx
-  ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}.h
-    )    
+  ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.cxx
+  ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.h
+    )
+    
+  #fix up the arg_server_sources path for compilation
+  set(ABS_SERVER_SOURCES "")
+  foreach(SRC_FILENAME ${ARG_SERVER_SOURCES})
+    list(APPEND ABS_SERVER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/${SRC_FILENAME}")
+  endforeach()
+    
+  set(VISIT_SERVER_SOURCES ${VISIT_SERVER_SOURCES} ${reader_sources} 
+    CACHE INTERNAL "vtk classes to wrap for client server")
+  set(VISIT_DB_SOURCES ${VISIT_DB_SOURCES} ${ABS_SERVER_SOURCES}
+    CACHE INTERNAL "visit sources for readers") 
+  set(VISIT_DB_INC_DIRS ${VISIT_DB_INC_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}
+    CACHE INTERNAL "include directories")  
   
-  add_library(${NAME} ${ARG_SERVER_SOURCES} ${reader_sources})  
 ENDFUNCTION(ADD_VISIT_READER)
 
 #Used for readers that are plugins for paraview
@@ -352,9 +362,9 @@ ADD_PARAVIEW_PLUGIN( ${NAME} ${VERSION} ${PV_ARGS} )
 ENDFUNCTION(ADD_VISIT_INTERFACE_PLUGIN_READER)
 
 
-FUNCTION(VISIT_INCLUDE_READER_SOURCE name)
+MACRO(VISIT_INCLUDE_READER_SOURCE name)
 option(VISIT_BUILD_PLUGIN_${name} "Build VisIt reader {name} plugin" ON)
 if (VISIT_BUILD_PLUGIN_${name})
   ADD_SUBDIRECTORY(${name})
 endif()
-ENDFUNCTION(VISIT_INCLUDE_READER_SOURCE name)
+ENDMACRO(VISIT_INCLUDE_READER_SOURCE name)
