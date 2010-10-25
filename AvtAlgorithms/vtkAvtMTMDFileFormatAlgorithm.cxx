@@ -122,7 +122,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-    this->FillAMR( output, meshMetaData, TimeIndex, 0);
+    this->FillAMR( output, &meshMetaData, TimeIndex, 0);
     return 1;
     }
 
@@ -165,7 +165,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         case AVT_SURFACE_MESH:
         default:
           tempData = vtkMultiBlockDataSet::New();
-          this->FillBlock( tempData, meshMetaData, TimeIndex );
+          this->FillBlock( tempData, &meshMetaData, TimeIndex );
           output->SetBlock(blockIndex,tempData);
           tempData->Delete();
           tempData = NULL;

@@ -36,7 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkAvtFileFormatAlgorithm.h"
 #include "vtkAvtAlgorithmsExport.h"
 #include "vtkStdString.h"
-#include "avtMeshMetaData.h"
 
 
 class vtkCallbackCommand;
@@ -51,6 +50,7 @@ class vtkMultiBlockDataSet;
 class avtSTMDFileFormat;
 class avtDatabaseMetaData;
 class avtVariableCache;
+class avtMeshMetaData;
 //ETX
 
 class AVTALGORITHMS_EXPORT vtkAvtSTMDFileFormatAlgorithm : public vtkAvtFileFormatAlgorithm
@@ -76,17 +76,17 @@ protected:
                           vtkInformationVector* outputVector);
 
   //BTX
-  int FillAMR( vtkHierarchicalBoxDataSet *amr, 
-                         const avtMeshMetaData &meshMetaData,
+  int FillAMR( vtkHierarchicalBoxDataSet *amr,
+                         const avtMeshMetaData *meshMetaData,
                          const int &timestep, const int &domain);
-  void FillBlock( vtkMultiBlockDataSet *block, 
-                         const avtMeshMetaData &meshMetaData,
+  void FillBlock( vtkMultiBlockDataSet *block,
+                         const avtMeshMetaData *meshMetaData,
                          const int &timestep);
-  void FillBlockWithCSG( vtkMultiBlockDataSet *block, 
-                         const avtMeshMetaData &meshMetaData,
+  void FillBlockWithCSG( vtkMultiBlockDataSet *block,
+                         const avtMeshMetaData *meshMetaData,
                          const int &timestep );
-  bool ValidAMR( const avtMeshMetaData &meshMetaData );
-  void GetDomainRange(const avtMeshMetaData &meshMetaData, int domain[2]);
+  bool ValidAMR( const avtMeshMetaData *meshMetaData );
+  void GetDomainRange(const avtMeshMetaData *meshMetaData, int domain[2]);
   //ETX
 
   bool IsEvenlySpacedDataArray(vtkDataArray *data);

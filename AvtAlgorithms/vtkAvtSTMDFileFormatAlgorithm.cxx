@@ -55,6 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkCleanPolyData.h"
 #include "vtkCSGGrid.h"
 
+#include "avtMeshMetaData.h"
 #include "avtSTMDFileFormat.h"
 #include "avtDomainNesting.h"
 #include "avtDatabaseMetaData.h"
@@ -99,7 +100,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
   if ( size == 1 &&  meshMetaData.meshType == AVT_AMR_MESH)
     {
     //verify the mesh is correct
-    if ( this->ValidAMR( meshMetaData ) )
+    if ( this->ValidAMR( &meshMetaData ) )
       {
       this->OutputType = VTK_HIERARCHICAL_BOX_DATA_SET;
       }
@@ -155,7 +156,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-    this->FillAMR( output, meshMetaData, 0, 0 );
+    this->FillAMR( output, &meshMetaData, 0, 0 );
 
     return 1;
     }
@@ -199,7 +200,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
         case AVT_SURFACE_MESH:
         default:
           tempData = vtkMultiBlockDataSet::New();
-          this->FillBlock( tempData, meshMetaData, 0 );
+          this->FillBlock( tempData, &meshMetaData, 0 );
           output->SetBlock(blockIndex,tempData);
           tempData->Delete();
           tempData = NULL;
@@ -216,7 +217,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
 //-----------------------------------------------------------------------------
 int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
-  vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData &meshMetaData,
+  vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData *meshMetaData,
   const int &timestep, const int &domain)
 {
   //we first need to determine if this AMR can be safely converted to a
@@ -231,12 +232,12 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
   this->GetDomainRange( meshMetaData, domainRange );
 
   //number of levels in the AMR
-  int numGroups = meshMetaData.numGroups;
+  int numGroups = meshMetaData->numGroups;
   amr->SetNumberOfLevels(numGroups);
 
   //TODO: if the cache doesn't have the results we can ask the file format itself
   //determine the ratio for each level
-  void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData.name.c_str(),
+  void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
                     AUXILIARY_DATA_DOMAIN_NESTING_INFORMATION,
                     0, -1);
   if (!(*vr))
@@ -266,7 +267,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     }
 
   //determine the number of grids on each level of the AMR
-  intVector gids = meshMetaData.groupIds;
+  intVector gids = meshMetaData->groupIds;
   int *numDataSets = new int[ numGroups ];
   for ( int i=0; i < numGroups; ++i)
     {
@@ -279,7 +280,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     }
 
   //assign the info the the AMR, and create the uniform grids
-  vtkstd::string name = meshMetaData.name;
+  vtkstd::string name = meshMetaData->name;
   vtkRectilinearGrid *rgrid = NULL;
   int meshIndex=0;
   for ( int i=0; i < numGroups; ++i)
@@ -355,10 +356,10 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
 
 //-----------------------------------------------------------------------------
 void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
-  vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData,
+  vtkMultiBlockDataSet *block, const avtMeshMetaData *meshMetaData,
   const int &timestep )
 {
-  if ( meshMetaData.meshType == AVT_CSG_MESH )
+  if ( meshMetaData->meshType == AVT_CSG_MESH )
     {
     //CSG meshes do not act like any other block
     //so it has a seperate method.
@@ -366,14 +367,14 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
     return;
     }
 
-  vtkstd::string name = meshMetaData.name;
-  
-  //block names   
-  stringVector blockNames = meshMetaData.blockNames;
+  vtkstd::string name = meshMetaData->name;
+
+  //block names
+  stringVector blockNames = meshMetaData->blockNames;
   int numBlockNames = blockNames.size();
 
   //set the number of pieces in the block
-  block->SetNumberOfBlocks( meshMetaData.numBlocks );
+  block->SetNumberOfBlocks( meshMetaData->numBlocks );
 
   int domainRange[2];
   this->GetDomainRange( meshMetaData, domainRange );
@@ -384,11 +385,11 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
     CATCH_VISIT_EXCEPTIONS(data,
       this->AvtFile->GetMesh(timestep, i, name.c_str()) );
     if ( data )
-      {      
+      {
       this->AssignProperties(data,name,timestep,i);
 
       //clean the mesh of all points that are not part of a cell
-      if ( meshMetaData.meshType == AVT_UNSTRUCTURED_MESH)
+      if ( meshMetaData->meshType == AVT_UNSTRUCTURED_MESH)
         {
         vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::SafeDownCast(data);
         vtkUnstructuredGridRelevantPointsFilter *clean =
@@ -398,7 +399,7 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
         block->SetBlock(i,clean->GetOutput());
         clean->Delete();
         }
-      else if(meshMetaData.meshType == AVT_SURFACE_MESH)
+      else if(meshMetaData->meshType == AVT_SURFACE_MESH)
         {
         vtkCleanPolyData *clean = vtkCleanPolyData::New();
         clean->SetInput( data );
@@ -410,9 +411,9 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
         clean->Update();
         block->SetBlock(i,clean->GetOutput());
         clean->Delete();
-        }      
+        }
       else
-        {      
+        {
         block->SetBlock(i,data);
         }
       if ( i < numBlockNames)
@@ -427,31 +428,31 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
 
 //-----------------------------------------------------------------------------
 void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
-  vtkMultiBlockDataSet *block, const avtMeshMetaData &meshMetaData,
+  vtkMultiBlockDataSet *block, const avtMeshMetaData *meshMetaData,
   const int &timestep )
 {
   //this still does not support multi-block csg meshes
 
-  vtkstd::string meshName = meshMetaData.name;
+  vtkstd::string meshName = meshMetaData->name;
 
-  //block names   
-  stringVector blockNames = meshMetaData.blockNames;
+  //block names
+  stringVector blockNames = meshMetaData->blockNames;
   int numBlockNames = blockNames.size();
 
   int domainRange[2];
   this->GetDomainRange( meshMetaData, domainRange );
 
   for ( int i=domainRange[0]; i < domainRange[1]; ++i )
-    {    
+    {
     //basic uniform csg support
     int blockIndex = i;
-    int csgRegion = 0;        
+    int csgRegion = 0;
     this->MetaData->ConvertCSGDomainToBlockAndRegion(meshName.c_str(),
-      &blockIndex, &csgRegion); 
+      &blockIndex, &csgRegion);
 
     vtkDataSet *data=NULL;
     CATCH_VISIT_EXCEPTIONS(data,
-      this->AvtFile->GetMesh(timestep, i, meshName.c_str()) );    
+      this->AvtFile->GetMesh(timestep, i, meshName.c_str()) );
     vtkCSGGrid *csgGrid = vtkCSGGrid::SafeDownCast(data);
     if ( csgGrid )
       {
@@ -460,7 +461,7 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
         bounds[0], bounds[1], bounds[2],
         bounds[3], bounds[4], bounds[5]);
       if ( csgResult )
-        {          
+        {
         block->SetBlock(i, csgResult );
         csgResult->Delete();
         if ( i < numBlockNames)
@@ -473,14 +474,14 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
     }
 }
 //-----------------------------------------------------------------------------
-bool vtkAvtSTMDFileFormatAlgorithm::ValidAMR( const avtMeshMetaData &meshMetaData )
+bool vtkAvtSTMDFileFormatAlgorithm::ValidAMR( const avtMeshMetaData *meshMetaData )
 {
 
   //I can't find an easy way to determine the type of a sub mesh
-  vtkstd::string name = meshMetaData.name;
+  vtkstd::string name = meshMetaData->name;
   vtkRectilinearGrid *rgrid = NULL;
 
-  for ( int i=0; i < meshMetaData.numBlocks; ++i )
+  for ( int i=0; i < meshMetaData->numBlocks; ++i )
     {
     //lets get the mesh for each amr box
     vtkRectilinearGrid *rgrid = NULL;
@@ -539,9 +540,9 @@ bool vtkAvtSTMDFileFormatAlgorithm::IsEvenlySpacedDataArray(vtkDataArray *data)
 
 //----------------------------------------------------------------------------
 //determine which nodes will be read by this processor
-void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData &meshMetaData, int domain[2])
+void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData *meshMetaData, int domain[2])
 {
-  int numBlock = meshMetaData.numBlocks;
+  int numBlock = meshMetaData->numBlocks;
   domain[0] = 0;
   domain[1] = numBlock;
 

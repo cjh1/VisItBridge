@@ -77,8 +77,7 @@ ENDMACRO(VISIT_VTK_THIRD_PARTY_INCLUDE)
 MACRO(VISIT_READER_INCLUDES)
   include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}    
     ${vtkVisItAVTAlgorithms_BINARY_DIR}
     ${vtkVisItAVTAlgorithms_SOURCE_DIR}
     ${VISIT_COMMON_INCLUDES}
@@ -138,11 +137,14 @@ FUNCTION(ADD_VISIT_READER NAME VERSION)
   endif()
 
   set(XML_NAME ${NAME})
+  set(LIBRARY_NAME "vtkVisItDatabases")
   #need to generate the VTK class wrapper
   string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
+  
   configure_file(
-      ${VISIT_CMAKE_DIR}/VisItExport.h.in
-      ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)      
+    ${VISIT_CMAKE_DIR}/VisItExport.h.in
+    ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)  
+    
   configure_file(
       ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.h.in
       ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)  
@@ -208,6 +210,7 @@ if(ARG_VISIT_READER_USES_OPTIONS)
 endif()
 
 set(XML_NAME ${NAME})
+set(LIBRARY_NAME ${NAME})
 #need to generate the VTK class wrapper
 string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
 configure_file(

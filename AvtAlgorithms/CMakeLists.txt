@@ -1,6 +1,9 @@
 PROJECT(vtkVisItAVTAlgorithms)
 
-SET(SOURCES
+SET(KIT VisItAVTAlgorithms)
+SET(KIT_UPCASE "VISITAVTALGORITHMS")
+
+SET(Kit_SRCS
 vtkAvtFileFormatAlgorithm.h
 vtkAvtFileFormatAlgorithm.cxx
 vtkAvtMTSDFileFormatAlgorithm.h
@@ -12,12 +15,13 @@ vtkAvtSTSDFileFormatAlgorithm.cxx
 vtkAvtSTMDFileFormatAlgorithm.h
 vtkAvtSTMDFileFormatAlgorithm.cxx
 )
-#########################################################################
-SET (dynamicHeaders "${dynamicHeaders};${PVFilters_BINARY_DIR}/vtkPVFiltersConfig.h")
-CONFIGURE_FILE(${PVFilters_SOURCE_DIR}/vtkPVFiltersConfig.h.in
-  ${PVFilters_BINARY_DIR}/vtkPVFiltersConfig.h
-  ESCAPE_QUOTES)
-  
+
+#setup the kit so we get client server bindings  
+SET(VTK_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+INCLUDE(${VTK_CMAKE_DIR}/vtkExportKit.cmake)
+VTK_EXPORT_KIT("${KIT}" "${KIT_UPCASE}" "${Kit_SRCS}")
+
+#########################################################################  
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/vtkAvtAlgorithmsExport.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
  set(dynamicHeaders "$dynamicHeaders;${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
@@ -42,7 +46,7 @@ ${VISIT_SOURCE_DIR}/visit_vtk/full
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
-ADD_LIBRARY(vtkVisItAVTAlgorithms ${SOURCES})
+ADD_LIBRARY(vtkVisItAVTAlgorithms ${Kit_SRCS})
 TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk)
 
 #Install
