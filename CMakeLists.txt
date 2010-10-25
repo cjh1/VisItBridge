@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
 project(VisItBridgePlugin)
-FIND_PACKAGE(ParaView REQUIRED)
 
 #Setup the version since some files need this
 SET(VISIT_VERSION "2.0.0")
@@ -29,6 +28,9 @@ SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${VISIT_CMAKE_DIR})
 
 #include the visit install target and plugin function
 include(${VISIT_CMAKE_DIR}/VisItCommon.cmake)
+
+#need toi grab some helper macros from paraview plugin 
+INCLUDE(ParaViewPlugins)
  
 #set up MPI
 set(VISIT_PARALLEL ${VTK_USE_MPI})
@@ -82,12 +84,9 @@ set(VISIT_COMMON_INCLUDES
 INCLUDE_DIRECTORIES(
   ${VISIT_COMMON_INCLUDES}
   )
-INCLUDE(${PARAVIEW_USE_FILE}) 
+
 INCLUDE_DIRECTORIES(
-  ${VTK_INCLUDE_DIRS}
-  ${PARAVIEW_INCLUDE_DIRS}
-  ${PARAVIEW_GUI_INCLUDE_DIRS}   
-  ${VTK_INCLUDE_DIRS_SOURCE_TREE}
+  ${VTK_INCLUDE_DIR} 
   ) 
 SET(VTK_BINARY_DIR ${PARAVIEW_VTK_DIR} )   
 
@@ -217,21 +216,18 @@ TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
 # manually check for socklen_t as CHECK_SYMBOL_EXISTS
 # doesn't appear to work on linux (at least) 
-IF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
-    MESSAGE(STATUS "Check for socklen_t")
-    TRY_COMPILE(HAVE_SOCKLEN_T
-        ${CMAKE_CURRENT_BINARY_DIR}
-        ${VISIT_SOURCE_DIR}/CMake/TestSocklenT.c
-        OUTPUT_VARIABLE SLT
-    )
-    IF (HAVE_SOCKLEN_T)
-        SET(HAVE_SOCKLEN_T 1 CACHE INTERNAL "support for socklen_t")
-        MESSAGE(STATUS "Check for socklen_t - found")
-    ELSE(HAVE_SOCKLEN_T)
-        SET(HAVE_SOCKLEN_T 0 CACHE INTERNAL "support for socklen_t")
-        MESSAGE(STATUS "Check for socklen_t - not found")
-    ENDIF (HAVE_SOCKLEN_T)
-ENDIF ("HAVE_SOCKLEN_T" MATCHES "^HAVE_SOCKLEN_T$")
+TRY_COMPILE(HAVE_SOCKLEN_T
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${VISIT_SOURCE_DIR}/CMake/TestSocklenT.c
+    OUTPUT_VARIABLE SLT
+)
+IF (HAVE_SOCKLEN_T)
+    SET(HAVE_SOCKLEN_T 1 CACHE INTERNAL "support for socklen_t")
+    MESSAGE(STATUS "Check for socklen_t - found")
+ELSE(HAVE_SOCKLEN_T)
+    SET(HAVE_SOCKLEN_T 0 CACHE INTERNAL "support for socklen_t")
+    MESSAGE(STATUS "Check for socklen_t - not found")
+ENDIF (HAVE_SOCKLEN_T)
 
 #-----------------------------------------------------------------------------
 # Create visit-config.h
