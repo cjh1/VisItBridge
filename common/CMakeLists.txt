@@ -141,7 +141,6 @@ parser/Symbol.C
 parser/Token.C
 )
 
-IF(BUILD_SHARED_LIBS)
 SET(PLUGIN_SOURCES
 plugin/DatabasePluginInfo.C
 plugin/DatabasePluginManager.C
@@ -152,7 +151,6 @@ plugin/PlotPluginManager.C
 plugin/PluginBroadcaster.C
 plugin/PluginManager.C
 )
-ENDIF(BUILD_SHARED_LIBS)
 
 SET(PROXYBASE_SOURCES
 proxybase/RemoteProxyBase.C

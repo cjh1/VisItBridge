@@ -82,10 +82,10 @@ using std::sort;
 
 #define MAX_PLUGINERROR 500
 
-#ifdef VISIT_STATIC
-extern void *fake_dlsym(const string &);
-extern void StaticGetSupportedLibs(std::vector<std::pair<std::string, std::string> > &,
-                                   const string &);
+#if defined VISIT_STATIC
+void *fake_dlsym(const string &){};
+void StaticGetSupportedLibs(std::vector<std::pair<std::string, std::string> > &,
+                                   const string &){};
 #endif
 
 // ****************************************************************************
