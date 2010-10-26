@@ -141,6 +141,19 @@ parser/Symbol.C
 parser/Token.C
 )
 
+IF(BUILD_SHARED_LIBS)
+SET(PLUGIN_SOURCES
+plugin/DatabasePluginInfo.C
+plugin/DatabasePluginManager.C
+plugin/InvalidDirectoryException.C
+plugin/InvalidPluginException.C
+plugin/OperatorPluginManager.C
+plugin/PlotPluginManager.C
+plugin/PluginBroadcaster.C
+plugin/PluginManager.C
+)
+ENDIF(BUILD_SHARED_LIBS)
+
 SET(PROXYBASE_SOURCES
 proxybase/RemoteProxyBase.C
 )
@@ -279,7 +292,8 @@ ADD_LIBRARY(visitcommon SHARED
     ${EXCEPTION_SOURCES}
     ${EXPRESSION_SOURCES}
     ${MISC_SOURCES}    
-    ${PARSER_SOURCES}    
+    ${PARSER_SOURCES}   
+    ${PLUGIN_SOURCES}
     ${PROXYBASE_SOURCES}
     ${STATE_SOURCES}
     ${UTILITY_SOURCES} ${UTILITY_WIN32_SOURCES})
