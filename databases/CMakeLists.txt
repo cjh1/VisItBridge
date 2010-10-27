@@ -69,3 +69,7 @@ endif(HAVE_LIBNETCDF)
 if(HAVE_LIBSILO)
   target_link_libraries(vtk${KIT} ${SILO_LIBRARY})
 endif(HAVE_LIBSILO)
+
+#Install
+#-------------------------------------------------------------------------------------------------
+VISIT_INSTALL_TARGETS(vtk${KIT})
