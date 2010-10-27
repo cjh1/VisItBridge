@@ -347,8 +347,8 @@ ENDFUNCTION(ADD_VISIT_INTERFACE_PLUGIN_READER)
 
 
 MACRO(VISIT_INCLUDE_READER_SOURCE name)
-option(VISIT_BUILD_PLUGIN_${name} "Build VisIt reader {name} plugin" ON)
-if (VISIT_BUILD_PLUGIN_${name})
+option(VISIT_BUILD_READER_${name} "Build VisIt Reader {name}" ON)
+if (VISIT_BUILD_READER_${name})
   ADD_SUBDIRECTORY(${name})
 endif()
 ENDMACRO(VISIT_INCLUDE_READER_SOURCE name)
