@@ -1,0 +1,3 @@
+
+#Setup the use file for VisIt
+SET(VISITBRIDGE_USE_FILE "@VISITBRIDGE_USE_FILE@")

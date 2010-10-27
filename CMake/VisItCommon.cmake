@@ -74,33 +74,6 @@ MACRO(VISIT_VTK_THIRD_PARTY_INCLUDE upper lower)
   endif(VTK_USE_SYSTEM_${upper})
 ENDMACRO(VISIT_VTK_THIRD_PARTY_INCLUDE)
 
-MACRO(VISIT_READER_INCLUDES)
-  include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}    
-    ${vtkVisItAVTAlgorithms_BINARY_DIR}
-    ${vtkVisItAVTAlgorithms_SOURCE_DIR}
-    ${VISIT_COMMON_INCLUDES}
-    ${VISIT_SOURCE_DIR}/include
-    ${AVT_DATABASE_SOURCE_DIR}/Database
-    ${AVT_DATABASE_SOURCE_DIR}/Ghost
-    ${AVT_DATABASE_SOURCE_DIR}/Formats
-    ${AVT_DBATTS_SOURCE_DIR}/MetaData
-    ${AVT_DBATTS_SOURCE_DIR}/SIL
-    ${VISIT_SOURCE_DIR}/avt/Math
-    ${VISIT_SOURCE_DIR}/avt/VisWindow/VisWindow
-    ${AVT_PIPELINE_SOURCE_DIR}/AbstractFilters
-    ${AVT_PIPELINE_SOURCE_DIR}/Data
-    ${AVT_PIPELINE_SOURCE_DIR}/Pipeline
-    ${AVT_PIPELINE_SOURCE_DIR}/Sinks
-    ${AVT_PIPELINE_SOURCE_DIR}/Sources
-    ${VISIT_SOURCE_DIR}/visit_vtk/full
-    ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
-    ${BOOST_INCLUDE_DIR}
-    ${VTK_INCLUDE_DIRS}
-    )
-ENDMACRO(VISIT_READER_INCLUDES)
-
 #called from readers that are being built into paraview
 FUNCTION(ADD_VISIT_READER NAME VERSION)
   set(PLUGIN_NAME "vtk${NAME}")
@@ -199,7 +172,11 @@ if(NOT ARG_VISIT_INCLUDE_NAME)
 endif()
 
 MESSAGE(STATUS "Generating wrappings for ${PLUGIN_NAME}")
-VISIT_READER_INCLUDES()
+include_directories(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${VISITBRIDGE_USE_FILE}
+  )  
 
 if(ARG_VISIT_READER_USES_OPTIONS)
   #determine the name of the plugin info class by removing the 
@@ -279,7 +256,11 @@ endif()
 
     
 message(STATUS "Generating wrappings for ${INTERFACE_NAME}")    
-VISIT_READER_INCLUDES()    
+include_directories(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${VISITBRIDGE_USE_FILE}
+  )
 
 #check reader types
 set(INTERFACE_SOURCES)

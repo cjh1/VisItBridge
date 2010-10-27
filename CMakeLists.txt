@@ -233,11 +233,37 @@ ENDIF (HAVE_SOCKLEN_T)
 #-----------------------------------------------------------------------------
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)    
+               ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)  
      
 add_subdirectory(common)
 add_subdirectory(third_party_builtin)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(AvtAlgorithms)
+
+set(VISITBRIDGE_USE_FILE    
+  ${vtkVisItAVTAlgorithms_BINARY_DIR}
+  ${vtkVisItAVTAlgorithms_SOURCE_DIR}
+  ${VISIT_COMMON_INCLUDES}
+  ${VISIT_SOURCE_DIR}/include
+  ${AVT_DATABASE_SOURCE_DIR}/Database
+  ${AVT_DATABASE_SOURCE_DIR}/Ghost
+  ${AVT_DATABASE_SOURCE_DIR}/Formats
+  ${AVT_DBATTS_SOURCE_DIR}/MetaData
+  ${AVT_DBATTS_SOURCE_DIR}/SIL
+  ${VISIT_SOURCE_DIR}/avt/Math
+  ${VISIT_SOURCE_DIR}/avt/VisWindow/VisWindow
+  ${AVT_PIPELINE_SOURCE_DIR}/AbstractFilters
+  ${AVT_PIPELINE_SOURCE_DIR}/Data
+  ${AVT_PIPELINE_SOURCE_DIR}/Pipeline
+  ${AVT_PIPELINE_SOURCE_DIR}/Sinks
+  ${AVT_PIPELINE_SOURCE_DIR}/Sources
+  ${VISIT_SOURCE_DIR}/visit_vtk/full
+  ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
+  ${BOOST_INCLUDE_DIR}
+  ${VTK_INCLUDE_DIRS}
+  )
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/VisItBridgeUse.cmake.in
+               ${CMAKE_CURRENT_BINARY_DIR}/VisItBridgeUse.cmake @ONLY IMMEDIATE)
+
 add_subdirectory(databases)

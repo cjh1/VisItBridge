@@ -31,7 +31,10 @@ SET(KIT VisItDatabases)
 SET(KIT_UPCASE "VISITDATABASES")
 
 #include all the visit directories 
-VISIT_READER_INCLUDES()
+include_directories(
+  ${VISITBRIDGE_USE_FILE}
+  )
+
 include_directories(
   ${VISIT_DB_INC_DIRS}
   )
