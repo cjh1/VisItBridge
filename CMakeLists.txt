@@ -265,7 +265,7 @@ set(VISITBRIDGE_USE_FILE
   ${AVT_PIPELINE_SOURCE_DIR}/Sources
   ${VISIT_SOURCE_DIR}/visit_vtk/full
   ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
-  ${BOOST_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIR}
   ${VTK_INCLUDE_DIRS}
   )
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/VisItBridgeUse.cmake.in
