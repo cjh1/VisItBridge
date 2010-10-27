@@ -34,12 +34,16 @@ INCLUDE(ParaViewPlugins)
  
 #set up MPI
 set(VISIT_PARALLEL ${VTK_USE_MPI})
-IF(VTK_USE_MPI)
-	INCLUDE(FindMPI)
+if(VTK_USE_MPI)
+  INCLUDE(FindMPI)
   INCLUDE_DIRECTORIES(  
     ${MPI_INCLUDE_PATH}
     )  
-ENDIF(VTK_USE_MPI)
+  set(VISIT_PARALLEL_LIBS ${MPI_LIBRARY})
+  if(MPI_EXTRA_LIBRARY)
+	set(VISIT_PARALLEL_LIBS ${VISIT_PARALLEL_LIBS} ${MPI_EXTRA_LIBRARY})
+  endif(MPI_EXTRA_LIBRARY)
+endif(VTK_USE_MPI)
 
 
 #block out most of the warnings in visit on windows
