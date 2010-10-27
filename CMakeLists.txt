@@ -140,8 +140,13 @@ ENDIF(VISIT_STATIC)
 #-----------------------------------------------------------------------------
 
 # Set up boost (interval) library
-set(HAVE_BILIB 1)
-set(BOOST_INCLUDE_DIR ${VISIT_SOURCE_DIR}/third_party_builtin/bilib/boost_1_42_0    CACHE PATH "Path to boost lib")
+find_package(Boost 1.40) #only need header libraries
+if (Boost_Found)  
+  set(HAVE_BILIB 1)
+else (Boost_Found)
+  set(HAVE_BILIB 0)
+endif(Boost_Found)
+
 
 #setup non third party vtk utilities
 set(HAVE_LIBHDF5 ${PARAVIEW_HDF5_LIBRARIES})
