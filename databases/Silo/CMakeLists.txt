@@ -1,4 +1,6 @@
 
+FIND_PACKAGE(SILO REQUIRED)
+
 SET(SOURCES
 avtSiloWriter.C
 avtSiloFileFormat.C
@@ -14,8 +16,7 @@ SiloMDServerPluginInfo.C
 
 ADD_VISIT_READER(VisItSilo "1.0" 
   VISIT_READER_TYPE "STMD"
-  VISIT_READER_NAME "avtSiloFileFormat"   
-  VISIT_READER_FILE_PATTERN "silo pdb"
+  VISIT_READER_NAME "avtSiloFileFormat"     
   VISIT_READER_USES_OPTIONS ON
   SERVER_SOURCES ${SOURCES}
   )
