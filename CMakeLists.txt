@@ -159,11 +159,10 @@ set(HAVE_NETCDF_H 1)
 set(HAVE_LIBEXODUSII 1)
 
 # Setup SILO
-if(PARAVIEW_USE_SILO)
-  #needed by the visit configure header
-  include_directories(${SILO_INCLUDE_DIR})
-  set(HAVE_LIBSILO ${SILO_FOUND})  
-endif(PARAVIEW_USE_SILO)
+find_package(SILO)
+if(SILO_FOUND)
+  set(HAVE_LIBSILO ${SILO_FOUND})
+endif(SILO_FOUND)
 
 #setup zlib
 include_directories(${VTK_ZLIB_INCLUDE_DIRS})

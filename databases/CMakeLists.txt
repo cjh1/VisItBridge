@@ -20,7 +20,15 @@ if (PARAVIEW_HDF5_LIBRARIES)
 endif(PARAVIEW_HDF5_LIBRARIES)
 
 VISIT_INCLUDE_READER_SOURCE(Silo OFF)
-
+if(VISIT_BUILD_READER_Silo)
+  if(NOT HAVE_LIBSILO)
+    #if we currently don't have silo setup make it required
+    find_package(SILO REQUIRED)
+  endif(NOT HAVE_LIBSILO)
+  if(NOT SILO_FOUND)
+    message(FATAL_ERROR "Unable to locate Silo.")
+  endif(NOT SILO_FOUND)
+endif(VISIT_BUILD_READER_Silo)
 
 #currently needs more work
 #if ( HAVE_LIBNETCDF )
@@ -38,6 +46,11 @@ include_directories(
 include_directories(
   ${VISIT_DB_INC_DIRS}
   )
+
+
+if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
+  include_directories(${SILO_INCLUDE_DIR})
+endif(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
   
 SET(Kit_SRCS
   ${VISIT_SERVER_SOURCES}
@@ -66,9 +79,9 @@ if(HAVE_LIBNETCDF)
   target_link_libraries(vtk${KIT} vtkNetCDF)
 endif(HAVE_LIBNETCDF)
 
-if(HAVE_LIBSILO)
+if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
   target_link_libraries(vtk${KIT} ${SILO_LIBRARY})
-endif(HAVE_LIBSILO)
+endif(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
 
 #Install
 #-------------------------------------------------------------------------------------------------
