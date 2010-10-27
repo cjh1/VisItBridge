@@ -140,7 +140,7 @@ ENDIF(VISIT_STATIC)
 #-----------------------------------------------------------------------------
 
 # Set up boost (interval) library
-find_package(Boost 1.40) #only need header libraries
+find_package(Boost 1.40 REQUIRED) #only need header libraries
 if (Boost_Found)  
   set(HAVE_BILIB 1)
 else (Boost_Found)
