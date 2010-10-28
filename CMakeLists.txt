@@ -230,10 +230,8 @@ TRY_COMPILE(HAVE_SOCKLEN_T
 )
 IF (HAVE_SOCKLEN_T)
     SET(HAVE_SOCKLEN_T 1 CACHE INTERNAL "support for socklen_t")
-    MESSAGE(STATUS "Check for socklen_t - found")
 ELSE(HAVE_SOCKLEN_T)
     SET(HAVE_SOCKLEN_T 0 CACHE INTERNAL "support for socklen_t")
-    MESSAGE(STATUS "Check for socklen_t - not found")
 ENDIF (HAVE_SOCKLEN_T)
 
 #-----------------------------------------------------------------------------
