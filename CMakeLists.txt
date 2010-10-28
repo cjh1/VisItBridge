@@ -244,7 +244,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)  
      
 add_subdirectory(common)
-add_subdirectory(third_party_builtin)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(AvtAlgorithms)
