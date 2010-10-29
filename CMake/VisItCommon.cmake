@@ -347,7 +347,7 @@ ENDFUNCTION(ADD_VISIT_INTERFACE_PLUGIN_READER)
 
 
 MACRO(VISIT_INCLUDE_READER_SOURCE name state)
-option(VISIT_BUILD_READER_${name} "Build VisIt Reader {name}" ${state})
+option(VISIT_BUILD_READER_${name} "Build VisIt Reader ${name}" ${state})
 if (VISIT_BUILD_READER_${name})
   ADD_SUBDIRECTORY(${name})
 endif()
