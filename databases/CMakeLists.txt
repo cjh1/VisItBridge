@@ -27,8 +27,7 @@ if(VISIT_BUILD_READER_Silo)
   endif(NOT HAVE_LIBSILO)
   if(NOT SILO_FOUND)
     message(FATAL_ERROR "Unable to locate Silo.")
-  endif(NOT SILO_FOUND)
-  set(PARAVIEW_USE_SILO ${SILO_FOUND})
+  endif(NOT SILO_FOUND)    
 endif(VISIT_BUILD_READER_Silo)
 
 #currently needs more work
