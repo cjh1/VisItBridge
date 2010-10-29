@@ -26,9 +26,21 @@ if(VISIT_BUILD_READER_Silo)
     find_package(SILO REQUIRED)
   endif(NOT HAVE_LIBSILO)
   if(NOT SILO_FOUND)
-    message(FATAL_ERROR "Unable to locate Silo.")
+    message(FATAL_ERROR "Unable to locate Silo library.")
   endif(NOT SILO_FOUND)    
 endif(VISIT_BUILD_READER_Silo)
+
+
+VISIT_INCLUDE_READER_SOURCE(CGNS OFF)
+if(VISIT_BUILD_READER_CGNS)
+  if(NOT HAVE_LIBCGNS)
+    #if we currently don't have silo setup make it required
+    find_package(CGNS REQUIRED)
+  endif(NOT HAVE_LIBCGNS)
+  if(NOT CGNS_FOUND)
+    message(FATAL_ERROR "Unable to locate CGNS library.")
+  endif(NOT CGNS_FOUND)  
+endif(VISIT_BUILD_READER_CGNS)
 
 #currently needs more work
 #if ( HAVE_LIBNETCDF )
@@ -51,6 +63,10 @@ include_directories(
 if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
   include_directories(${SILO_INCLUDE_DIR})
 endif(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
+
+if(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)
+  include_directories(${CGNS_INCLUDE_DIR})
+endif(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)
   
 SET(Kit_SRCS
   ${VISIT_SERVER_SOURCES}
@@ -82,6 +98,10 @@ endif(HAVE_LIBNETCDF)
 if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
   target_link_libraries(vtk${KIT} ${SILO_LIBRARY})
 endif(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
+
+if(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)  
+  target_link_libraries(vtk${KIT} ${CGNS_LIBRARY})
+endif(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)
 
 #Install
 #-------------------------------------------------------------------------------------------------

@@ -4,6 +4,7 @@
     list i.e. if two readers can read the same extension, then the reader 
     apperaring later will be tried first when reading the file. 
   -->
+  <Proxy group="sources" name="VisItCGNSReader" />  
   <Proxy group="sources" name="VisItEnzoReader" />
   <Proxy group="sources" name="VisItMirandaReader" />
   <Proxy group="sources" name="VisItPixieReader" />
