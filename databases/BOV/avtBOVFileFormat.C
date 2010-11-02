@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -150,7 +150,6 @@ avtBOVFileFormat::avtBOVFileFormat(const char *fname)
     //
     file_pattern = "";
     cycle = 0;
-    dtime = 0.;
     full_size[0] = 0;
     full_size[1] = 0;
     full_size[2] = 0;
@@ -220,8 +219,6 @@ avtBOVFileFormat::ActivateTimestep(void)
     ReadTOC();
     if (metadata != NULL)
         metadata->SetCycle(timestep, cycle);
-    if (metadata != NULL)
-        metadata->SetTime(timestep, dtime);
 }
 
 
@@ -244,10 +241,6 @@ avtBOVFileFormat::ActivateTimestep(void)
 //
 //    Jeremy Meredith, Thu Jul 24 14:55:41 EDT 2008
 //    Change most int's and long's to long longs to support >4GB files.
-//
-//    Cyrus Harrison, Mon Aug 23 13:44:07 PDT 2010
-//    Make sure coords on the edges of domains actually abut (avoid
-//    fp errors setting them explicty).
 //
 // ****************************************************************************
 
@@ -324,7 +317,6 @@ avtBOVFileFormat::GetMesh(int dom, const char *meshname)
 
     for (i = 0 ; i < dx ; i++)
         x->SetTuple1(i, x_start + i * (x_stop-x_start) / (dx-1));
-    x->SetTuple1(dx-1, x_stop);
 
     vtkFloatArray *y = vtkFloatArray::New();
     long long dy = bricklet_size[1];
@@ -346,7 +338,6 @@ avtBOVFileFormat::GetMesh(int dom, const char *meshname)
     y->SetNumberOfTuples(dy);
     for (i = 0 ; i < dy ; i++)
         y->SetTuple1(i, y_start + i * (y_stop-y_start) / (dy-1));
-    y->SetTuple1(dy-1, y_stop);
 
     vtkFloatArray *z = vtkFloatArray::New();
     long long dz = bricklet_size[2];
@@ -375,7 +366,6 @@ avtBOVFileFormat::GetMesh(int dom, const char *meshname)
         z->SetNumberOfTuples(dz);
         for (i = 0 ; i < dz ; i++)
             z->SetTuple1(i, z_start + i * (z_stop-z_start) / (dz-1));
-        z->SetTuple1(dz-1, z_stop);
     }
 
     int dims[3] = { dx, dy, dz };
@@ -1380,9 +1370,6 @@ avtBOVFileFormat::GetAuxiliaryData(const char *var, int domain,
 //    I made it use Nek domain boundaries for nodal data since this can
 //    dramatically cut memory usage for the domain boundaries structure.
 //
-//    Hank Childs, Sat Apr 24 18:21:42 PDT 2010
-//    Add proper support for time.
-//
 // ****************************************************************************
 
 void
@@ -1564,7 +1551,6 @@ avtBOVFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md)
     }
 
     md->SetCycle(timestep, cycle);
-    md->SetTime(timestep, dtime);
 }
 
 
@@ -1607,9 +1593,6 @@ avtBOVFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md)
 //    Changed the way exceptions are generated so it works in parallel.
 //    Changed "eof" test to "good" test since eof alone might hang.
 //    Added a check in strict mode to make sure the first 100 lines are ASCII.
-//
-//    Hank Childs, Sat Apr 24 18:21:42 PDT 2010
-//    Add proper support for time.
 //
 // ****************************************************************************
 
@@ -1658,11 +1641,6 @@ avtBOVFileFormat::ReadTOC(void)
             else if (strcmp(line, "TIME:") == 0)
             {
                 line += strlen("TIME:") + 1;
-                dtime = atof(line);
-            }
-            else if (strcmp(line, "CYCLE:") == 0)
-            {
-                line += strlen("CYCLE:") + 1;
                 cycle = atoi(line);
             }
             else if (strcmp(line, "DATA_FILE:") == 0)
@@ -1897,7 +1875,7 @@ avtBOVFileFormat::ReadTOC(void)
             BroadcastDoubleVector(var_brick_max, PAR_Rank());
         }
 
-        vector<double> valsd(9);
+        vector<double> valsd(8);
         valsd[0] = min;
         valsd[1] = max;
         valsd[2] = origin[0];
@@ -1906,7 +1884,6 @@ avtBOVFileFormat::ReadTOC(void)
         valsd[5] = dimensions[0];
         valsd[6] = dimensions[1];
         valsd[7] = dimensions[2];
-        valsd[8] = dtime;
         BroadcastDoubleVector(valsd, PAR_Rank());
         min           = valsd[0];
         max           = valsd[1];
@@ -1916,9 +1893,9 @@ avtBOVFileFormat::ReadTOC(void)
         dimensions[0] = valsd[5];
         dimensions[1] = valsd[6];
         dimensions[2] = valsd[7];
-        dtime         = valsd[8];
 
         BroadcastString(file_pattern, PAR_Rank());
+debug1 << "Pattern is " << file_pattern << endl;
         BroadcastString(varname, PAR_Rank());
     }
 

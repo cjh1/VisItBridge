@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -246,7 +246,7 @@ avtFLASHFileFormat::FinalizeHDF5(void)
 // ****************************************************************************
 
 avtFLASHFileFormat::avtFLASHFileFormat(const char *cfilename, 
-                                       DBOptionsAttributes *&opts)
+                                       DBOptionsAttributes *opts)
     : avtSTMDFileFormat(&cfilename, 1)
 {
     filename  = cfilename;

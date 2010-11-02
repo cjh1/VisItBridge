@@ -145,14 +145,6 @@
       </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItAugDecompReader" class="vtkVisItAugDecompReader"
-      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-     <Hints>
-       <ReaderFactory extensions="augd"
-                      file_description="VisIt AugDecomp Reader" />
-     </Hints>
-    </SourceProxy>
-
     <SourceProxy name="VisItAUXFileReader" class="vtkVisItAUXFileReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>

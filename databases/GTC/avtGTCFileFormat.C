@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -49,11 +49,10 @@
 #include <vtkFloatArray.h>
 #include <vtkUnstructuredGrid.h>
 #include <avtDatabaseMetaData.h>
-
 #include <InvalidDBTypeException.h>
+
+
 #include <InvalidVariableException.h>
-#include <InvalidFilesException.h>
-#include <NonCompliantException.h>
 
 // Define this symbol BEFORE including hdf5.h to indicate the HDF5 code
 // in this file uses version 1.6 of the HDF5 API. This is harmless for
@@ -152,26 +151,24 @@ avtGTCFileFormat::Initialize()
 
     // Turn off error message printing.
     H5Eset_auto(0,0);
-
+    debug4 << mName << "Opening " << GetFilename() << endl;
     bool err = false;
-
-    // Check for a valid GTC file
-    if( H5Fis_hdf5( GetFilename() ) < 0 )
-      EXCEPTION1( InvalidFilesException, GetFilename() );
-
-    if ((fileHandle = H5Fopen(GetFilename(), H5F_ACC_RDONLY, H5P_DEFAULT)) < 0)
-      EXCEPTION1( InvalidFilesException, GetFilename() );
+    fileHandle = H5Fopen(GetFilename(), H5F_ACC_RDONLY, H5P_DEFAULT);
     
-    if ((particleHandle = H5Dopen(fileHandle, "particle_data")) < 0)
+    if (fileHandle < 0)
     {
-      H5Fclose(fileHandle);
-      EXCEPTION1( InvalidFilesException, GetFilename() );
+        debug4 << mName << "Could not open " << GetFilename() << endl;
+        EXCEPTION1(InvalidDBTypeException, "Cannot be a GTC file since it is not even an HDF5 file.");
     }
 
-    // At this point consider the file to truly be a GTC file. If
-    // some other file NonCompliantExceptions will be thrown.
-
-    // Continue as normal reporting NonCompliantExceptions
+    particleHandle = H5Dopen(fileHandle, "particle_data");
+    if (particleHandle < 0)
+    {
+        debug4 << mName << "Could not open particle_data" << endl;
+        H5Fclose(fileHandle);
+        EXCEPTION1(InvalidDBTypeException, "Cannot be a GTC file, "
+                   "since it is does not contain the dataset \"particle_data\"");
+    }
 
     //Check variable's size.
     hid_t dataspace = H5Dget_space(particleHandle);
@@ -184,8 +181,7 @@ avtGTCFileFormat::Initialize()
         H5Sclose(sid);
         H5Dclose(particleHandle);
         H5Fclose(fileHandle);
-        EXCEPTION2( NonCompliantException, "GTC Dataset Extents",
-                    "Dataset 'particle_data' has an invalid extents");
+        EXCEPTION1(InvalidDBTypeException, "The GTC file has an invalid number of dimensions");
     }
     
     debug4 << mName << "Determining variable size" << endl;
@@ -197,8 +193,7 @@ avtGTCFileFormat::Initialize()
         H5Sclose(sid);
         H5Dclose(particleHandle);
         H5Fclose(fileHandle);
-        EXCEPTION2( NonCompliantException, "GTC Dataset Extents",
-                    "Dataset 'particle_data' has an insufficient number of variables");
+        EXCEPTION1(InvalidDBTypeException, "The GTC file has an insufficient number of variables");
     }
     H5Sclose(dataspace);
 
@@ -907,3 +902,6 @@ parallelBuffer::AddElement( float *data )
 }
 
 #endif
+
+
+

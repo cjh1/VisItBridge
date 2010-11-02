@@ -1,6 +1,7 @@
 
 set(SOURCES
   avtExtrudedVolFileFormat.C
+  avtExtrudedVolWriter.C
   avtExtrudedVolOptions.C
   avtExtrudedVolOptions.h
   ExtrudedVolPluginInfo.h

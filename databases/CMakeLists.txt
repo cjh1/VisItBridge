@@ -15,8 +15,7 @@ set(VISIT_DB_INC_DIRS CACHE INTERNAL "include directories" FORCE)
 
 set(DEFAULT_BRIDGE_READERS
   ANALYZE
-  ANSYS
-  AugDecomp
+  ANSYS  
   AUXFile
   BOV
   CEAucd

@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -245,7 +245,7 @@ avtExtrudedVolFileFormat::GetMesh(int domain, const char *meshname)
         {
             EXCEPTION1(InvalidVariableException, meshname);
         }
-        int wedge[6];
+        vtkIdType wedge[6];
         wedge[0] = cell->GetPointId(0);
         wedge[1] = cell->GetPointId(1);
         wedge[2] = cell->GetPointId(2);

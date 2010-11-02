@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -72,7 +72,6 @@ GetChomboReadOptions(void)
     rv->SetBool("Enable only explicitly defined materials by default", false);
     rv->SetBool("Check for mapping file and import coordinates if available", true);
     rv->SetBool("Use particle_nid and polymer_id to connect particles", false);
-    rv->SetBool("Always compute domain boundaries (hack for AMR stitch cells)", false);
     return rv;
 }
 

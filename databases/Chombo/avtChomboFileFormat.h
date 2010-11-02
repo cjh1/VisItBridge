@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -150,9 +150,6 @@ class DBOptionsAttributes;
 //    Added ability to connect particle mesh based on polymer_id and
 //    particle_nid
 //
-//    Tom Fogal, Fri Aug  6 16:39:18 MDT 2010
-//    Implement method to handle data selections.
-//
 // ****************************************************************************
 
 class avtChomboFileFormat : public avtSTMDFileFormat
@@ -177,11 +174,6 @@ class avtChomboFileFormat : public avtSTMDFileFormat
     void                  *GetMaterial(const char *var, int patch, 
                                        const char *type,
                                        DestructorFunction &df);
-
-    void                   RegisterDataSelections(
-                             const std::vector<avtDataSelection_p>&,
-                             std::vector<bool>* applied
-                           );
   
   protected:
     bool                   initializedReader;
@@ -191,7 +183,6 @@ class avtChomboFileFormat : public avtSTMDFileFormat
     int                    nMaterials;
     bool                   hasParticles;
     bool                   connectParticles;
-    bool                   alwaysComputeDomainBoundaries;
     std::vector<std::string>  particleVarnames;
     double                 dtime;
     int                    cycle;
@@ -228,8 +219,6 @@ class avtChomboFileFormat : public avtSTMDFileFormat
     double                 probLo[3];
     double                 aspectRatio[3];
 
-    size_t                 resolution; // for user selection of resolution
-
     void                   InitializeReader(void);
     void                   GetLevelAndLocalPatchNumber(int global_patch,
                                            int &level, int &local_patch) const;
@@ -242,4 +231,8 @@ class avtChomboFileFormat : public avtSTMDFileFormat
     virtual bool           HasInvariantMetaData(void) const { return false; };
     virtual bool           HasInvariantSIL(void) const { return false; };
 };
+
+
 #endif
+
+
