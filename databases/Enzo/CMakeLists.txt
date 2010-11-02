@@ -1,7 +1,7 @@
 
-SET(SOURCES
-avtEnzoFileFormat.h
-avtEnzoFileFormat.C
+set(SOURCES
+  avtEnzoFileFormat.h
+  avtEnzoFileFormat.C
 )
 
 ADD_VISIT_READER(VisItEnzoReader "1.0"  
