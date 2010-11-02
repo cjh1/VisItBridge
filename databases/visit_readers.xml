@@ -254,7 +254,7 @@
     <SourceProxy name="VisItFLASHReader" class="vtkVisItFLASHReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
-       <ReaderFactory extensions="hierarchy boundary"
+       <ReaderFactory extensions="flash f5"
                       file_description="VisIt FLASH Reader" />
      </Hints>
      </SourceProxy>
