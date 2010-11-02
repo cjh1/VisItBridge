@@ -248,7 +248,11 @@ ENDIF (HAVE_SOCKLEN_T)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)  
-     
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/common/misc/ConfigureInfo.C.in
+               ${CMAKE_CURRENT_BINARY_DIR}/common/misc/ConfigureInfo.C @ONLY IMMEDIATE)
+
+               
 add_subdirectory(common)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
