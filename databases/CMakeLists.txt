@@ -32,9 +32,27 @@ set(DEFAULT_BRIDGE_READERS
   Gadget
   GGCM
   GTC
-  GULP
+  GULP  
+  Image
+  LAMMPS
+  Lines
+  M3D
+  M3DC1
   Miranda
+  MM5
+  NASTRAN
+  Nek5000
+  OpenFOAM
+  OVERFLOW
+  paraDIS
+  paraDIS_tecplot
+  PATRAN
+  PFLOTRAN
   Pixie
+  PlainText
+  PLOT2D
+  PLOT3D
+  Point3d  
   ProteinDataBank
   SAMRAI
   Tetrad

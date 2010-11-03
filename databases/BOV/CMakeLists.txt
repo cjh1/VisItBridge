@@ -1,7 +1,8 @@
 
-SET(SOURCES
-avtBOVFileFormat.C
-)
+set(SOURCES
+  avtBOVFileFormat.C
+  )
+  
 ADD_VISIT_READER(VisItBOVReader "1.0"
   VISIT_READER_TYPE "STMD"
   VISIT_READER_NAME "avtBOVFileFormat"    

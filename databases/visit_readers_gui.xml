@@ -25,12 +25,30 @@
   <Proxy group="sources" name="VisItGGCMReader" />  
   <Proxy group="sources" name="VisItGTCReader" />
   <Proxy group="sources" name="VisItGULPReader" />
+  <Proxy group="sources" name="VisItN5NimrodReader" />
+  <Proxy group="sources" name="VisItImageReader" />
+  <Proxy group="sources" name="VisItLAMMPSReader" />
+  <Proxy group="sources" name="VisItLinesReader" />
+  <Proxy group="sources" name="VisItM3DReader" />
+  <Proxy group="sources" name="VisItM3DC1Reader" />  
   <Proxy group="sources" name="VisItMirandaReader" />
+  <Proxy group="sources" name="VisItMM5Reader" />
+  <Proxy group="sources" name="VisItNASTRANReader" />
+  <Proxy group="sources" name="VisItNek5000Reader" />
+  <Proxy group="sources" name="VisItOpenFOAMReader" />
+  <Proxy group="sources" name="VisItOVERFLOWReader" />
+  <Proxy group="sources" name="VisItparaDISReader" />
+  <Proxy group="sources" name="VisItparaDIS_tecplotReader" />
+  <Proxy group="sources" name="VisItPATRANReader" />
+  <Proxy group="sources" name="VisItPFLOTRANReader" />
   <Proxy group="sources" name="VisItPixieReader" />
+  <Proxy group="sources" name="VisItPlainTextReader" />
+  <Proxy group="sources" name="VisItPLOT2DReader" />
+  <Proxy group="sources" name="VisItPLOT3DReader" />
+  <Proxy group="sources" name="VisItPoint3dReader" />
   <Proxy group="sources" name="VisItProteinDataBankReader" />    
   <Proxy group="sources" name="VisItSAMRAIReader" />  
   <Proxy group="sources" name="VisItSiloReader" />
   <Proxy group="sources" name="VisItTecplotReader" />
   <Proxy group="sources" name="VisItTetradReader" />
-  
 </ParaViewReaders>  
