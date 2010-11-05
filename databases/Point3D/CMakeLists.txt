@@ -1,9 +1,9 @@
 
 set(SOURCES
-  avtPOINT3DFileFormat.C
+  avtPoint3DFileFormat.C
   )
-ADD_VISIT_READER(VisItPOINT3DsReader "1.0"
+ADD_VISIT_READER(VisItPoint3DReader "1.0"
   VISIT_READER_TYPE "STSD"
-  VISIT_READER_NAME "avtPOINT3DFileFormat"    
+  VISIT_READER_NAME "avtPoint3DFileFormat"    
   SERVER_SOURCES ${SOURCES}
   )
