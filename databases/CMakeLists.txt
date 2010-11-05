@@ -43,9 +43,7 @@ set(DEFAULT_BRIDGE_READERS
   NASTRAN
   Nek5000
   OpenFOAM
-  OVERFLOW
-  paraDIS
-  paraDIS_tecplot
+  OVERFLOW  
   PATRAN
   PFLOTRAN
   Pixie
@@ -68,6 +66,7 @@ foreach(db ${DEFAULT_BRIDGE_READERS})
   add_subdirectory(${db})
 endforeach(db)
 
+ADD_DEFINITIONS("-DRC_CPP_VISIT_BUILD")
   
 VISIT_INCLUDE_READER_SOURCE(Silo OFF)
 if(VISIT_BUILD_READER_Silo)
@@ -100,14 +99,17 @@ endif(VISIT_BUILD_READER_CGNS)
 SET(KIT VisItDatabases)
 SET(KIT_UPCASE "VISITDATABASES")
 
-#include all the visit directories 
+#include all the db directores before
+#the visit files
+include_directories(
+  ${VISIT_DB_INC_DIRS}
+  )
+  
 include_directories(
   ${VISITBRIDGE_USE_FILE}
   )
 
-include_directories(
-  ${VISIT_DB_INC_DIRS}
-  )
+
 
 
 if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)

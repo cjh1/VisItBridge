@@ -402,23 +402,7 @@
                       file_description="VisIt OVERFLOW Reader" />
      </Hints>
     </SourceProxy>
-    
-    <SourceProxy name="VisItparaDISReader" class="vtkVisItparaDISReader"
-      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-     <Hints>
-       <ReaderFactory extensions="prds dat data"
-                      file_description="VisIt paraDIS Reader" />
-     </Hints>
-    </SourceProxy>
-    
-    <SourceProxy name="VisItparaDIS_tecplotReader" class="vtkVisItparaDIS_tecplotReader"
-      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-     <Hints>
-       <ReaderFactory extensions="fld field cyl cylinder dat"
-                      file_description="VisIt paraDIS tecplot Reader" />
-     </Hints>
-    </SourceProxy>    
-
+      
     <SourceProxy name="VisItPATRANReader" class="vtkVisItPATRANReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
