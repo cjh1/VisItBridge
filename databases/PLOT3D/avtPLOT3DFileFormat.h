@@ -49,7 +49,7 @@
 #include <string>
 
 
-class     vtkVisItPLOT3DReader;
+class     vtkVisItPLOT3DReaderInternal;
 
 
 // ****************************************************************************
@@ -78,7 +78,7 @@ class avtPLOT3DFileFormat : public avtSTMDFileFormat
     virtual void          PopulateDatabaseMetaData(avtDatabaseMetaData *);
 
   protected:
-    vtkVisItPLOT3DReader *reader;
+    vtkVisItPLOT3DReaderInternal *reader;
 };
 
 

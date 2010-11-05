@@ -10,7 +10,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkVisItPLOT3DReader.h,v $
+  Module:    $RCSfile: vtkVisItPLOT3DReaderInternal.h,v $
   Language:  C++
   Date:      $Date: 2002/01/22 15:38:17 $
   Version:   $Revision: 1.48 $
@@ -24,9 +24,9 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVisItPLOT3DReader - read PLOT3D data files
+// .NAME vtkVisItPLOT3DReaderInternal - read PLOT3D data files
 // .SECTION Description
-// vtkVisItPLOT3DReader is a reader object that reads PLOT3D formatted files and 
+// vtkVisItPLOT3DReaderInternal is a reader object that reads PLOT3D formatted files and 
 // generates a structured grid on output. PLOT3D is a computer graphics 
 // program designed to visualize the grids and solutions of computational 
 // fluid dynamics. Please see the "PLOT3D User's Manual" available from 
@@ -41,7 +41,7 @@
 // the flow density (scalar), flow momentum (vector), and flow energy (scalar).
 //
 // The reader can generate additional scalars and vectors (or "functions")
-// from this information. To use vtkVisItPLOT3DReader, you must specify the 
+// from this information. To use vtkVisItPLOT3DReaderInternal, you must specify the 
 // particular function number for the scalar and vector you want to visualize.
 // This implementation of the reader provides the following functions. The
 // scalar functions are:
@@ -84,8 +84,8 @@
 // file is specified, as well as a scalar from the solution file (or derived
 // from the solution file), the function file takes precedence.
 
-#ifndef __vtkVisItPLOT3DReader_h
-#define __vtkVisItPLOT3DReader_h
+#ifndef __vtkVisItPLOT3DReaderInternal_h
+#define __vtkVisItPLOT3DReaderInternal_h
 
 #include <stdio.h>
 #include "vtkStructuredGridSource.h"
@@ -128,11 +128,11 @@ class vtkStructuredGrid;
 #define FORTRAN_BINARY 1
 
 
-class vtkVisItPLOT3DReader : public vtkStructuredGridSource 
+class vtkVisItPLOT3DReaderInternal : public vtkStructuredGridSource 
 {
 public:
-  static vtkVisItPLOT3DReader *New();
-  vtkTypeRevisionMacro(vtkVisItPLOT3DReader,vtkStructuredGridSource);
+  static vtkVisItPLOT3DReaderInternal *New();
+  vtkTypeRevisionMacro(vtkVisItPLOT3DReaderInternal,vtkStructuredGridSource);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -293,8 +293,8 @@ public:
   int ReadNumbers(FILE *fp, unsigned int numbersToRead, float * output);
   int ReadNumbers(FILE *fp, unsigned int numbersToRead, int * output);
 protected:
-  vtkVisItPLOT3DReader();
-  ~vtkVisItPLOT3DReader();
+  vtkVisItPLOT3DReaderInternal();
+  ~vtkVisItPLOT3DReaderInternal();
 
   void ExecuteInformation();
   void Execute();
@@ -391,8 +391,8 @@ protected:
   void ComputePressureGradient(vtkPointData *outputPD);
 
 private:
-  vtkVisItPLOT3DReader(const vtkVisItPLOT3DReader&);  // Not implemented.
-  void operator=(const vtkVisItPLOT3DReader&);  // Not implemented.
+  vtkVisItPLOT3DReaderInternal(const vtkVisItPLOT3DReaderInternal&);  // Not implemented.
+  void operator=(const vtkVisItPLOT3DReaderInternal&);  // Not implemented.
 };
 
 #endif
@@ -403,7 +403,7 @@ private:
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkVisItPLOT3DReader.cxx,v $
+  Module:    $RCSfile: vtkVisItPLOT3DReaderInternal.cxx,v $
   Language:  C++
   Date:      $Date: 2002/01/22 15:38:17 $
   Version:   $Revision: 1.64 $
@@ -428,8 +428,8 @@ private:
 #include <ctype.h>
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkVisItPLOT3DReader, "$Revision: 1.64 $");
-vtkStandardNewMacro(vtkVisItPLOT3DReader);
+vtkCxxRevisionMacro(vtkVisItPLOT3DReaderInternal, "$Revision: 1.64 $");
+vtkStandardNewMacro(vtkVisItPLOT3DReaderInternal);
 
 #define VTK_BINARY 0
 #define VTK_ASCII 1
@@ -439,7 +439,7 @@ vtkStandardNewMacro(vtkVisItPLOT3DReader);
 #define VTK_PINF ((VTK_RHOINF*VTK_CINF) * (VTK_RHOINF*VTK_CINF) / this->Gamma)
 #define VTK_CV (this->R / (this->Gamma-1.0))
 
-vtkVisItPLOT3DReader::vtkVisItPLOT3DReader()
+vtkVisItPLOT3DReaderInternal::vtkVisItPLOT3DReaderInternal()
 {
   //  set up for the default PLOT3D file type
   this->GridType = SINGLE_GRID;
@@ -489,7 +489,7 @@ vtkVisItPLOT3DReader::vtkVisItPLOT3DReader()
   this->SolutionOffsets = NULL;
 } 
 
-vtkVisItPLOT3DReader::~vtkVisItPLOT3DReader()
+vtkVisItPLOT3DReaderInternal::~vtkVisItPLOT3DReaderInternal()
 {
   if (this->XYZFileName)
     {
@@ -534,7 +534,7 @@ vtkVisItPLOT3DReader::~vtkVisItPLOT3DReader()
 
 
 
-void vtkVisItPLOT3DReader::RemoveFunction(int fnum)
+void vtkVisItPLOT3DReaderInternal::RemoveFunction(int fnum)
 {
   for (int i=0; i < this->FunctionList->GetNumberOfTuples(); i++)
   {
@@ -549,7 +549,7 @@ void vtkVisItPLOT3DReader::RemoveFunction(int fnum)
 
 
 
-void vtkVisItPLOT3DReader::ExecuteInformation()
+void vtkVisItPLOT3DReaderInternal::ExecuteInformation()
 {
   FILE *xyzFp;
   int error = 0;
@@ -585,7 +585,7 @@ MatchesSubstring(const char *c1, const char *c2)
 }
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::CollectInfo
+//  Method: vtkVisItPLOT3DReaderInternal::CollectInfo
 //
 //  Arguments;
 //      x_file:  grid file name
@@ -610,7 +610,7 @@ MatchesSubstring(const char *c1, const char *c2)
 //
 // ****************************************************************************
 
-void vtkVisItPLOT3DReader::CollectInfo(char *x_file, char *s_file)
+void vtkVisItPLOT3DReaderInternal::CollectInfo(char *x_file, char *s_file)
 {
   const int lineSize = 1024;
   int fileFound = 1;
@@ -756,7 +756,7 @@ void vtkVisItPLOT3DReader::CollectInfo(char *x_file, char *s_file)
 
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::getInfoLine
+//  Method: vtkVisItPLOT3DReaderInternal::getInfoLine
 //
 //  Arguments:
 //      line     storage for a line read from a vp3d file.
@@ -768,7 +768,7 @@ void vtkVisItPLOT3DReader::CollectInfo(char *x_file, char *s_file)
 //
 // ****************************************************************************
 
-int vtkVisItPLOT3DReader::getInfoLine(char * line, int size, FILE*fp)
+int vtkVisItPLOT3DReaderInternal::getInfoLine(char * line, int size, FILE*fp)
 {
   //  skip all comments and empty lines in the file.  
   do{
@@ -785,7 +785,7 @@ int vtkVisItPLOT3DReader::getInfoLine(char * line, int size, FILE*fp)
 
 
 
-void vtkVisItPLOT3DReader::Execute()
+void vtkVisItPLOT3DReaderInternal::Execute()
 {
   FILE *xyzFp, *QFp, *funcFp;
   int error = 0;
@@ -971,7 +971,7 @@ void vtkVisItPLOT3DReader::Execute()
 
 
 
-int vtkVisItPLOT3DReader::ReadGrid(FILE *fp,vtkStructuredGrid *output)
+int vtkVisItPLOT3DReaderInternal::ReadGrid(FILE *fp,vtkStructuredGrid *output)
 {
   vtkPoints *newPts;
   int i, gridFound, offset, gridSize;
@@ -1122,7 +1122,7 @@ int vtkVisItPLOT3DReader::ReadGrid(FILE *fp,vtkStructuredGrid *output)
 
 
 // for UpdateInformation
-int vtkVisItPLOT3DReader::ReadGridDimensions(FILE *fp,
+int vtkVisItPLOT3DReaderInternal::ReadGridDimensions(FILE *fp,
                                               vtkStructuredGrid *output)
 {
   int *dim= new int[3*this->NumberOfGrids ];
@@ -1167,7 +1167,7 @@ int vtkVisItPLOT3DReader::ReadGridDimensions(FILE *fp,
 
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::FindNumberOfGrids
+//  Method: vtkVisItPLOT3DReaderInternal::FindNumberOfGrids
 //
 //  Arguments;
 //      fp:      grid file stream
@@ -1177,7 +1177,7 @@ int vtkVisItPLOT3DReader::ReadGridDimensions(FILE *fp,
 //
 // ****************************************************************************
 
-int vtkVisItPLOT3DReader::FindNumberOfGrids(FILE *fp)
+int vtkVisItPLOT3DReaderInternal::FindNumberOfGrids(FILE *fp)
 {
   int numGrids;
   if (this->GridType == MULTI_GRID || this->Compression == COMPRESSED_ASCII) 
@@ -1195,7 +1195,7 @@ int vtkVisItPLOT3DReader::FindNumberOfGrids(FILE *fp)
 }
 
 
-int vtkVisItPLOT3DReader::ReadSolution(FILE *fp,vtkStructuredGrid *output)
+int vtkVisItPLOT3DReaderInternal::ReadSolution(FILE *fp,vtkStructuredGrid *output)
 {
   vtkFloatArray *newDensity, *newEnergy;
   vtkFloatArray *newMomentum;
@@ -1417,7 +1417,7 @@ int vtkVisItPLOT3DReader::ReadSolution(FILE *fp,vtkStructuredGrid *output)
 }
 
 
-int vtkVisItPLOT3DReader::ReadFunctionFile(FILE *fp,vtkStructuredGrid *output)
+int vtkVisItPLOT3DReaderInternal::ReadFunctionFile(FILE *fp,vtkStructuredGrid *output)
 {
   int numGrids;
   output = output;     // what is this for?
@@ -1434,7 +1434,7 @@ int vtkVisItPLOT3DReader::ReadFunctionFile(FILE *fp,vtkStructuredGrid *output)
 }
 
 
-int vtkVisItPLOT3DReader::ReadVectorFunctionFile(FILE *fp,
+int vtkVisItPLOT3DReaderInternal::ReadVectorFunctionFile(FILE *fp,
                                                   vtkStructuredGrid *output)
 {
   int numGrids= this->FindNumberOfGrids(fp);
@@ -1452,7 +1452,7 @@ int vtkVisItPLOT3DReader::ReadVectorFunctionFile(FILE *fp,
 //
 // Various PLOT3D functions.....................
 //
-void vtkVisItPLOT3DReader::MapFunction(int fNumber,vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::MapFunction(int fNumber,vtkPointData *outputPD)
 {
    switch (fNumber)
     {
@@ -1520,14 +1520,14 @@ void vtkVisItPLOT3DReader::MapFunction(int fNumber,vtkPointData *outputPD)
     }
 }
 
-void vtkVisItPLOT3DReader::ComputeDensity(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeDensity(vtkPointData *outputPD)
 {
   outputPD->AddArray(this->Density);
   outputPD->SetActiveScalars("Density");
   vtkDebugMacro(<<"Created density scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeTemperature(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeTemperature(vtkPointData *outputPD)
 {
   double *m;
   float e, rr, u, v, w, v2, p, d, rrgas;
@@ -1572,7 +1572,7 @@ void vtkVisItPLOT3DReader::ComputeTemperature(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created temperature scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputePressure(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputePressure(vtkPointData *outputPD)
 { 
   double *m;
   float e, u, v, w, v2, p, d, rr;
@@ -1615,7 +1615,7 @@ void vtkVisItPLOT3DReader::ComputePressure(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created pressure scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeEnthalpy(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeEnthalpy(vtkPointData *outputPD)
 { 
   double *m;
   float e, u, v, w, v2, d, rr;
@@ -1656,7 +1656,7 @@ void vtkVisItPLOT3DReader::ComputeEnthalpy(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created enthalpy scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeInternalEnergy(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeInternalEnergy(vtkPointData *outputPD)
 { 
   outputPD->AddArray(this->Energy);
   outputPD->SetActiveScalars("Energy");
@@ -1664,7 +1664,7 @@ void vtkVisItPLOT3DReader::ComputeInternalEnergy(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created energy scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeKineticEnergy(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeKineticEnergy(vtkPointData *outputPD)
 {
   double *m;
   float u, v, w, v2, d, rr;
@@ -1703,7 +1703,7 @@ void vtkVisItPLOT3DReader::ComputeKineticEnergy(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created kinetic energy scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeVelocityMagnitude(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeVelocityMagnitude(vtkPointData *outputPD)
 {
   double *m;
   float u, v, w, v2, d, rr;
@@ -1743,7 +1743,7 @@ void vtkVisItPLOT3DReader::ComputeVelocityMagnitude(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created velocity magnitude scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeStagnationEnergy(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeStagnationEnergy(vtkPointData *outputPD)
 {
   outputPD->AddArray(this->Energy);
   outputPD->SetActiveScalars("Energy");
@@ -1751,7 +1751,7 @@ void vtkVisItPLOT3DReader::ComputeStagnationEnergy(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created stagnation energy scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeEntropy(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeEntropy(vtkPointData *outputPD)
 {
   double *m;
   float u, v, w, v2, d, rr, s, p, e;
@@ -1794,7 +1794,7 @@ void vtkVisItPLOT3DReader::ComputeEntropy(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created entropy scalar");
 }
 
-void vtkVisItPLOT3DReader::ComputeSwirl(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeSwirl(vtkPointData *outputPD)
 {
   vtkDataArray *currentVector;
   vtkDataArray *vorticity;
@@ -1863,7 +1863,7 @@ void vtkVisItPLOT3DReader::ComputeSwirl(vtkPointData *outputPD)
 }
 
 // Vector functions
-void vtkVisItPLOT3DReader::ComputeVelocity(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeVelocity(vtkPointData *outputPD)
 {
   double *m;
   float v[3], d, rr;
@@ -1903,7 +1903,7 @@ void vtkVisItPLOT3DReader::ComputeVelocity(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created velocity vector");
 }
 
-void vtkVisItPLOT3DReader::ComputeVorticity(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeVorticity(vtkPointData *outputPD)
 {
   vtkDataArray *velocity;
   vtkFloatArray *vorticity;
@@ -2132,14 +2132,14 @@ void vtkVisItPLOT3DReader::ComputeVorticity(vtkPointData *outputPD)
   vtkDebugMacro(<<"Created vorticity vector");
 }
 
-void vtkVisItPLOT3DReader::ComputeMomentum(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputeMomentum(vtkPointData *outputPD)
 {
   this->Momentum->SetName("Momentum");
   outputPD->SetVectors(this->Momentum);
   vtkDebugMacro(<<"Created momentum vector");
 }
 
-void vtkVisItPLOT3DReader::ComputePressureGradient(vtkPointData *outputPD)
+void vtkVisItPLOT3DReaderInternal::ComputePressureGradient(vtkPointData *outputPD)
 {
   vtkDataArray *currentScalar;
   vtkDataArray *pressure;
@@ -2374,7 +2374,7 @@ void vtkVisItPLOT3DReader::ComputePressureGradient(vtkPointData *outputPD)
     }
 }
 
-void vtkVisItPLOT3DReader::PrintSelf(ostream& os, vtkIndent indent)
+void vtkVisItPLOT3DReaderInternal::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
 
@@ -2419,13 +2419,13 @@ void vtkVisItPLOT3DReader::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 
-void vtkVisItPLOT3DReader::AddFunction(int functionNumber)
+void vtkVisItPLOT3DReaderInternal::AddFunction(int functionNumber)
 {
   this->FunctionList->InsertNextValue(functionNumber);
 }
 
 
-void vtkVisItPLOT3DReader::RemoveAllFunctions()
+void vtkVisItPLOT3DReaderInternal::RemoveAllFunctions()
 {
   this->FunctionList->Reset();
 }
@@ -2435,7 +2435,7 @@ void vtkVisItPLOT3DReader::RemoveAllFunctions()
 
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::ReadNumbers
+//  Method: vtkVisItPLOT3DReaderInternal::ReadNumbers
 //
 //  Arguments;
 //      fp:             file stream from which to read numbers
@@ -2456,7 +2456,7 @@ void vtkVisItPLOT3DReader::RemoveAllFunctions()
 //
 // ****************************************************************************
 
-int vtkVisItPLOT3DReader::ReadNumbers( FILE *fp, unsigned int numbersToRead, 
+int vtkVisItPLOT3DReaderInternal::ReadNumbers( FILE *fp, unsigned int numbersToRead, 
                                         float * output)
 {
   if (output == NULL)
@@ -2545,7 +2545,7 @@ int vtkVisItPLOT3DReader::ReadNumbers( FILE *fp, unsigned int numbersToRead,
 
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::ReadNumbers
+//  Method: vtkVisItPLOT3DReaderInternal::ReadNumbers
 //
 //  Arguments;
 //      fp:             file stream from which to read numbers
@@ -2566,7 +2566,7 @@ int vtkVisItPLOT3DReader::ReadNumbers( FILE *fp, unsigned int numbersToRead,
 // ****************************************************************************
 
 
-int vtkVisItPLOT3DReader::ReadNumbers( FILE *fp, unsigned int numbersToRead, 
+int vtkVisItPLOT3DReaderInternal::ReadNumbers( FILE *fp, unsigned int numbersToRead, 
                                         int * output)
 {
   if (output == NULL)
@@ -2632,7 +2632,7 @@ int vtkVisItPLOT3DReader::ReadNumbers( FILE *fp, unsigned int numbersToRead,
 
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::ComputeGridOffset
+//  Method: vtkVisItPLOT3DReaderInternal::ComputeGridOffset
 //
 //  Arguments;
 //      fp:             file stream for grid file
@@ -2646,7 +2646,7 @@ int vtkVisItPLOT3DReader::ReadNumbers( FILE *fp, unsigned int numbersToRead,
 //
 // ****************************************************************************
 
-int vtkVisItPLOT3DReader::ComputeGridOffset(FILE *fp)
+int vtkVisItPLOT3DReaderInternal::ComputeGridOffset(FILE *fp)
 {
   int i;
 
@@ -2701,7 +2701,7 @@ int vtkVisItPLOT3DReader::ComputeGridOffset(FILE *fp)
 
 
 // ****************************************************************************
-//  Method: vtkVisItPLOT3DReader::ComputeSolutionOffset
+//  Method: vtkVisItPLOT3DReaderInternal::ComputeSolutionOffset
 //
 //  Arguments;
 //      fp:             file stream for solution file 
@@ -2715,7 +2715,7 @@ int vtkVisItPLOT3DReader::ComputeGridOffset(FILE *fp)
 //
 // ****************************************************************************
 
-int vtkVisItPLOT3DReader::ComputeSolutionOffset(FILE *fp)
+int vtkVisItPLOT3DReaderInternal::ComputeSolutionOffset(FILE *fp)
 {
   int i;
 
@@ -2845,7 +2845,7 @@ avtPLOT3DFileFormat::avtPLOT3DFileFormat(const char *fname)
         EXCEPTION0(ImproperUseException);
     }
 
-    reader = vtkVisItPLOT3DReader::New();
+    reader = vtkVisItPLOT3DReaderInternal::New();
 
     reader->SetVP3DFileName(v_file); 
     reader->SetXYZFileName(x_file);
