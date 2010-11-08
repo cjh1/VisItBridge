@@ -4,6 +4,8 @@ set(SOURCES
   avtXmdvFileFormat.h
   avtXmdvOptions.C
   avtXmdvOptions.h
+  avtXmdvWriter.C
+  avtXmdvWriter.h  
   XmdvPluginInfo.h
   XmdvPluginInfo.C
   XmdvEnginePluginInfo.C

@@ -565,7 +565,7 @@
     </SourceProxy>
 
 
-    <SourceProxy name="VisItVASPOUTCARReader" class="vtkVisItVASPOUTCARReader"
+    <SourceProxy name="VisItVASPOUTCARReader" class="vtkVisItOUTCARReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="OUT*"
@@ -573,7 +573,7 @@
      </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItVASPCHGCARReader" class="vtkVisItVASPCHGCARReader"
+    <SourceProxy name="VisItVASPCHGCARReader" class="vtkVisItCHGCARReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="CHG*"
@@ -581,7 +581,7 @@
      </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItVASPPOSCARReader" class="vtkVisItVASPPOSCARReader"
+    <SourceProxy name="VisItVASPPOSCARReader" class="vtkVisItPOSCARReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="POS*"
