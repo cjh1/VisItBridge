@@ -87,11 +87,12 @@ class VsCommonPluginInfo : public virtual CommonDatabasePluginInfo, public virtu
     virtual void SetReadOptions(DBOptionsAttributes* opts);
     const static int defaultStride;
 
+    static std::string strideSettingAxis1_Name;
+    static std::string strideSettingAxis2_Name;
+    static std::string strideSettingAxis3_Name;
+    
   private:
-          std::vector<int> settings;
-          static std::string strideSettingAxis1_Name;
-          static std::string strideSettingAxis2_Name;
-          static std::string strideSettingAxis3_Name;
+    std::vector<int> settings;
 };
 
 class VsMDServerPluginInfo : public virtual MDServerDatabasePluginInfo, public virtual VsCommonPluginInfo

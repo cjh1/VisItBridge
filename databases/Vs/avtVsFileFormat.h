@@ -28,6 +28,7 @@ class vtkDataSet;
 class vtkDataArray;
 class avtDatabaseMetaData;
 class avtMeshMetaData;
+class DBOptionsAttributes;
 
 /**
  * avtSTMDFileFormat is a base class for multi-domain, single-time
@@ -45,9 +46,10 @@ class avtVsFileFormat: public avtSTMDFileFormat {
    * Construct a file reader from a data file.
    *
    * @param dfnm the name of the data file
-   * @param newStride The stride to use when loading data
+   * @param readOpts The db options that holds the stride to use when loading data
    */
-  avtVsFileFormat(const char* dfnm, std::vector<int> settings);
+  avtVsFileFormat(const char* dfnm, DBOptionsAttributes *readOpts);
+
 
   /**
    * Destructor

@@ -108,14 +108,17 @@ VsCommonPluginInfo::SetupDatabase(const char *const *list,
                                    int nList, int nBlock)
 {
 #if HDF5_VERSION_GE(1,8,1)
+    //modifed from compilation since for paraview we have modified
+    //the avtVsFileFormat to handle a DBOptionsAtrributes
+    
     avtSTMDFileFormat **ffl = new avtSTMDFileFormat*[nList];
     for (int i = 0 ; i < nList ; i++)
-    {
-        ffl[i] = new avtVsFileFormat(list[i], settings);
+    {        
+      ffl[i] = new avtVsFileFormat(list[i], this->GetReadOptions()); 
     }
     avtSTMDFileFormatInterface *inter
            = new avtSTMDFileFormatInterface(ffl, nList);
-    return new avtGenericDatabase(inter);
+    return new avtGenericDatabase(inter);    
 #else
     DebugStream::Stream3() <<"VsCommonPluginInfo::SetupDatabase() - Vizschema database plugin requires hdf5 1.8.1 or later." <<std::endl;
     DebugStream::Stream3() <<"VsCommonPluginInfo::SetupDatabase() - Plugin is disabled and will not open files." <<std::endl;

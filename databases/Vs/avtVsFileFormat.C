@@ -45,6 +45,7 @@
 #include <InvalidVariableException.h>
 #include <InvalidDBTypeException.h>
 #include <VsPluginInfo.h>
+#include <DBOptionsAttributes.h>
 
 // definition of VISIT_VERSION
 #include <visit-config.h>
@@ -58,7 +59,7 @@
 // VizSchema includes
 #include <VsUtils.h>
 
-avtVsFileFormat::avtVsFileFormat(const char* dfnm, std::vector<int> settings) :
+avtVsFileFormat::avtVsFileFormat(const char* dfnm, DBOptionsAttributes *readOpts) :
   avtSTMDFileFormat(&dfnm, 1), dataFileName(dfnm),debugStrmRef(DebugStream::Stream3()) {
 
     debugStrmRef <<"avtVsFileFormat::constructor() - entering" <<std::endl;
@@ -69,18 +70,13 @@ avtVsFileFormat::avtVsFileFormat(const char* dfnm, std::vector<int> settings) :
 
     //initialize settings
     stride.resize(3);
-    if (settings.size() != 3) {
-      debugStrmRef <<"avtVsFileFormat::constructor() - Expected settings array of length 3." <<std::endl;
-      debugStrmRef <<"avtVsFileFormat::constructor() - Got length " <<settings.size() <<"." <<std::endl;
-      stride[0] = VsCommonPluginInfo::defaultStride;
-      stride[1] = VsCommonPluginInfo::defaultStride;
-      stride[2] = VsCommonPluginInfo::defaultStride;
-    } else {
-      stride[0] = settings[0];
-      stride[1] = settings[1];
-      stride[2] = settings[2];
-    }
-
+    stride[0] = (readOpts->FindIndex(VsCommonPluginInfo::strideSettingAxis1_Name) != -1 ) ?
+      readOpts->GetInt(VsCommonPluginInfo::strideSettingAxis1_Name) : VsCommonPluginInfo::defaultStride;
+    stride[1] = (readOpts->FindIndex(VsCommonPluginInfo::strideSettingAxis2_Name) != -1 ) ?
+      readOpts->GetInt(VsCommonPluginInfo::strideSettingAxis2_Name) : VsCommonPluginInfo::defaultStride;
+    stride[2] = (readOpts->FindIndex(VsCommonPluginInfo::strideSettingAxis3_Name) != -1 ) ?
+      readOpts->GetInt(VsCommonPluginInfo::strideSettingAxis3_Name) : VsCommonPluginInfo::defaultStride;
+    
     debugStrmRef <<"avtVsFileFormat::constructor() - strides are: " <<stride[0] <<", " <<stride[1] <<", " <<stride[2] <<"." <<std::endl;
 
     herr_t err = H5check();
