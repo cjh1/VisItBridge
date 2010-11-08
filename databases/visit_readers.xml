@@ -499,13 +499,6 @@
      </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItShapefileReader" class="vtkVisItShapefileReader"
-      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-     <Hints>
-       <ReaderFactory extensions="shp shx dbf"
-                      file_description="VisIt Shapefile Reader" />
-     </Hints>
-    </SourceProxy>
 #ifdef VISITBRIDGE_USE_SILO
     <SourceProxy name="VisItSiloReader" class="vtkVisItSiloReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">

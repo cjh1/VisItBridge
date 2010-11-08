@@ -49,8 +49,7 @@
   <Proxy group="sources" name="VisItRAWReader" />
   <Proxy group="sources" name="VisItSAMRAIReader" />  
   <Proxy group="sources" name="VisItSARReader" />
-  <Proxy group="sources" name="VisItSASReader" /> 
-  <Proxy group="sources" name="VisItShapefileReader" />
+  <Proxy group="sources" name="VisItSASReader" />   
   <Proxy group="sources" name="VisItSiloReader" />
   <Proxy group="sources" name="VisItSpheralReader" />
   <Proxy group="sources" name="VisItTecplotReader" />

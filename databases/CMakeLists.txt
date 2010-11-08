@@ -55,8 +55,7 @@ set(DEFAULT_BRIDGE_READERS
   RAW
   SAMRAI
   SAR
-  SAS
-  Shapefile
+  SAS  
   Spheral
   Tecplot  
   Tetrad
