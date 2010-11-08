@@ -608,7 +608,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5 vsh5"
-                      file_description="VisIt Vs Reader" />
+                      file_description="VisIt VizSchema Reader" />
      </Hints>
     </SourceProxy>
     
