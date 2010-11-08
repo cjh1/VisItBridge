@@ -298,14 +298,14 @@
                       file_description="VisIt GULP Reader" />
      </Hints>
      </SourceProxy>
-     
+
     <SourceProxy name="VisItH5NimrodReader" class="vtkVisItH5NimrodReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5nimrod"
                       file_description="VisIt H5Nimrod Reader" />
      </Hints>
-     </SourceProxy>     
+     </SourceProxy>
 
    <SourceProxy name="VisItImageReader" class="vtkVisItImageReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -314,7 +314,7 @@
                       file_description="VisIt Image Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItLAMMPSStructureReader" class="vtkVisItLAMMPSStructureReader"
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -322,7 +322,7 @@
                       file_description="VisIt LAMMPSStructure Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItLAMMPSDumpReader" class="vtkVisItLAMMPSDumpReader"
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -330,7 +330,7 @@
                       file_description="VisIt LAMMPS Dump Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItLinesReader" class="vtkVisItLinesReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -338,14 +338,14 @@
                       file_description="VisIt Lines Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItM3DReader" class="vtkVisItM3DReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="m3d h5"
                       file_description="VisIt Multilevel 3D Plasma Reader" />
      </Hints>
-    </SourceProxy>    
+    </SourceProxy>
 
     <SourceProxy name="VisItM3DC1Reader" class="vtkVisItM3DC1Reader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -354,7 +354,7 @@
                       file_description="VisIt M3DC1 Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItMirandaReader" class="vtkVisItMirandaReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -362,7 +362,7 @@
                       file_description="VisIt Miranda Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItMM5Reader" class="vtkVisItMM5Reader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -378,7 +378,7 @@
                       file_description="VisIt NASTRAN Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItNek5000Reader" class="vtkVisItNek5000Reader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -386,7 +386,7 @@
                       file_description="VisIt Nek5000 Reader" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItOpenFOAMReader" class="vtkVisItOpenFOAMReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -402,7 +402,7 @@
                       file_description="VisIt OVERFLOW Reader" />
      </Hints>
     </SourceProxy>
-      
+
     <SourceProxy name="VisItPATRANReader" class="vtkVisItPATRANReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -417,7 +417,7 @@
        <ReaderFactory extensions="h5"
                       file_description="VisIt PFLOTRAN Reader" />
      </Hints>
-    </SourceProxy>    
+    </SourceProxy>
 
     <SourceProxy name="VisItPixieReader" class="vtkVisItPixieReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -449,7 +449,7 @@
        <ReaderFactory extensions="q x vp3d"
                       file_description="VisIt PLOT3D Reader" />
      </Hints>
-    </SourceProxy>  
+    </SourceProxy>
 
     <SourceProxy name="VisItPOINT3DReader" class="vtkVisItPOINT3DReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -457,8 +457,8 @@
        <ReaderFactory extensions="3D"
                       file_description="VisIt POINT3D Reader" />
      </Hints>
-    </SourceProxy> 
-    
+    </SourceProxy>
+
     <SourceProxy name="VisItProteinDataBankReader" class="vtkVisItProteinDataBankReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -467,11 +467,43 @@
      </Hints>
     </SourceProxy>
 
+    <SourceProxy name="VisItRAWReader" class="vtkVisItRAWReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="ent pdb"
+                      file_description="VisIt RAW Reader" />
+     </Hints>
+    </SourceProxy>
+
     <SourceProxy name="VisItSAMRAIReader" class="vtkVisItSAMRAIReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="samrai"
                       file_description="VisIt SAMRAI Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItSARReader" class="vtkVisItSARReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="SAR sar"
+                      file_description="VisIt SAR Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItSASReader" class="vtkVisItSASReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="sasgeom sas sasdata"
+                      file_description="VisIt SAS Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItShapefileReader" class="vtkVisItShapefileReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="shp shx dbf"
+                      file_description="VisIt Shapefile Reader" />
      </Hints>
     </SourceProxy>
 #ifdef VISITBRIDGE_USE_SILO
@@ -483,6 +515,22 @@
      </Hints>
     </SourceProxy>
 #endif
+    <SourceProxy name="VisItSpheralReader" class="vtkVisItSpheralReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="spheral sv"
+                      file_description="VisIt Spheral Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItTecplotReader" class="vtkVisItTecplotReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="tp plt tec"
+                      file_description="VisIt Tecplot Reader" />
+     </Hints>
+    </SourceProxy>
+
     <SourceProxy name="VisItTetradReader" class="vtkVisItTetradReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -490,5 +538,95 @@
                       file_description="VisIt Tetrad Reader" />
      </Hints>
     </SourceProxy>
+
+    <SourceProxy name="VisItTFTReader" class="vtkVisItTFTReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="dat tft"
+                      file_description="VisIt TFT Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItTSurfReader" class="vtkVisItTSurfReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="ts_deg83"
+                      file_description="VisIt TSurf Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItUNICReader" class="vtkVisItUNICReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="h5"
+                      file_description="VisIt UNIC Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItUNICReader" class="vtkVisItUNICReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="h5"
+                      file_description="VisIt UNIC Reader" />
+     </Hints>
+    </SourceProxy>
+
+
+    <SourceProxy name="VisItVASPOUTCARReader" class="vtkVisItVASPOUTCARReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="OUT*"
+                      file_description="VisIt VASP OUT Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItVASPCHGCARReader" class="vtkVisItVASPCHGCARReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="CHG*"
+                      file_description="VisIt VASP CHGCA Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItVASPPOSCARReader" class="vtkVisItVASPPOSCARReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="POS*"
+                      file_description="VisIt VASP POSCAR Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItVelodyneReader" class="vtkVisItVelodyneReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="vld rst"
+                      file_description="VisIt Velodyne Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItVsReader" class="vtkVisItVsReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="h5 vsh5"
+                      file_description="VisIt Vs Reader" />
+     </Hints>
+    </SourceProxy>
+    
+    <SourceProxy name="VisItXmdvReader" class="vtkVisItXmdvReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="okc"
+                      file_description="VisIt Xmdv Reader" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItXYZReader" class="vtkVisItXYZReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="xyz"
+                      file_description="VisIt XYZ Reader" />
+     </Hints>
+    </SourceProxy>    
+
   </ProxyGroup>
 </ServerManagerConfiguration>

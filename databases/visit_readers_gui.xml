@@ -27,7 +27,8 @@
   <Proxy group="sources" name="VisItGULPReader" />
   <Proxy group="sources" name="VisItN5NimrodReader" />
   <Proxy group="sources" name="VisItImageReader" />
-  <Proxy group="sources" name="VisItLAMMPSReader" />
+  <Proxy group="sources" name="VisItLAMMPSStructureReader" />
+  <Proxy group="sources" name="VisItLAMMPSDumpReader" />
   <Proxy group="sources" name="VisItLinesReader" />
   <Proxy group="sources" name="VisItM3DReader" />
   <Proxy group="sources" name="VisItM3DC1Reader" />  
@@ -45,8 +46,23 @@
   <Proxy group="sources" name="VisItPLOT3DReader" />
   <Proxy group="sources" name="VisItPoint3dReader" />
   <Proxy group="sources" name="VisItProteinDataBankReader" />    
+  <Proxy group="sources" name="VisItRAWReader" />
   <Proxy group="sources" name="VisItSAMRAIReader" />  
+  <Proxy group="sources" name="VisItSARReader" />
+  <Proxy group="sources" name="VisItSASReader" /> 
+  <Proxy group="sources" name="VisItShapefileReader" />
   <Proxy group="sources" name="VisItSiloReader" />
+  <Proxy group="sources" name="VisItSpheralReader" />
   <Proxy group="sources" name="VisItTecplotReader" />
   <Proxy group="sources" name="VisItTetradReader" />
+  <Proxy group="sources" name="VisItTFTReader" />
+  <Proxy group="sources" name="VisItTSurfReader" />
+  <Proxy group="sources" name="VisItUNICReader" />
+  <Proxy group="sources" name="VisItVASPOUTCARReader" />
+  <Proxy group="sources" name="VisItVASPCHGCARReader" />
+  <Proxy group="sources" name="VisItVASPPOSCARReader" />
+  <Proxy group="sources" name="VisItVelodyneReader" />  
+  <Proxy group="sources" name="VisItVsReader" />  
+  <Proxy group="sources" name="VisItXmdvReader" />
+  <Proxy group="sources" name="VisItXYZReader" />
 </ParaViewReaders>  

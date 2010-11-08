@@ -52,8 +52,22 @@ set(DEFAULT_BRIDGE_READERS
   PLOT3D
   Point3d  
   ProteinDataBank
+  RAW
   SAMRAI
+  SAR
+  SAS
+  Shapefile
+  Spheral
+  Tecplot  
   Tetrad
+  TFT
+  TSurf
+  UNIC
+  VASP
+  Velodyne
+  Vs
+  Xmdv
+  XYZ
   )
 if(NOT WIN32)
   list(APPEND DEFAULT_BRIDGE_READERS

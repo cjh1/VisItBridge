@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -846,14 +846,6 @@ avtTecplotFileFormat::ParsePOINT(int numI, int numJ, int numK)
 //
 //    Mark C. Miller, Tue Jan 12 17:36:23 PST 2010
 //    Added logic to parse SOLUTIONTIME and set solTime.
-//
-//    Jeremy Meredith, Tue Jul 13 15:51:24 EDT 2010
-//    Allow the "$" which seems to appear alone on the last line of some
-//    ASCII tecplot files.
-//
-//    Jeremy Meredith, Mon Sep 27 16:03:56 EDT 2010
-//    Accept "NODES" and "ELEMENTS" as aliases for "N" and "E" in ZONE records.
-//
 // ****************************************************************************
 
 void
@@ -900,20 +892,6 @@ avtTecplotFileFormat::ReadFile()
         else if (tok == "TEXT")
         {
             // unsupported
-            tok = GetNextToken();
-            while (READING_UNTIL_END_OF_LINE)
-            {
-                // Skipping token
-                tok = GetNextToken();
-            }
-            got_next_token_already = true;
-        }
-        else if (tok == "$")
-        {
-            // this seems to have appeared at the end
-            // of some files; may simply be an eof
-            // pre-indicator, but it seems to be safe
-            // to skip it.....
             tok = GetNextToken();
             while (READING_UNTIL_END_OF_LINE)
             {
@@ -1054,9 +1032,7 @@ avtTecplotFileFormat::ReadFile()
                      tok != "J"  &&
                      tok != "K"  &&
                      tok != "N"  &&
-                     tok != "NODES"  &&
                      tok != "E"  &&
-                     tok != "ELEMENTS"  &&
                      tok != "ET" &&
                      tok != "F"  &&
                      tok != "ZONETYPE"  &&
@@ -1087,11 +1063,11 @@ avtTecplotFileFormat::ReadFile()
                 {
                     numK = atoi(GetNextToken().c_str());
                 }
-                else if (tok == "N" || tok == "NODES")
+                else if (tok == "N")
                 {
                     numNodes = atoi(GetNextToken().c_str());
                 }
-                else if (tok == "E" || tok == "ELEMENTS")
+                else if (tok == "E")
                 {
                     numElements = atoi(GetNextToken().c_str());
                 }

@@ -2,7 +2,7 @@
 *
 * Copyright (c) 2000 - 2010, Lawrence Livermore National Security, LLC
 * Produced at the Lawrence Livermore National Laboratory
-* LLNL-CODE-442911
+* LLNL-CODE-400124
 * All rights reserved.
 *
 * This file is  part of VisIt. For  details, see https://visit.llnl.gov/.  The
@@ -56,8 +56,6 @@
 #define TECPLOT_109 109
 #define TECPLOT_110 110
 #define TECPLOT_111 111
-#define TECPLOT_112 112
-#define TECPLOT_113 113
 
 #define TECPLOT_SWAP(A, B, tmp) \
         tmp = A;\
@@ -933,13 +931,6 @@ TecplotZone::operator = (const TecplotZone &obj)
     }
 }
 
-// ****************************************************************************
-// Modifications:
-//   Brad Whitlock, Mon Jul 19 09:40:13 PDT 2010
-//   I adjusted the read for Tecplot 112 (2009 format)
-//
-// ****************************************************************************
-
 bool
 TecplotZone::Read(FILE *f)
 {
@@ -970,8 +961,7 @@ TecplotZone::Read(FILE *f)
         solutionTime = ReadDouble(f);
         zoneColor = ReadInt(f);
         zoneType = (ZoneType)ReadInt(f);
-        if(version < TECPLOT_112)
-            dataPacking = ReadInt(f);
+        dataPacking = ReadInt(f);
         varLocation = ReadInt(f);
         if(varLocation == 1)
         {
@@ -2301,9 +2291,7 @@ TecplotFile::Write()
 // Creation:   Thu Jun 12 11:40:18 PDT 2008
 //
 // Modifications:
-//   Brad Whitlock, Mon Jul 19 09:40:55 PDT 2010
-//   I added Tecplot 112 and 113.
-//
+//   
 // ****************************************************************************
 
 bool
@@ -2348,10 +2336,6 @@ TecplotFile::Read(FILE *f)
             version = TECPLOT_110;
         else if(strcmp(magic+5,"111") == 0)
             version = TECPLOT_111;
-        else if(strcmp(magic+5,"112") == 0)
-            version = TECPLOT_112;
-        else if(strcmp(magic+5,"113") == 0)
-            version = TECPLOT_113;
         else
         {
             debug4 << mName << "Unsupported Tecplot version: " << (magic+5) << endl;
