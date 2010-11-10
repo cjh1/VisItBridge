@@ -119,7 +119,7 @@ include_directories(
   )
   
 include_directories(
-  ${VISITBRIDGE_USE_FILE}
+  ${VISITBRIDGE_INCLUDE_DIRS}
   )
 
 

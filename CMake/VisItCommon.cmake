@@ -175,7 +175,7 @@ MESSAGE(STATUS "Generating wrappings for ${PLUGIN_NAME}")
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${VISITBRIDGE_USE_FILE}
+  ${VISITBRIDGE_INCLUDE_DIRS}
   )  
 
 if(ARG_VISIT_READER_USES_OPTIONS)
@@ -259,7 +259,7 @@ message(STATUS "Generating wrappings for ${INTERFACE_NAME}")
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${VISITBRIDGE_USE_FILE}
+  ${VISITBRIDGE_INCLUDE_DIRS}
   )
 
 #check reader types

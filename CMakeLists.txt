@@ -258,7 +258,7 @@ add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(AvtAlgorithms)
 
-set(VISITBRIDGE_USE_FILE    
+set(VISITBRIDGE_INCLUDE_DIRS    
   ${vtkVisItAVTAlgorithms_BINARY_DIR}
   ${vtkVisItAVTAlgorithms_SOURCE_DIR}
   ${VISIT_COMMON_INCLUDES}
