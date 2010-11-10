@@ -1,4 +1,9 @@
-#VISIT_INCLUDE_READER_SOURCE is located in Cmake/ViItCommon.cmake
+MACRO(VISIT_INCLUDE_READER_SOURCE name state)
+option(VISIT_BUILD_READER_${name} "Build VisIt Reader ${name}" ${state})
+if (VISIT_BUILD_READER_${name})
+  ADD_SUBDIRECTORY(${name})
+endif()
+ENDMACRO(VISIT_INCLUDE_READER_SOURCE name)
 
 PROJECT(vtkVisItDatabases)
 
@@ -8,17 +13,74 @@ set(VISIT_SERVER_SOURCES CACHE INTERNAL "vtk classes to wrap for client server" 
 set(VISIT_DB_SOURCES "" CACHE INTERNAL "visit sources for readers" FORCE) 
 set(VISIT_DB_INC_DIRS CACHE INTERNAL "include directories" FORCE)
 
-VISIT_INCLUDE_READER_SOURCE(Fluent ON)
-VISIT_INCLUDE_READER_SOURCE(Miranda ON)
-VISIT_INCLUDE_READER_SOURCE(ProteinDataBank ON)
+set(DEFAULT_BRIDGE_READERS
+  ANALYZE
+  ANSYS  
+  AUXFile
+  BOV
+  CEAucd
+  Chombo  
+  CMAT
+  CTRL
+  Curve2D
+  DDCMD
+  Dyna3D
+  Enzo
+  ExtrudedVol
+  FLASH  
+  Fluent
+  Gadget
+  GGCM
+  GTC
+  GULP  
+  Image
+  LAMMPS
+  Lines
+  M3D
+  M3DC1
+  Miranda
+  MM5
+  NASTRAN
+  Nek5000
+  OpenFOAM
+  OVERFLOW  
+  PATRAN
+  PFLOTRAN
+  Pixie
+  PlainText
+  PLOT2D
+  PLOT3D
+  Point3d  
+  ProteinDataBank
+  RAW
+  SAMRAI
+  SAR
+  SAS  
+  Spheral
+  Tecplot  
+  Tetrad
+  TFT
+  TSurf
+  UNIC
+  VASP
+  Velodyne
+  Vs
+  Xmdv
+  XYZ
+  )
+if(NOT WIN32)
+  list(APPEND DEFAULT_BRIDGE_READERS
+    Claw
+    )
+endif(NOT WIN32)    
+    
+#add all the default readers to the library    
+foreach(db ${DEFAULT_BRIDGE_READERS})
+  add_subdirectory(${db})
+endforeach(db)
 
-if (PARAVIEW_HDF5_LIBRARIES)  
-  VISIT_INCLUDE_READER_SOURCE(Enzo ON)
-  VISIT_INCLUDE_READER_SOURCE(Pixie ON)  
-  VISIT_INCLUDE_READER_SOURCE(SAMRAI ON)
-  VISIT_INCLUDE_READER_SOURCE(Tetrad ON)
-endif(PARAVIEW_HDF5_LIBRARIES)
-
+ADD_DEFINITIONS("-DRC_CPP_VISIT_BUILD")
+  
 VISIT_INCLUDE_READER_SOURCE(Silo OFF)
 if(VISIT_BUILD_READER_Silo)
   if(NOT HAVE_LIBSILO)
@@ -50,14 +112,17 @@ endif(VISIT_BUILD_READER_CGNS)
 SET(KIT VisItDatabases)
 SET(KIT_UPCASE "VISITDATABASES")
 
-#include all the visit directories 
-include_directories(
-  ${VISITBRIDGE_USE_FILE}
-  )
-
+#include all the db directores before
+#the visit files
 include_directories(
   ${VISIT_DB_INC_DIRS}
   )
+  
+include_directories(
+  ${VISITBRIDGE_INCLUDE_DIRS}
+  )
+
+
 
 
 if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)

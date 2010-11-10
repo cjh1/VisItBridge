@@ -248,13 +248,17 @@ ENDIF (HAVE_SOCKLEN_T)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/visit-cmake.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/visit-config.h @ONLY IMMEDIATE)  
-     
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/common/misc/ConfigureInfo.C.in
+               ${CMAKE_CURRENT_BINARY_DIR}/common/misc/ConfigureInfo.C @ONLY IMMEDIATE)
+
+               
 add_subdirectory(common)
 add_subdirectory(visit_vtk)
 add_subdirectory(avt)
 add_subdirectory(AvtAlgorithms)
 
-set(VISITBRIDGE_USE_FILE    
+set(VISITBRIDGE_INCLUDE_DIRS    
   ${vtkVisItAVTAlgorithms_BINARY_DIR}
   ${vtkVisItAVTAlgorithms_SOURCE_DIR}
   ${VISIT_COMMON_INCLUDES}
@@ -266,6 +270,7 @@ set(VISITBRIDGE_USE_FILE
   ${AVT_DBATTS_SOURCE_DIR}/SIL
   ${VISIT_SOURCE_DIR}/avt/Math
   ${VISIT_SOURCE_DIR}/avt/VisWindow/VisWindow
+  ${VISIT_SOURCE_DIR}/avt/IVP
   ${AVT_PIPELINE_SOURCE_DIR}/AbstractFilters
   ${AVT_PIPELINE_SOURCE_DIR}/Data
   ${AVT_PIPELINE_SOURCE_DIR}/Pipeline

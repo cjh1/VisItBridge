@@ -1,8 +1,8 @@
 
-SET(SOURCES
-avtFluentFileFormat.h
-avtFluentFileFormat.C
-)
+set(SOURCES
+  avtFluentFileFormat.h
+  avtFluentFileFormat.C
+  )
 
 ADD_VISIT_READER(VisItFluentReader "1.0"  
   VISIT_READER_TYPE "STMD"

@@ -52,15 +52,15 @@ class avtFluentFileFormat : public avtSTMDFileFormat
     virtual           ~avtFluentFileFormat() {;};
 
     virtual const char    *GetType(void)   { return "Fluent"; };
-    virtual void           FreeUpResources(void);
+    virtual void           FreeUpResources(void); 
 
     virtual vtkDataSet    *GetMesh(int, const char *);
     virtual vtkDataArray  *GetVar(int, const char *);
     virtual vtkDataArray  *GetVectorVar(int, const char *);
 
     //Number of variables is dynamic
-    virtual bool          HasInvariantMetaData(void) const
-                                { return false; };
+    virtual bool          HasInvariantMetaData(void) const 
+                                { return false; }; 
     //Number of Domains is dynamic
     virtual bool          HasInvariantSIL(void) const
                                 { return false; };

@@ -1,14 +1,14 @@
 
-SET(SOURCES
-avtMirandaFileFormat.C
-avtMirandaFileFormat.h
-avtMirandaOptions.C
-avtMirandaOptions.h
-MirandaPluginInfo.h
-MirandaPluginInfo.C
-MirandaEnginePluginInfo.C
-MirandaMDServerPluginInfo.C
-MirandaCommonPluginInfo.C
+set(SOURCES
+  avtMirandaFileFormat.C
+  avtMirandaFileFormat.h
+  avtMirandaOptions.C
+  avtMirandaOptions.h
+  MirandaPluginInfo.h
+  MirandaPluginInfo.C
+  MirandaEnginePluginInfo.C
+  MirandaMDServerPluginInfo.C
+  MirandaCommonPluginInfo.C
 )
 
 ADD_VISIT_READER(VisItMirandaReader "1.0" 
