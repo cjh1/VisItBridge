@@ -50,7 +50,7 @@ set(DEFAULT_BRIDGE_READERS
   PlainText
   PLOT2D
   PLOT3D
-  Point3d  
+  Point3D 
   ProteinDataBank
   RAW
   SAMRAI
