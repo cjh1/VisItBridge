@@ -156,9 +156,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-    this->FillAMR( output, &meshMetaData, 0, 0 );
-
-    return 1;
+    this->FillAMR( output, &meshMetaData, 0, 0 );    
     }
 
   else if ( this->OutputType == VTK_MULTIBLOCK_DATA_SET )
@@ -470,6 +468,7 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
                                  blockNames.at(i).c_str());
           }
         }
+      csgGrid->Delete();
       }
     }
 }

@@ -123,7 +123,6 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
     this->FillAMR( output, &meshMetaData, TimeIndex, 0);
-    return 1;
     }
 
   else if ( this->OutputType == VTK_MULTIBLOCK_DATA_SET )
