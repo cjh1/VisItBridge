@@ -85,7 +85,9 @@ set(VISIT_COMMON_INCLUDES
   
 #watch out, you need to make sure common/parser is always in front of
 # python2.X includes
+message("INCLUDES ${INCLUDE_DIRECTORIES}")
 INCLUDE_DIRECTORIES(BEFORE ${VISIT_COMMON_INCLUDES})
+
 INCLUDE_DIRECTORIES(${VTK_INCLUDE_DIR})   
 if (PARAVIEW_HDF5_LIBRARIES)  
   INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})  

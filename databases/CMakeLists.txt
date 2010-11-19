@@ -114,7 +114,7 @@ SET(KIT_UPCASE "VISITDATABASES")
 
 #include all the db directores before
 #the visit files
-include_directories(
+include_directories(BEFORE
   ${VISIT_DB_INC_DIRS}
   )
   
