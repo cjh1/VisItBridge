@@ -47,7 +47,13 @@ ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
 ADD_LIBRARY(vtkVisItAVTAlgorithms ${Kit_SRCS})
-TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk avtivp)
+IF(VISIT_PARALLEL)    
+  TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_par avtpipeline_par visit_vtk avtivp)    
+ELSE(VISIT_PARALLEL)	
+  TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk avtivp)
+ENDIF(VISIT_PARALLEL)
+
+
 
 #Install
 #-------------------------------------------------------------------------------------------------
