@@ -134,14 +134,14 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Hints>
         <ReaderFactory extensions="img hdr"
-          file_description="VisIt ANALYZE Reader" />
+          file_description="ANALYZE Files" />
       </Hints>
     </SourceProxy>
     <SourceProxy name="VisItANSYSReader" class="vtkVisItANSYSReader"
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Hints>
         <ReaderFactory extensions="inp"
-          file_description="VisIt ANSYS Reader" />
+          file_description="ANSYS Files" />
       </Hints>
     </SourceProxy>
 
@@ -149,7 +149,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="aux"
-                      file_description="VisIt AUXFile Reader" />
+                      file_description="AUXFile Files" />
      </Hints>
     </SourceProxy>
 
@@ -157,7 +157,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="bov"
-                      file_description="VisIt BOV Reader" />
+                      file_description="BOV Files" />
      </Hints>
     </SourceProxy>
 
@@ -165,7 +165,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="ucd inp"
-                      file_description="VisIt CEAucd Reader" />
+                      file_description="CEAucd Files" />
      </Hints>
     </SourceProxy>
 
@@ -174,7 +174,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="cgns"
-                      file_description="VisIt CGNS Reader" />
+                      file_description="CGNS Files" />
      </Hints>
     </SourceProxy>
 #endif
@@ -183,7 +183,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="hdf5 h5"
-                      file_description="VisIt Chombo Reader" />
+                      file_description="Chombo Files" />
      </Hints>
     </SourceProxy>
 
@@ -191,7 +191,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="claw"
-                      file_description="VisIt Claw Reader" />
+                      file_description="Claw Files" />
      </Hints>
     </SourceProxy>
 
@@ -199,7 +199,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="cmat"
-                      file_description="VisIt CMAT Reader" />
+                      file_description="CMAT Files" />
      </Hints>
     </SourceProxy>
 
@@ -207,7 +207,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="ctrl"
-                      file_description="VisIt CTRL Reader" />
+                      file_description="CTRL Files" />
      </Hints>
     </SourceProxy>
 
@@ -215,7 +215,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="curve ultra ult u"
-                      file_description="VisIt Curve2D Reader" />
+                      file_description="Curve2D Files" />
      </Hints>
     </SourceProxy>
 
@@ -223,7 +223,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="ddcmd"
-                      file_description="VisIt DDCMD Reader" />
+                      file_description="DDCMD Files" />
      </Hints>
     </SourceProxy>
 
@@ -231,7 +231,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="dyn"
-                      file_description="VisIt Dyna3D Reader" />
+                      file_description="Dyna3D Files" />
      </Hints>
     </SourceProxy>
 
@@ -239,7 +239,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="hierarchy boundary"
-                      file_description="VisIt Enzo Reader" />
+                      file_description="Enzo Files (VisIt)" />
      </Hints>
      </SourceProxy>
 
@@ -247,7 +247,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="exvol"
-                      file_description="VisIt ExtrudedVol Reader" />
+                      file_description="ExtrudedVol Files" />
      </Hints>
      </SourceProxy>
 
@@ -255,7 +255,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="flash f5"
-                      file_description="VisIt FLASH Reader" />
+                      file_description="FLASH Files (VisIt)" />
      </Hints>
      </SourceProxy>
 
@@ -263,7 +263,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="cas"
-                      file_description="VisIt Fluent Reader" />
+                      file_description="Fluent Files (VisIt)" />
      </Hints>
      </SourceProxy>
 
@@ -271,7 +271,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="gadget"
-                      file_description="VisIt Gadget Reader" />
+                      file_description="Gadget Files" />
      </Hints>
      </SourceProxy>
 
@@ -279,7 +279,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="3df mer"
-                      file_description="VisIt GGCM Reader" />
+                      file_description="GGCM Files" />
      </Hints>
      </SourceProxy>
 
@@ -287,7 +287,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5"
-                      file_description="VisIt GTC Reader" />
+                      file_description="GTC Files" />
      </Hints>
      </SourceProxy>
 
@@ -295,7 +295,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="trg"
-                      file_description="VisIt GULP Reader" />
+                      file_description="GULP Files" />
      </Hints>
      </SourceProxy>
 
@@ -303,7 +303,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5nimrod"
-                      file_description="VisIt H5Nimrod Reader" />
+                      file_description="H5Nimrod Files" />
      </Hints>
      </SourceProxy>
 
@@ -311,7 +311,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="pnm ppm sdt spr imgvol"
-                      file_description="VisIt Image Reader" />
+                      file_description="Image Files" />
      </Hints>
     </SourceProxy>
 
@@ -319,7 +319,7 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="eam meam rigid lammps"
-                      file_description="VisIt LAMMPSStructure Reader" />
+                      file_description="LAMMPSStructure Files" />
      </Hints>
     </SourceProxy>
 
@@ -327,7 +327,7 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="dump"
-                      file_description="VisIt LAMMPS Dump Reader" />
+                      file_description="LAMMPS Dump Files" />
      </Hints>
     </SourceProxy>
 
@@ -335,7 +335,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="lines"
-                      file_description="VisIt Lines Reader" />
+                      file_description="Lines Files" />
      </Hints>
     </SourceProxy>
 
@@ -343,7 +343,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="m3d h5"
-                      file_description="VisIt Multilevel 3D Plasma Reader" />
+                      file_description="Multilevel 3D Plasma Files" />
      </Hints>
     </SourceProxy>
 
@@ -351,7 +351,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5"
-                      file_description="VisIt M3DC1 Reader" />
+                      file_description="M3DC1 Files" />
      </Hints>
     </SourceProxy>
 
@@ -359,7 +359,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="mir raw"
-                      file_description="VisIt Miranda Reader" />
+                      file_description="Miranda Files" />
      </Hints>
     </SourceProxy>
 
@@ -367,7 +367,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="mm5"
-                      file_description="VisIt MM5 Reader" />
+                      file_description="MM5 Files" />
      </Hints>
     </SourceProxy>
 
@@ -375,7 +375,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="nas f06"
-                      file_description="VisIt NASTRAN Reader" />
+                      file_description="NASTRAN Files" />
      </Hints>
     </SourceProxy>
 
@@ -383,7 +383,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="nek3d nek2d nek5d nek5000 nek"
-                      file_description="VisIt Nek5000 Reader" />
+                      file_description="Nek5000 Files" />
      </Hints>
     </SourceProxy>
 
@@ -391,7 +391,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="controlDict"
-                      file_description="VisIt OpenFOAM Reader" />
+                      file_description="OpenFOAM Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
@@ -399,7 +399,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="dat save"
-                      file_description="VisIt OVERFLOW Reader" />
+                      file_description="OVERFLOW Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
@@ -407,7 +407,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="neu"
-                      file_description="VisIt PATRAN Reader" />
+                      file_description="PATRAN Files" />
      </Hints>
     </SourceProxy>
 
@@ -415,7 +415,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5"
-                      file_description="VisIt PFLOTRAN Reader" />
+                      file_description="PFLOTRAN Files" />
      </Hints>
     </SourceProxy>
 
@@ -423,7 +423,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5"
-                      file_description="VisIt Pixie Reader" />
+                      file_description="Pixie Files" />
      </Hints>
     </SourceProxy>
 
@@ -431,7 +431,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="csv tsv txt"
-                      file_description="VisIt Plain Text Reader" />
+                      file_description="Plain Text Files" />
      </Hints>
     </SourceProxy>
 
@@ -439,7 +439,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="p2d"
-                      file_description="VisIt PLOT2D Reader" />
+                      file_description="PLOT2D Files" />
      </Hints>
     </SourceProxy>
 
@@ -447,7 +447,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="q x vp3d"
-                      file_description="VisIt PLOT3D Reader" />
+                      file_description="PLOT3D Files" />
      </Hints>
     </SourceProxy>
 
@@ -455,7 +455,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="3D"
-                      file_description="VisIt POINT3D Reader" />
+                      file_description="POINT3D Files" />
      </Hints>
     </SourceProxy>
 
@@ -463,7 +463,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="ent pdb"
-                      file_description="VisIt Protein Data Bank Reader" />
+                      file_description="Protein Data Bank Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
@@ -471,7 +471,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="ent pdb"
-                      file_description="VisIt RAW Reader" />
+                      file_description="RAW Files" />
      </Hints>
     </SourceProxy>
 
@@ -479,7 +479,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="samrai"
-                      file_description="VisIt SAMRAI Reader" />
+                      file_description="SAMRAI Files" />
      </Hints>
     </SourceProxy>
 
@@ -487,7 +487,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="SAR sar"
-                      file_description="VisIt SAR Reader" />
+                      file_description="SAR Files" />
      </Hints>
     </SourceProxy>
 
@@ -495,7 +495,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="sasgeom sas sasdata"
-                      file_description="VisIt SAS Reader" />
+                      file_description="SAS Files" />
      </Hints>
     </SourceProxy>
 
@@ -504,7 +504,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="silo pdb"
-                      file_description="VisIt Silo Reader" />
+                      file_description="Silo Files" />
      </Hints>
     </SourceProxy>
 #endif
@@ -512,7 +512,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="spheral sv"
-                      file_description="VisIt Spheral Reader" />
+                      file_description="Spheral Files" />
      </Hints>
     </SourceProxy>
 
@@ -520,7 +520,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="tp plt tec"
-                      file_description="VisIt Tecplot Reader" />
+                      file_description="Tecplot Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
@@ -528,7 +528,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="hdf5 h5"
-                      file_description="VisIt Tetrad Reader" />
+                      file_description="Tetrad Files" />
      </Hints>
     </SourceProxy>
 
@@ -536,7 +536,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="dat tft"
-                      file_description="VisIt TFT Reader" />
+                      file_description="TFT Files" />
      </Hints>
     </SourceProxy>
 
@@ -544,7 +544,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="ts_deg83"
-                      file_description="VisIt TSurf Reader" />
+                      file_description="TSurf Files" />
      </Hints>
     </SourceProxy>
 
@@ -552,7 +552,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5"
-                      file_description="VisIt UNIC Reader" />
+                      file_description="UNIC Files" />
      </Hints>
     </SourceProxy>
 
@@ -560,7 +560,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5"
-                      file_description="VisIt UNIC Reader" />
+                      file_description="UNIC Files" />
      </Hints>
     </SourceProxy>
 
@@ -569,7 +569,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="OUT*"
-                      file_description="VisIt VASP OUT Reader" />
+                      file_description="VASP OUT Files" />
      </Hints>
     </SourceProxy>
 
@@ -577,7 +577,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="CHG*"
-                      file_description="VisIt VASP CHGCA Reader" />
+                      file_description="VASP CHGCA Files" />
      </Hints>
     </SourceProxy>
 
@@ -585,7 +585,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="POS*"
-                      file_description="VisIt VASP POSCAR Reader" />
+                      file_description="VASP POSCAR Files" />
      </Hints>
     </SourceProxy>
 
@@ -593,7 +593,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="vld rst"
-                      file_description="VisIt Velodyne Reader" />
+                      file_description="Velodyne Files" />
      </Hints>
     </SourceProxy>
 
@@ -601,7 +601,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="h5 vsh5"
-                      file_description="VisIt VizSchema Reader" />
+                      file_description="VizSchema Files" />
      </Hints>
     </SourceProxy>
     
@@ -609,7 +609,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="okc"
-                      file_description="VisIt Xmdv Reader" />
+                      file_description="Xmdv Files" />
      </Hints>
     </SourceProxy>
 
@@ -617,7 +617,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="xyz"
-                      file_description="VisIt XYZ Reader" />
+                      file_description="XYZ Files" />
      </Hints>
     </SourceProxy>    
 

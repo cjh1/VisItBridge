@@ -35,13 +35,10 @@
   <Proxy group="sources" name="VisItMirandaReader" />
   <Proxy group="sources" name="VisItMM5Reader" />
   <Proxy group="sources" name="VisItNASTRANReader" />
-  <Proxy group="sources" name="VisItNek5000Reader" />
-  <Proxy group="sources" name="VisItOpenFOAMReader" />
-  <Proxy group="sources" name="VisItOVERFLOWReader" />  
+  <Proxy group="sources" name="VisItNek5000Reader" />  
   <Proxy group="sources" name="VisItPATRANReader" />
   <Proxy group="sources" name="VisItPFLOTRANReader" />
   <Proxy group="sources" name="VisItPixieReader" />
-  <Proxy group="sources" name="VisItPlainTextReader" />
   <Proxy group="sources" name="VisItPLOT2DReader" />
   <Proxy group="sources" name="VisItPLOT3DReader" />
   <Proxy group="sources" name="VisItPoint3dReader" />
