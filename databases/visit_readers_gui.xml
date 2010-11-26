@@ -36,6 +36,8 @@
   <Proxy group="sources" name="VisItMM5Reader" />
   <Proxy group="sources" name="VisItNASTRANReader" />
   <Proxy group="sources" name="VisItNek5000Reader" />  
+  <Proxy group="sources" name="VisItParaDisReader" />
+  <Proxy group="sources" name="VisItParaDisTecplotReader" />
   <Proxy group="sources" name="VisItPATRANReader" />
   <Proxy group="sources" name="VisItPFLOTRANReader" />
   <Proxy group="sources" name="VisItPixieReader" />

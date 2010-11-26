@@ -379,13 +379,29 @@
      </Hints>
     </SourceProxy>
 
+    <SourceProxy name="VisItParaDisReader" class="vtkVisItParaDISReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="prds data dat"
+                      file_description="ParaDIS Files" />
+     </Hints>
+    </SourceProxy>
+    
+    <SourceProxy name="VisItParaDisTecplotReader" class="vtkVisItParaDISTecplotReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="fld field cyl cylinder dat"
+                      file_description="ParaDIS Tecplot Files" />
+     </Hints>
+    </SourceProxy>
+
     <SourceProxy name="VisItNek5000Reader" class="vtkVisItNek5000Reader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="nek3d nek2d nek5d nek5000 nek"
                       file_description="Nek5000 Files" />
      </Hints>
-    </SourceProxy>
+    </SourceProxy>    
 
     <SourceProxy name="VisItOpenFOAMReader" class="vtkVisItOpenFOAMReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
