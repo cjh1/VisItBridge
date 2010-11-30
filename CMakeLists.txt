@@ -9,6 +9,26 @@ IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 
+#disable compiler warnings from the bridge
+option(VISIT_DISABLE_COMPILER_WARNINGS "Disable compiler warnings" ON)
+mark_as_advanced(VISIT_DISABLE_COMPILER_WARNINGS)
+if(VISIT_DISABLE_COMPILER_WARNINGS)
+  if(WIN32)
+    if (MSVC)    
+      string(REGEX REPLACE "(^| )([/-])W[0-9]( |$)" " "
+          CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+      set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} /w")
+      
+      string(REGEX REPLACE "(^| )([/-])W[0-9]( |$)" " "
+          CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+    endif(MSVC)  
+  else(WIN32)  
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -w")
+    set (CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -w")
+  endif(WIN32)
+endif(VISIT_DISABLE_COMPILER_WARNINGS)
+
 #set up some vars we need to compile
 set(VISIT_STATIC)
 if (BUILD_SHARED_LIBS)
