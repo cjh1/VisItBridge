@@ -186,7 +186,8 @@
                       file_description="Chombo Files" />
      </Hints>
     </SourceProxy>
-
+    
+#ifndef WIN32
     <SourceProxy name="VisItClawReader" class="vtkVisItClawReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -194,6 +195,7 @@
                       file_description="Claw Files" />
      </Hints>
     </SourceProxy>
+#endif    
 
     <SourceProxy name="VisItCMATReader" class="vtkVisItCMATReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
