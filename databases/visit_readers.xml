@@ -463,7 +463,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="q x vp3d"
-                      file_description="PLOT3D Files" />
+                      file_description="PLOT3D Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
