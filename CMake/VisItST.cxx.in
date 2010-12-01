@@ -64,21 +64,13 @@ vtkStandardNewMacro(@PLUGIN_NAME@);
   this->SetFileName(0);
 }
 
+#ifdef VISIT_READER_USES_INTERFACE
 //-----------------------------------------------------------------------------
 int @PLUGIN_NAME@::CanReadFile(const char *fname)
 {
-#ifdef VISIT_READER_USES_INTERFACE
-  if (!@PLUGIN_NAME@@ARG_VISIT_INTERFACE_FILE@::@ARG_VISIT_INTERFACE_CALL@)
-    {
-    return 0;
-    }
-#endif  
-    
-  //make sure everything is NULL
-  this->SetFileName( fname );
-  this->CleanupAVTReader();  
-  return InitializeAVTReader( 0 );
+  return @PLUGIN_NAME@@ARG_VISIT_INTERFACE_FILE@::@ARG_VISIT_INTERFACE_CALL@)
 }
+#endif 
 
 //-----------------------------------------------------------------------------
 bool @PLUGIN_NAME@::InitializeAVTReader(  const int&  )

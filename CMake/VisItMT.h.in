@@ -43,7 +43,9 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
+#ifdef VISIT_READER_USES_INTERFACE  
   int CanReadFile(const char* fname);
+#endif  
 
 protected:
   @PLUGIN_NAME@();
