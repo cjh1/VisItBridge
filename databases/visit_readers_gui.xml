@@ -43,7 +43,7 @@
   <Proxy group="sources" name="VisItPixieReader" />
   <Proxy group="sources" name="VisItPLOT2DReader" />
   <Proxy group="sources" name="VisItPLOT3DReader" />
-  <Proxy group="sources" name="VisItPoint3dReader" />
+  <Proxy group="sources" name="vtkVisItPOINT3DReader" />
   <Proxy group="sources" name="VisItProteinDataBankReader" />    
   <Proxy group="sources" name="VisItRAWReader" />
   <Proxy group="sources" name="VisItSAMRAIReader" />  
