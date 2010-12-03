@@ -93,6 +93,11 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
 
 
   int size = this->MetaData->GetNumMeshes();
+  if ( size <= 0 )
+    {
+    vtkErrorMacro("Unable to find any meshes");
+    return 0;
+    }
 
   //determine if this is an AMR mesh
   this->OutputType = VTK_MULTIBLOCK_DATA_SET;
