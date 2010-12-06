@@ -62,6 +62,8 @@
 using std::string;
 using std::map;
 
+using avtCTRLFileFormatNamespace::Atom;
+
 
 // ****************************************************************************
 //  Method: avtCTRL constructor

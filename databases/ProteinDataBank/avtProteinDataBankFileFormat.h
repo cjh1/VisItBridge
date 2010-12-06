@@ -67,8 +67,15 @@ class DBOptionsAttributes;
 //    Added compound support.
 //
 // ****************************************************************************
-struct Atom
-{
+
+
+//This namespace needs to exist on each merge, or the compiler
+//will choose the struct inside avtCTRLFileFormat causing
+//me to waste hours of my life as I can't figure out why the copy constructor fails
+namespace avtProteinDataBankNamespace
+  {
+  struct Atom
+    {
     int   serial;
     char  name[5];
     char  altloc;
@@ -93,7 +100,8 @@ struct Atom
 
     Atom(const char *line, int compound=0);
     void Print(ostream &out);
-};
+    };
+  }
 
 
 struct ConnectRecord
@@ -149,7 +157,7 @@ class avtProteinDataBankFileFormat : public avtSTSDFileFormat
 
     bool metadata_read;
     int  nmodels;
-    std::vector< std::vector<Atom> >    allatoms;
+    std::vector< std::vector<avtProteinDataBankNamespace::Atom> >    allatoms;
     std::vector< std::pair<int, int> >  bonds;
 
     std::vector<ConnectRecord>       connect;

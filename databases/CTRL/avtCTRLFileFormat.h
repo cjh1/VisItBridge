@@ -48,14 +48,20 @@
 #include <string>
 #include <vector>
 
-struct Atom
-{
+//This namespace needs to exist on each merge, or the compiler
+//will choose this struct inside avtProteinDataBankFileFormat causing
+//me to waste hours of my life.
+namespace avtCTRLFileFormatNamespace
+  {
+  struct Atom
+    {
     char element[3];
     int atomicnumber;
     float x;
     float y;
     float z; 
-};
+    };
+  }
 
 // ****************************************************************************
 //  Class: avtCTRLFileFormat
@@ -93,7 +99,7 @@ class avtCTRLFileFormat : public avtSTSDFileFormat
     std::string filename;
     bool metadata_read;
 
-    std::vector<Atom> atoms;
+    std::vector<avtCTRLFileFormatNamespace::Atom> atoms;
     double alat;
     double unitCell[3][3];
 };
