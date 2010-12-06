@@ -59,6 +59,46 @@ avtFluentFileFormat::avtFluentFileFormat(const char *filename)
 void
 avtFluentFileFormat::FreeUpResources(void)
 {
+  if ( this->Points )
+    {
+    this->Points->Delete();
+    this->Points = NULL;
+    }
+  if ( this->Triangle )
+    {
+    this->Triangle->Delete();
+    this->Triangle = NULL;
+    }
+  if ( this->Tetra )
+    {
+    this->Tetra->Delete();
+    this->Tetra = NULL;
+    }
+  if ( this->Quad )
+    {
+    this->Quad->Delete();
+    this->Quad = NULL;
+    }
+  if ( this->Hexahedron )
+    {
+    this->Hexahedron->Delete();
+    this->Hexahedron = NULL;
+    }
+  if ( this->Pyramid )
+    {
+    this->Pyramid->Delete();
+    this->Pyramid = NULL;
+    }
+  if ( this->Wedge )
+    {
+    this->Wedge->Delete();
+    this->Wedge = NULL;
+    }
+  if ( this->ConvexPointSet )
+    {
+    this->ConvexPointSet->Delete();
+    this->ConvexPointSet = NULL;
+    }  
 }
 
 
