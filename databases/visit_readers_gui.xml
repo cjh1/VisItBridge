@@ -36,6 +36,17 @@
   <Proxy group="sources" name="VisItMirandaReader" />
   <Proxy group="sources" name="VisItMM5Reader" />
   <Proxy group="sources" name="VisItNASTRANReader" />
+  <Proxy group="sources" name="VisItNetCDFADAPTReader" />
+  <Proxy group="sources" name="VisItNetCDFLODIReader" />
+  <Proxy group="sources" name="VisItNetCDFLODIParticleReader" />
+  <Proxy group="sources" name="VisItNetCDFFVCOM_STSDReader" />
+  <Proxy group="sources" name="VisItNetCDFFVCOM_MTMDReader" />
+  <Proxy group="sources" name="VisItNetCDFFVCOM_MTSDReader" />
+  <Proxy group="sources" name="VisItNetCDFFVCOMParticleReader" />
+  <Proxy group="sources" name="VisItNetCDFCCSM_MTSDReader" />
+  <Proxy group="sources" name="VisItNetCDFCCSM_STSDReader" />
+  <Proxy group="sources" name="VisItNetCDFBasic_MTSD_NETCDFReader" />
+  <Proxy group="sources" name="VisItNetCDFBasic_STSD_NETCDFReader" />  
   <Proxy group="sources" name="VisItNek5000Reader" />  
   <Proxy group="sources" name="VisItParaDisReader" />
   <Proxy group="sources" name="VisItParaDisTecplotReader" />

@@ -203,6 +203,9 @@ endif(MILI_FOUND)
 #setup zlib
 include_directories(${VTK_ZLIB_INCLUDE_DIRS})
 
+#setup netcdf
+VISIT_VTK_THIRD_PARTY_INCLUDE(NETCDF vtknetcdf)
+
 #setup png
 VISIT_VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 

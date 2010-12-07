@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _@PLUGIN_NAME@_h
 #include "@PLUGIN_NAME@Export.h"
 #include "vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm.h"
+#cmakedefine VISIT_READER_USES_INTERFACE
 
 class @PLUGIN_NAME@_EXPORT @PLUGIN_NAME@ : public vtkAvt@ARG_VISIT_READER_TYPE@FileFormatAlgorithm
 {

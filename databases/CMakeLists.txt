@@ -41,6 +41,7 @@ set(DEFAULT_BRIDGE_READERS
   Miranda
   MM5
   NASTRAN
+  NETCDF
   Nek5000
   OpenFOAM
   OVERFLOW
@@ -116,12 +117,6 @@ if(VISIT_BUILD_READER_Mili)
   endif(NOT MILI_FOUND)  
 endif(VISIT_BUILD_READER_Mili)
 
-
-#currently needs more work
-#if ( HAVE_LIBNETCDF )
-  #VISIT_INCLUDE_READER_SOURCE(NETCDF)
-#endif( HAVE_LIBNETCDF )
-
 SET(KIT VisItDatabases)
 SET(KIT_UPCASE "VISITDATABASES")
 
@@ -164,14 +159,10 @@ VTK_EXPORT_KIT("${KIT}" "${KIT_UPCASE}" "${Kit_SRCS}")
 #build all the readers into a single library
 add_library(vtk${KIT} ${Kit_SRCS} ${VISIT_DB_SOURCES})    
 
-target_link_libraries(vtk${KIT} vtkVisItAVTAlgorithms) 
+target_link_libraries(vtk${KIT} vtkVisItAVTAlgorithms vtkNetCDF) 
 if(PARAVIEW_HDF5_LIBRARIES)
   target_link_libraries(vtk${KIT} ${PARAVIEW_HDF5_LIBRARIES})
 endif(PARAVIEW_HDF5_LIBRARIES)  
-
-if(HAVE_LIBNETCDF)
-  target_link_libraries(vtk${KIT} vtkNetCDF)
-endif(HAVE_LIBNETCDF)
 
 if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
   target_link_libraries(vtk${KIT} ${SILO_LIBRARY})
@@ -184,6 +175,7 @@ endif(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)
 if(HAVE_LIBMILI AND VISIT_BUILD_READER_Mili)  
   target_link_libraries(vtk${KIT} ${MILI_LIBRARY})
 endif(HAVE_LIBMILI AND VISIT_BUILD_READER_Mili)
+
 
 #Install
 #-------------------------------------------------------------------------------------------------

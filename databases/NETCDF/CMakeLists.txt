@@ -10,9 +10,7 @@ PROJECT(VisItNETCDF)
 #this macro is called from the CanReadFile method of each class
 set(INTERFACE_MACRO_CALL "ValidNETCDFFile(fname)")
 set(INTERFACE_MACRO_FILE "ValidNETCDFFile") #needs to be a .h
-SET(INTERFACE_EXEMPT_CLASSES
-  "avtBasic_STSD_NETCDFFileFormat" #catch-all class so it doesn't have a method to call
-) 
+
   
 SET(SOURCES
 avtBasicNETCDFFileFormat.C
@@ -43,8 +41,6 @@ avtFVCOM_MTSDFileFormat
 avtFVCOMParticleFileFormat
 avtCCSM_MTSD_FileFormat
 avtCCSM_STSD_FileFormat
-avtBasic_MTSD_NETCDFFileFormat
-avtBasic_STSD_NETCDFFileFormat
 )
 
 set(READER_TYPES
@@ -55,8 +51,6 @@ STSD
 MTMD
 MTSD
 MTSD
-MTSD
-STSD
 MTSD
 STSD
 )
@@ -71,8 +65,6 @@ avtFVCOM_MTSDFileFormat
 avtFVCOMParticleFileFormat
 avtCCSMFileFormat
 avtCCSMFileFormat
-avtBasicNETCDFFileFormat
-avtBasicNETCDFFileFormat
 )
 
 ADD_VISIT_INTERFACE_READER(VisItNETCDF "1.0"    
@@ -81,9 +73,6 @@ ADD_VISIT_INTERFACE_READER(VisItNETCDF "1.0"
   VISIT_READER_INCLUDES ${READER_INCLUDES}
   VISIT_INTERFACE_CALL ${INTERFACE_MACRO_CALL}
   VISIT_INTERFACE_FILE ${INTERFACE_MACRO_FILE}
-  VISIT_INTERFACE_EXEMPT_CLASSES ${INTERFACE_EXEMPT_CLASSES}
-  VISIT_READER_FILE_PATTERN "cdf nc elev ncd"
+  VISIT_INTERFACE_EXEMPT_CLASSES ${INTERFACE_EXEMPT_CLASSES}  
   SERVER_SOURCES ${SOURCES}  
   )
-
-TARGET_LINK_LIBRARIES(VisItNETCDF vtkVisItAVTAlgorithms vtkNetCDF)

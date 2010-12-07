@@ -69,7 +69,7 @@ vtkStandardNewMacro(@PLUGIN_NAME@);
 //-----------------------------------------------------------------------------
 int @PLUGIN_NAME@::CanReadFile(const char *fname)
 {
-  return @PLUGIN_NAME@@ARG_VISIT_INTERFACE_FILE@::@ARG_VISIT_INTERFACE_CALL@)
+  return @PLUGIN_NAME@@ARG_VISIT_INTERFACE_FILE@::@ARG_VISIT_INTERFACE_CALL@;
 }
 #endif 
 

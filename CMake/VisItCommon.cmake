@@ -144,6 +144,102 @@ FUNCTION(ADD_VISIT_READER NAME VERSION)
   
 ENDFUNCTION(ADD_VISIT_READER)
 
+#called from readers that are being built into paraview
+FUNCTION(ADD_VISIT_INTERFACE_READER NAME VERSION)
+
+  set(INTERFACE_NAME "vtk${NAME}")
+  set(INTERFACE_VERSION "${VERSION}")
+  set(ARG_VISIT_READER_NAMES)
+  set(ARG_VISIT_READER_TYPES)
+  set(ARG_VISIT_READER_INCLUDES)
+  set(ARG_VISIT_INTERFACE_CALL)
+  set(ARG_VISIT_INTERFACE_FILE)
+  set(ARG_VISIT_INTERFACE_EXEMPT_CLASSES)
+  set(ARG_VISIT_READER_FILE_PATTERN)
+  set(ARG_SERVER_SOURCES)
+  PV_PLUGIN_PARSE_ARGUMENTS(ARG 
+  "VISIT_READER_NAMES;VISIT_READER_TYPES;VISIT_READER_INCLUDES;VISIT_INTERFACE_CALL;VISIT_INTERFACE_FILE;VISIT_INTERFACE_EXEMPT_CLASSES;SERVER_SOURCES"
+    "" ${ARGN} )   
+    
+  if (NOT ARG_VISIT_INTERFACE_CALL OR NOT ARG_VISIT_INTERFACE_FILE )
+    MESSAGE(FATAL_ERROR "The macro file for the file interface needs to be defined.")
+  endif(NOT ARG_VISIT_INTERFACE_CALL OR NOT ARG_VISIT_INTERFACE_FILE)
+
+  #if the user hasn't defined an include name, we presume the reader name
+  #is also the include name
+  if(NOT ARG_VISIT_INCLUDE_NAME)
+    set(ARG_VISIT_INCLUDE_NAME ${ARG_VISIT_READER_NAME})
+  endif()
+  
+  set(LIBRARY_NAME "vtkVisItDatabases")
+    
+  list(LENGTH ARG_VISIT_READER_NAMES NUM_READERS)
+  foreach( index RANGE ${NUM_READERS})
+    if ( index LESS NUM_READERS )
+      list(GET ARG_VISIT_READER_NAMES ${index} ARG_VISIT_READER_NAME)
+      list(GET ARG_VISIT_READER_TYPES ${index} ARG_VISIT_READER_TYPE)
+      list(GET ARG_VISIT_READER_INCLUDES ${index} ARG_VISIT_INCLUDE_NAME)
+      
+      #need to set up the vars needed by the configures
+      string(REGEX REPLACE "^avt|FileFormat$" "" TEMP_NAME ${ARG_VISIT_READER_NAME})
+      set(PLUGIN_NAME "vtkVisIt${TEMP_NAME}Reader")
+      set(XML_NAME "VisItVisIt${TEMP_NAME}Reader")
+    
+      
+      #need to generate the VTK class wrapper
+      string(SUBSTRING ${ARG_VISIT_READER_TYPE} 0 2 READER_WRAPPER_TYPE)
+      
+      #determine if this file is exempt from the interface CanReadFile macro    
+      list(FIND ARG_VISIT_INTERFACE_EXEMPT_CLASSES ${ARG_VISIT_READER_NAME} EXEMPT_READER)
+      if ( EXEMPT_READER EQUAL -1 )
+        set(VISIT_READER_USES_INTERFACE ON)
+      else( EXEMPT_READER EQUAL -1 )
+        set(VISIT_READER_USES_INTERFACE OFF)    
+      endif( EXEMPT_READER EQUAL -1 ) 
+  
+      #we have to configure the macro file 
+      configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_VISIT_INTERFACE_FILE}.h
+        ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}${ARG_VISIT_INTERFACE_FILE}.h @ONLY)
+        
+      configure_file(
+        ${VISIT_CMAKE_DIR}/VisItExport.h.in
+        ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}Export.h @ONLY)  
+          
+      configure_file(
+        ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.h.in
+        ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.h @ONLY)
+        
+      configure_file(
+        ${VISIT_CMAKE_DIR}/VisIt${READER_WRAPPER_TYPE}.cxx.in
+        ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.cxx @ONLY)
+        
+      set(reader_sources
+        ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.cxx
+        ${VISIT_DATABASE_BINARY_DIR}/${PLUGIN_NAME}.h)
+    
+    
+      set(VISIT_SERVER_SOURCES ${VISIT_SERVER_SOURCES} ${reader_sources} 
+        CACHE INTERNAL "vtk classes to wrap for client server")
+        
+    endif(index LESS NUM_READERS)
+  endforeach(index)
+  
+  #fix up the arg_server_sources path for compilation
+  set(ABS_SERVER_SOURCES "")
+  foreach(SRC_FILENAME ${ARG_SERVER_SOURCES})
+    list(APPEND ABS_SERVER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/${SRC_FILENAME}")
+  endforeach()
+        
+  set(VISIT_DB_SOURCES ${VISIT_DB_SOURCES} ${ABS_SERVER_SOURCES}
+    CACHE INTERNAL "visit sources for readers") 
+    
+  set(VISIT_DB_INC_DIRS ${VISIT_DB_INC_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}
+    CACHE INTERNAL "include directories")
+  
+
+ENDFUNCTION(ADD_VISIT_INTERFACE_READER)
+
 #Used for readers that are plugins for paraview
 FUNCTION(ADD_VISIT_PLUGIN_READER NAME VERSION)
 set(PLUGIN_NAME "vtk${NAME}")

@@ -390,7 +390,79 @@
                       file_description="NASTRAN Files" />
      </Hints>
     </SourceProxy>
+        
+    <SourceProxy name="VisItNetCDFADAPTReader" class="vtkVisItADAPTReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="ADAPT Files" />
+     </Hints>
+    </SourceProxy> 
 
+    <SourceProxy name="VisItNetCDFLODIReader" class="vtkVisItLODIReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="LODI Files" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItNetCDFLODIParticleReader" class="vtkVisItLODIParticleReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="LODI Particle Files" />
+     </Hints>
+    </SourceProxy>    
+    
+    <SourceProxy name="VisItNetCDFFVCOM_STSDReader" class="vtkVisItFVCOM_STSDReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="FVCOM STSD Files" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItNetCDFFVCOM_MTMDReader" class="vtkVisItFVCOM_MTMDReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="FVCOM MTMD Files" />
+     </Hints>
+    </SourceProxy>
+
+    <SourceProxy name="VisItNetCDFFVCOM_MTSDReader" class="vtkVisItFVCOM_MTSDReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="FVCOM MTSD Files" />
+     </Hints>
+    </SourceProxy>    
+    
+    <SourceProxy name="VisItNetCDFFVCOMParticleReader" class="vtkVisItFVCOMParticleReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="FVCOM Particle Files" />
+     </Hints>
+    </SourceProxy> 
+    
+    <SourceProxy name="VisItNetCDFCCSM_MTSDReader" class="vtkVisItCCSM_MTSD_Reader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="CCSM MTSD Files" />
+     </Hints>
+    </SourceProxy> 
+
+    <SourceProxy name="VisItNetCDFCCSM_STSDReader" class="vtkVisItCCSM_STSD_Reader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="nc cdf elev ncd"
+                      file_description="CCSM STSD Files" />
+     </Hints>
+    </SourceProxy> 
+    
     <SourceProxy name="VisItParaDisReader" class="vtkVisItParaDISReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
