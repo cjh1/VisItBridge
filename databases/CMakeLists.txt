@@ -105,6 +105,18 @@ if(VISIT_BUILD_READER_CGNS)
   endif(NOT CGNS_FOUND)  
 endif(VISIT_BUILD_READER_CGNS)
 
+VISIT_INCLUDE_READER_SOURCE(Mili OFF)
+if(VISIT_BUILD_READER_Mili)
+  if(NOT HAVE_LIBMILI)
+    #if we currently don't have silo setup make it required
+    find_package(MILI REQUIRED)
+  endif(NOT HAVE_LIBMILI)
+  if(NOT MILI_FOUND)
+    message(FATAL_ERROR "Unable to locate Mili library.")
+  endif(NOT MILI_FOUND)  
+endif(VISIT_BUILD_READER_Mili)
+
+
 #currently needs more work
 #if ( HAVE_LIBNETCDF )
   #VISIT_INCLUDE_READER_SOURCE(NETCDF)
@@ -168,6 +180,10 @@ endif(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
 if(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)  
   target_link_libraries(vtk${KIT} ${CGNS_LIBRARY})
 endif(HAVE_LIBCGNS AND VISIT_BUILD_READER_CGNS)
+
+if(HAVE_LIBMILI AND VISIT_BUILD_READER_Mili)  
+  target_link_libraries(vtk${KIT} ${MILI_LIBRARY})
+endif(HAVE_LIBMILI AND VISIT_BUILD_READER_Mili)
 
 #Install
 #-------------------------------------------------------------------------------------------------

@@ -32,6 +32,7 @@
   <Proxy group="sources" name="VisItLinesReader" />
   <Proxy group="sources" name="VisItM3DReader" />
   <Proxy group="sources" name="VisItM3DC1Reader" />  
+  <Proxy group="sources" name="VisItMiliReader" />
   <Proxy group="sources" name="VisItMirandaReader" />
   <Proxy group="sources" name="VisItMM5Reader" />
   <Proxy group="sources" name="VisItNASTRANReader" />

@@ -356,6 +356,16 @@
                       file_description="M3DC1 Files" />
      </Hints>
     </SourceProxy>
+    
+#ifdef VISITBRIDGE_USE_MILI
+    <SourceProxy name="VisItMiliReader" class="vtkVisItMiliReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="m mili"
+                      file_description="Mili Files" />
+     </Hints>
+    </SourceProxy>
+#endif    
 
     <SourceProxy name="VisItMirandaReader" class="vtkVisItMirandaReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">

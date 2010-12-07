@@ -193,6 +193,13 @@ if(CGNS_FOUND)
   set(VISITBRIDGE_USE_CGNS ${CGNS_FOUND} PARENT_SCOPE)
 endif(CGNS_FOUND)
 
+# Setup Mili
+find_package(MILI)
+if(MILI_FOUND)
+  set(HAVE_LIBMILI ${MILI_FOUND})
+  set(VISITBRIDGE_USE_MILI ${MILI_FOUND} PARENT_SCOPE)
+endif(MILI_FOUND)
+
 #setup zlib
 include_directories(${VTK_ZLIB_INCLUDE_DIRS})
 
