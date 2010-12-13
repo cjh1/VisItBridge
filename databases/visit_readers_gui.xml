@@ -52,6 +52,7 @@
   <Proxy group="sources" name="VisItSiloReader" />
   <Proxy group="sources" name="VisItSpheralReader" />
   <Proxy group="sources" name="VisItTecplotReader" />
+  <Proxy group="sources" name="VisItTecplotBinaryReader" />
   <Proxy group="sources" name="VisItTetradReader" />
   <Proxy group="sources" name="VisItTFTReader" />
   <Proxy group="sources" name="VisItTSurfReader" />
