@@ -619,8 +619,16 @@
     <SourceProxy name="VisItTecplotReader" class="vtkVisItTecplotReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
-       <ReaderFactory extensions="tp plt tec"
+       <ReaderFactory extensions="tp tec"
                       file_description="Tecplot Files (VisIt)" />
+     </Hints>
+    </SourceProxy>
+	
+    <SourceProxy name="VisItTecplotBinaryReader" class="vtkVisItTecplotBinaryReader"
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Hints>
+       <ReaderFactory extensions="plt"
+                      file_description="Tecplot Binary Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
