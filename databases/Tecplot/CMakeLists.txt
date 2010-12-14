@@ -2,6 +2,7 @@
 set(SOURCES
   avtTecplotFileFormat.C  
   TecplotFile.C
+  TecplotFile.h
   )
   
 set(BINARY_SOURCES
