@@ -145,7 +145,7 @@
       </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItAUXFileReader" class="vtkVisItAUXFileReader"
+    <SourceProxy name="VisItAUXFileReader" class="vtkVisItAuxFileReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="aux"
@@ -551,7 +551,7 @@
      </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItPOINT3DReader" class="vtkVisItPOINT3DReader"
+    <SourceProxy name="VisItPoint3DReader" class="vtkVisItPoint3DReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="3D"
