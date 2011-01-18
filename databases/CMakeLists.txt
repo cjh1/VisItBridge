@@ -32,7 +32,8 @@ set(DEFAULT_BRIDGE_READERS
   Gadget
   GGCM
   GTC
-  GULP  
+  GULP
+  H5Nimrod
   Image
   LAMMPS
   Lines
