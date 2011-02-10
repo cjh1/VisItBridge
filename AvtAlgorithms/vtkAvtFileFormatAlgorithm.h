@@ -93,6 +93,11 @@ protected:
   virtual bool InitializeAVTReader( const int &timestep );
   virtual void CleanupAVTReader();
 
+  //Used to support requests for block and domain
+  //level piece loading
+  virtual int ProcessRequest(vtkInformation* request,
+                vtkInformationVector** inputVector,
+                vtkInformationVector* outputVector);
   // Description:
   // This is called by the superclass.
   // This is the method you should override.
@@ -123,8 +128,11 @@ protected:
   void SetupMaterialSelections();
 
   //method to setup the proper block bounds for the data.
-  //this method is needed when the filters are being used by ParaFlow
+  //this method is needed to support dynamic block loading
+  //for certain streaming pipelines
   virtual void SetupBlockBoundsInformation(vtkInformation *outInfo);  
+  
+  //method setups the number of timesteps that the file has
   void SetupTemporalInformation(vtkInformation *outInfo);
 
   //this method is used to get the current time step from the pipeline
@@ -139,6 +147,8 @@ protected:
     const int &timestep, const int &domain );
   void AssignMaterials( vtkDataSet *data, const vtkStdString &meshName,
     const int &timestep, const int &domain );
+  bool GetDataSpatialExtents(const char* meshName,
+    const int &timestep, const int &domain, double bounds[6]);
   //ETX
 
 

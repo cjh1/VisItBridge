@@ -86,9 +86,10 @@ protected:
                          const avtMeshMetaData *meshMetaData,
                          const int &timestep );
   bool ValidAMR( const avtMeshMetaData *meshMetaData );
-  void GetDomainRange(const avtMeshMetaData *meshMetaData, int domain[2]);
+  void GetDomainRange(const avtMeshMetaData *meshMetaData);
   //ETX
 
+  bool ShouldReadDataSet(const int &index);
   bool IsEvenlySpacedDataArray(vtkDataArray *data);
 
 
@@ -98,5 +99,9 @@ protected:
 private:
   vtkAvtSTMDFileFormatAlgorithm(const vtkAvtSTMDFileFormatAlgorithm&);
   void operator = (const vtkAvtSTMDFileFormatAlgorithm&);
+
+  
+  struct vtkAvtSTMDFileFormatAlgorithmInternal;
+  vtkAvtSTMDFileFormatAlgorithmInternal *Internal;
 };
 #endif

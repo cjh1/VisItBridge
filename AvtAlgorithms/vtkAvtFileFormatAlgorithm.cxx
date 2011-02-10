@@ -148,6 +148,23 @@ void vtkAvtFileFormatAlgorithm::CleanupAVTReader()
     }
 }
 
+//----------------------------------------------------------------------------
+int vtkAvtFileFormatAlgorithm::ProcessRequest(vtkInformation* request,
+                                         vtkInformationVector** inputVector,
+                                         vtkInformationVector* outputVector)
+{
+  // generate the needed data for each time step
+  // to handle domain level piece loading
+  if(request->Has(
+  vtkStreamingDemandDrivenPipeline::REQUEST_UPDATE_EXTENT_INFORMATION()))
+    {
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+    this->SetupBlockBoundsInformation(outInfo);    
+    }
+    
+  return this->Superclass::ProcessRequest(request, inputVector, outputVector);
+}
+
 
 //-----------------------------------------------------------------------------
 int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
@@ -450,55 +467,83 @@ void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data,
 void vtkAvtFileFormatAlgorithm::SetupBlockBoundsInformation(
   vtkInformation *outInfo)
 { 
+  //this allows the VisIt Readers to support individual
+  //domain and block loading  
   vtkSmartPointer<vtkMultiBlockDataSet> metadata =
       vtkSmartPointer<vtkMultiBlockDataSet>::New();
 
-  unsigned int index = 0;
-  int size = this->MetaData->GetNumMeshes();
-  avtIntervalTree *tree = NULL;
+  unsigned int index = 0; //converting the multiblock to a flat index
+
+  int size = this->MetaData->GetNumMeshes();  
   int timeStep = this->GetCurrentTimeStep(outInfo);
   for ( int i=0; i < size; ++i)
-    {
-    //we need to see how ParaFlow handles time varying extents
-    //we can handle domains easily
-    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);
+    {    
+    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);    
     int numBlocks = meshMetaData->numBlocks;
-    int timeStep = 1;
+    
+    //setup the block that represents this mesh
+    vtkMultiBlockDataSet* childDS = vtkMultiBlockDataSet::New();
+    childDS->SetNumberOfBlocks(numBlocks);
+    metadata->SetBlock(i,childDS);
+    childDS->FastDelete();
+
+    //setup the bounding box for each domain in this block
     for ( int dom=0; dom < numBlocks; ++dom )
       {
-      void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
-                    AUXILIARY_DATA_SPATIAL_EXTENTS, timeStep, dom);
-      if (!(*vr))
-        { 
-        //the specfic domain failed, try the extent for time
-        void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
-          AUXILIARY_DATA_SPATIAL_EXTENTS, timeStep, -1);        
-        }
-      if (!(*vr))
-        { 
-        //the specfic timestep failed, try the gloabl extent
-        void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
-          AUXILIARY_DATA_SPATIAL_EXTENTS, -1, -1);
-        }
-      if (!(*vr))
-        {
-        //everything failed we don't have information!
-        return;
-        }
 
-      tree = reinterpret_cast<avtIntervalTree*>(*vr);
-      if ( tree )
+      //create the block for this domain
+      childDS->SetBlock(dom,NULL);
+      vtkInformation* piece_metadata = childDS->GetMetaData(dom);
+
+      double bounds[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+      bool valid = 
+        this->GetDataSpatialExtents(meshMetaData->name.c_str(),
+        timeStep, dom, bounds);
+      if ( valid )
         {
-        vtkInformation* piece_metadata = ?;
-        double bounds[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
-        tree->GetExtents(bounds);      
-        }    
+        piece_metadata->Set(
+        vtkStreamingDemandDrivenPipeline::PIECE_BOUNDING_BOX(),bounds,6);
+        piece_metadata->Set(vtkCompositeDataPipeline::COMPOSITE_INDEX(), index);
+        }
+      ++index;
       }
     }
 
   outInfo->Set(vtkCompositeDataPipeline::COMPOSITE_DATA_META_DATA(),
             metadata);
 }
+
+//-----------------------------------------------------------------------------
+bool vtkAvtFileFormatAlgorithm::GetDataSpatialExtents(const char* meshName,
+    const int &timestep, const int &domain, double bounds[6])
+{  
+    void_ref_ptr vr = this->Cache->GetVoidRef(meshName,
+                  AUXILIARY_DATA_SPATIAL_EXTENTS, timestep, domain);
+    if (!(*vr))
+      { 
+      //the specfic domain failed, try the global size for the timestep
+      void_ref_ptr vr = this->Cache->GetVoidRef(meshName,
+        AUXILIARY_DATA_SPATIAL_EXTENTS, timestep, -1);
+      }
+    if (!(*vr))
+      { 
+      //the specfic timestep failed, try the gloabl extent
+      void_ref_ptr vr = this->Cache->GetVoidRef(meshName,
+        AUXILIARY_DATA_SPATIAL_EXTENTS, -1, -1);
+      }
+    if (!(*vr))
+      {
+      //everything failed we don't have information!
+      return false;
+      }
+    avtIntervalTree *tree = NULL;
+    tree = reinterpret_cast<avtIntervalTree*>(*vr);
+    if ( tree )
+      {      
+      tree->GetExtents(bounds);
+      return true;
+      }
+  }
 
 //-----------------------------------------------------------------------------
 unsigned int vtkAvtFileFormatAlgorithm::GetCurrentTimeStep(vtkInformation *outInfo)

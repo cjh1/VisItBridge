@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkMultiBlockDataSetAlgorithm.h"
-#include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkDataArraySelection.h"
 
 #include "vtkAMRBox.h"
@@ -51,6 +50,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkFieldData.h"
 #include "vtkPointData.h"
 
+#include "vtkCompositeDataPipeline.h"
+#include "vtkStreamingDemandDrivenPipeline.h"
+
 #include "vtkUnstructuredGridRelevantPointsFilter.h"
 #include "vtkCleanPolyData.h"
 #include "vtkCSGGrid.h"
@@ -65,6 +67,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TimingsManager.h"
 
 #include "limits.h"
+#include <vtkstd/set>
+
+struct vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithmInternal
+{  
+  unsigned int MinDataset;
+  unsigned int MaxDataset;
+  bool HasUpdateRestriction;
+  vtkstd::set<int> UpdateIndices;
+  vtkAvtSTMDFileFormatAlgorithmInternal():
+    MinDataset(0),
+    MaxDataset(0),
+    HasUpdateRestriction(false),
+    UpdateIndices()
+    {}  
+};
 
 vtkStandardNewMacro(vtkAvtSTMDFileFormatAlgorithm);
 
@@ -74,11 +91,14 @@ vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithm()
   this->UpdatePiece = 0;
   this->UpdateNumPieces = 0;
   this->OutputType = VTK_MULTIBLOCK_DATA_SET;
+  this->Internal = 
+    new vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithmInternal();
 }
 
 //-----------------------------------------------------------------------------
 vtkAvtSTMDFileFormatAlgorithm::~vtkAvtSTMDFileFormatAlgorithm()
 {
+  delete this->Internal;
 }
 
 //-----------------------------------------------------------------------------
@@ -231,8 +251,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     return 0;
     }
 
-  int domainRange[2];
-  this->GetDomainRange( meshMetaData, domainRange );
+  this->GetDomainRange(meshMetaData);
 
   //number of levels in the AMR
   int numGroups = meshMetaData->numGroups;
@@ -292,8 +311,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     for (int j=0; j < numDataSets[i]; ++j)
       {
       //only load grids inside the domainRange for this processor
-      if ( meshIndex >= domainRange[0] &&
-        meshIndex < domainRange[1] )
+      if (this->ShouldReadDataSet(meshIndex) )
         {
         //get the rgrid from the VisIt reader
         //so we have the origin/spacing/dims
@@ -378,12 +396,14 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
 
   //set the number of pieces in the block
   block->SetNumberOfBlocks( meshMetaData->numBlocks );
-
-  int domainRange[2];
-  this->GetDomainRange( meshMetaData, domainRange );
-
-  for ( int i=domainRange[0]; i < domainRange[1]; ++i )
+  
+  this->GetDomainRange(meshMetaData);
+  for ( int i=this->Internal->MinDataset; i < this->Internal->MaxDataset; ++i )
     {
+    if (!this->ShouldReadDataSet(i))
+      {
+      continue;
+      }
     vtkDataSet *data=NULL;
     CATCH_VISIT_EXCEPTIONS(data,
       this->AvtFile->GetMesh(timestep, i, name.c_str()) );
@@ -442,11 +462,13 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
   stringVector blockNames = meshMetaData->blockNames;
   int numBlockNames = blockNames.size();
 
-  int domainRange[2];
-  this->GetDomainRange( meshMetaData, domainRange );
-
-  for ( int i=domainRange[0]; i < domainRange[1]; ++i )
+  this->GetDomainRange(meshMetaData);
+  for ( int i=this->Internal->MinDataset; i < this->Internal->MaxDataset; ++i )
     {
+    if (!this->ShouldReadDataSet(i))
+      {
+      continue;
+      }
     //basic uniform csg support
     int blockIndex = i;
     int csgRegion = 0;
@@ -544,20 +566,50 @@ bool vtkAvtSTMDFileFormatAlgorithm::IsEvenlySpacedDataArray(vtkDataArray *data)
 
 //----------------------------------------------------------------------------
 //determine which nodes will be read by this processor
-void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData *meshMetaData, int domain[2])
-{
+void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData *meshMetaData)
+{       
   int numBlock = meshMetaData->numBlocks;
-  domain[0] = 0;
-  domain[1] = numBlock;
-
-  //1 == load the whole data
-  if ( this->UpdateNumPieces > 1 )
+  this->Internal->MinDataset = 0;
+  this->Internal->MaxDataset = numBlock;
+    
+  vtkInformation* outInfo = this->GetOutputPortInformation(0);
+  if (outInfo->Has(vtkCompositeDataPipeline::UPDATE_COMPOSITE_INDICES()))
     {
-    //determine which domains in this mesh this processor is responsible for
-    float percent = (1.0 / this->UpdateNumPieces) * numBlock;
-    domain[0] = percent * this->UpdatePiece;
-    domain[1] = (percent * this->UpdatePiece) + percent;
+    //index based data requests    
+    this->Internal->UpdateIndices.clear();
+    int length = outInfo->Length(vtkCompositeDataPipeline::UPDATE_COMPOSITE_INDICES());
+    this->Internal->HasUpdateRestriction = (length > 0);
+    if (this->Internal->HasUpdateRestriction)
+      {
+      int* idx = outInfo->Get(vtkCompositeDataPipeline::UPDATE_COMPOSITE_INDICES());      
+      this->Internal->UpdateIndices = vtkstd::set<int>(idx, idx+length);
+      }
     }
+  if (!this->Internal->HasUpdateRestriction)
+    {
+    //1 == load the whole data
+    if ( this->UpdateNumPieces > 1 )
+      {
+      //determine which domains in this mesh this processor is responsible for
+      float percent = (1.0 / this->UpdateNumPieces) * numBlock;
+      this->Internal->MinDataset = percent * this->UpdatePiece;
+      this->Internal->MaxDataset = (percent * this->UpdatePiece) + percent;
+      }
+    }
+}
+//-----------------------------------------------------------------------------
+bool vtkAvtSTMDFileFormatAlgorithm::ShouldReadDataSet(const int &index)
+{
+  bool shouldRead =
+    (index >= this->Internal->MinDataset &&
+     index < this->Internal->MaxDataset);
+
+  if (shouldRead && this->Internal->HasUpdateRestriction)
+    {
+    shouldRead = (this->Internal->UpdateIndices.find(index) ==
+        this->Internal->UpdateIndices.end());      
+    }
+  return shouldRead;
 }
 
 //-----------------------------------------------------------------------------
