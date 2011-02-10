@@ -33,7 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
+#include "vtkMultiBlockDataSet.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkCompositeDataPipeline.h"
+#include "vtkSmartPointer.h"
 
 #include "vtkCallbackCommand.h"
 #include "vtkDataArraySelection.h"
@@ -48,6 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtDatabaseMetaData.h"
 #include "avtDomainNesting.h"
 #include "avtFileFormat.h"
+#include "avtIntervalTree.h"
 #include "avtMaterial.h"
 #include "avtMaterialMetaData.h"
 #include "avtScalarMetaData.h"
@@ -177,7 +181,6 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
 
   //setup the timestep and cylce info
   this->SetupTemporalInformation(outInfo);
-
 
   return 1;
 }
@@ -441,6 +444,88 @@ void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data,
         }
       }
     }
+}
+
+//-----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::SetupBlockBoundsInformation(
+  vtkInformation *outInfo)
+{ 
+  vtkSmartPointer<vtkMultiBlockDataSet> metadata =
+      vtkSmartPointer<vtkMultiBlockDataSet>::New();
+
+  unsigned int index = 0;
+  int size = this->MetaData->GetNumMeshes();
+  avtIntervalTree *tree = NULL;
+  int timeStep = this->GetCurrentTimeStep(outInfo);
+  for ( int i=0; i < size; ++i)
+    {
+    //we need to see how ParaFlow handles time varying extents
+    //we can handle domains easily
+    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);
+    int numBlocks = meshMetaData->numBlocks;
+    int timeStep = 1;
+    for ( int dom=0; dom < numBlocks; ++dom )
+      {
+      void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
+                    AUXILIARY_DATA_SPATIAL_EXTENTS, timeStep, dom);
+      if (!(*vr))
+        { 
+        //the specfic domain failed, try the extent for time
+        void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
+          AUXILIARY_DATA_SPATIAL_EXTENTS, timeStep, -1);        
+        }
+      if (!(*vr))
+        { 
+        //the specfic timestep failed, try the gloabl extent
+        void_ref_ptr vr = this->Cache->GetVoidRef(meshMetaData->name.c_str(),
+          AUXILIARY_DATA_SPATIAL_EXTENTS, -1, -1);
+        }
+      if (!(*vr))
+        {
+        //everything failed we don't have information!
+        return;
+        }
+
+      tree = reinterpret_cast<avtIntervalTree*>(*vr);
+      if ( tree )
+        {
+        vtkInformation* piece_metadata = ?;
+        double bounds[6] = {0.0,0.0,0.0,0.0,0.0,0.0};
+        tree->GetExtents(bounds);      
+        }    
+      }
+    }
+
+  outInfo->Set(vtkCompositeDataPipeline::COMPOSITE_DATA_META_DATA(),
+            metadata);
+}
+
+//-----------------------------------------------------------------------------
+unsigned int vtkAvtFileFormatAlgorithm::GetCurrentTimeStep(vtkInformation *outInfo)
+{
+  int tsLength =
+    outInfo->Length(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
+  double* steps =
+    outInfo->Get(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
+  
+  unsigned int TimeIndex = 0;
+  // Check if a particular time was requested by the pipeline.
+  // This overrides the ivar.
+  if(outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS()) && tsLength>0)
+    {
+    // Get the requested time step. We only supprt requests of a single time
+    // step in this reader right now
+    double *requestedTimeSteps =
+      outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS());
+
+    // find the first time value larger than requested time value
+    // this logic could be improved
+    while (TimeIndex < tsLength-1 && steps[TimeIndex] < requestedTimeSteps[0])
+      {
+      TimeIndex++;
+      }    
+    }
+  return TimeIndex;
 }
 
 //-----------------------------------------------------------------------------

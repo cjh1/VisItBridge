@@ -81,30 +81,7 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
   {
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
-  int tsLength =
-    outInfo->Length(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
-  double* steps =
-    outInfo->Get(vtkStreamingDemandDrivenPipeline::TIME_STEPS());
-
-  double TimeStepValue = 0;
-  unsigned int TimeIndex = 0;
-  // Check if a particular time was requested by the pipeline.
-  // This overrides the ivar.
-  if(outInfo->Has(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS()) && tsLength>0)
-    {
-    // Get the requested time step. We only supprt requests of a single time
-    // step in this reader right now
-    double *requestedTimeSteps =
-      outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_TIME_STEPS());
-
-    // find the first time value larger than requested time value
-    // this logic could be improved
-    while (TimeIndex < tsLength-1 && steps[TimeIndex] < requestedTimeSteps[0])
-      {
-      TimeIndex++;
-      }
-    TimeStepValue = steps[TimeIndex];
-    }
+  unsigned int TimeIndex = this->GetCurrentTimeStep(outInfo);
 
   if (!this->InitializeAVTReader( TimeIndex ))
     {

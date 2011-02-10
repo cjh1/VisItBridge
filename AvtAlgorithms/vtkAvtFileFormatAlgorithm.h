@@ -117,12 +117,18 @@ protected:
   // see algorithm for more info
   virtual int FillOutputPortInformation(int port, vtkInformation* info);
 
-  //methods that setup selection arrays that the client will interact with
+  //methods that setup selection arrays that the client will interact with  
   void SetupDataArraySelections();
   void SetupMeshSelections();
   void SetupMaterialSelections();
 
+  //method to setup the proper block bounds for the data.
+  //this method is needed when the filters are being used by ParaFlow
+  virtual void SetupBlockBoundsInformation(vtkInformation *outInfo);  
   void SetupTemporalInformation(vtkInformation *outInfo);
+
+  //this method is used to get the current time step from the pipeline
+  unsigned int GetCurrentTimeStep(vtkInformation *outInfo);
 
   // Callback registered with the SelectionObserver.
   static void SelectionModifiedCallback(vtkObject* caller, unsigned long eid,
