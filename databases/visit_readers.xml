@@ -3,8 +3,8 @@
 
     <!-- ================================================================= -->
     <Proxy name="VisItReaderBase">
-      <Documentation>
-        This defines the interface for all VisItBridge Readers
+      <Documentation
+        long_help="Note this reader is automatically generated from wrapping a third party reader.">
       </Documentation>
 
       <StringVectorProperty
@@ -132,6 +132,10 @@
   <ProxyGroup name="sources">
     <SourceProxy name="VisItANALYZEReader" class="vtkVisItANALYZEReader"
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation
+       short_help="Format that stores fMRI data of brain scans">
+       The default file extension is .img and .hdr.
+    </Documentation>
       <Hints>
         <ReaderFactory extensions="img hdr"
           file_description="ANALYZE Files" />
@@ -139,6 +143,10 @@
     </SourceProxy>
     <SourceProxy name="VisItANSYSReader" class="vtkVisItANSYSReader"
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation
+       short_help="ASCII file format used for input to the ANSYS suite">
+       The default file extension is .inp.
+    </Documentation>
       <Hints>
         <ReaderFactory extensions="inp"
           file_description="ANSYS Files" />
@@ -147,6 +155,7 @@
 
     <SourceProxy name="VisItAUXFileReader" class="vtkVisItAuxFileReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+
      <Hints>
        <ReaderFactory extensions="aux"
                       file_description="AUXFile Files" />
@@ -155,6 +164,11 @@
 
     <SourceProxy name="VisItBOVReader" class="vtkVisItBOVReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation
+       short_help="Brick of values reader"
+       long_help="BOV generates a rectilinear grid of values">
+       The default file extension is .bov.
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="bov"
                       file_description="BOV Files" />
@@ -172,6 +186,10 @@
 #ifdef VISITBRIDGE_USE_CGNS
     <SourceProxy name="VisItCGNSReader" class="vtkVisItCGNSReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+      <Documentation
+       short_help="Reads CFD General Notation System Files">
+       The default file extension is .cgns.
+     </Documentation>
      <Hints>
        <ReaderFactory extensions="cgns"
                       file_description="CGNS Files" />
@@ -181,12 +199,17 @@
 
     <SourceProxy name="VisItChomboReader" class="vtkVisItChomboReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation
+       short_help="Reads files from the Chombo package"
+       long_help="Loads block-structured adaptively refined rectangular grids">
+       The default file extension is .h5 and .hdf5.
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="hdf5 h5"
                       file_description="Chombo Files" />
      </Hints>
     </SourceProxy>
-    
+
 #ifndef WIN32
     <SourceProxy name="VisItClawReader" class="vtkVisItClawReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -195,7 +218,7 @@
                       file_description="Claw Files" />
      </Hints>
     </SourceProxy>
-#endif    
+#endif
 
     <SourceProxy name="VisItCMATReader" class="vtkVisItCMATReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -215,6 +238,11 @@
 
     <SourceProxy name="VisItCurve2DReader" class="vtkVisItCurve2DReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation
+       short_help="ASCII 2D Curve Format"
+       long_help="Reads single x,y values per line to generate a 2D curve">
+       The default file extension is .curve, .ultra ,.ult, and .u
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="curve ultra ult u"
                       file_description="Curve2D Files" />
@@ -223,6 +251,10 @@
 
     <SourceProxy name="VisItDDCMDReader" class="vtkVisItDDCMDReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation
+       short_help="Reads ddcMD particle and atom files">
+       The default file extension is .ddcmd
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="ddcmd"
                       file_description="DDCMD Files" />
@@ -231,6 +263,10 @@
 
     <SourceProxy name="VisItDyna3DReader" class="vtkVisItDyna3DReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+      <Documentation
+       short_help="Reads Dyna3D finite element files">
+       The default file extension is .dyn
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="dyn"
                       file_description="Dyna3D Files" />
@@ -239,6 +275,10 @@
 
     <SourceProxy name="VisItEnzoReader" class="vtkVisItEnzoReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+      <Documentation
+       short_help="Reads enzo cosmological simulation AMR files">
+       The default file extension is .boundary .hierarchy
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="hierarchy boundary"
                       file_description="Enzo Files (VisIt)" />
@@ -356,7 +396,7 @@
                       file_description="M3DC1 Files" />
      </Hints>
     </SourceProxy>
-    
+
 #ifdef VISITBRIDGE_USE_MILI
     <SourceProxy name="VisItMiliReader" class="vtkVisItMiliReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -365,7 +405,7 @@
                       file_description="Mili Files" />
      </Hints>
     </SourceProxy>
-#endif    
+#endif
 
     <SourceProxy name="VisItMirandaReader" class="vtkVisItMirandaReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -390,14 +430,14 @@
                       file_description="NASTRAN Files" />
      </Hints>
     </SourceProxy>
-        
+
     <SourceProxy name="VisItNetCDFADAPTReader" class="vtkVisItADAPTReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="ADAPT Files" />
      </Hints>
-    </SourceProxy> 
+    </SourceProxy>
 
     <SourceProxy name="VisItNetCDFLODIReader" class="vtkVisItLODIReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -413,8 +453,8 @@
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="LODI Particle Files" />
      </Hints>
-    </SourceProxy>    
-    
+    </SourceProxy>
+
     <SourceProxy name="VisItNetCDFFVCOM_STSDReader" class="vtkVisItFVCOM_STSDReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -437,23 +477,23 @@
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="FVCOM MTSD Files" />
      </Hints>
-    </SourceProxy>    
-    
+    </SourceProxy>
+
     <SourceProxy name="VisItNetCDFFVCOMParticleReader" class="vtkVisItFVCOMParticleReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="FVCOM Particle Files" />
      </Hints>
-    </SourceProxy> 
-    
+    </SourceProxy>
+
     <SourceProxy name="VisItNetCDFCCSM_MTSDReader" class="vtkVisItCCSM_MTSD_Reader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="CCSM MTSD Files" />
      </Hints>
-    </SourceProxy> 
+    </SourceProxy>
 
     <SourceProxy name="VisItNetCDFCCSM_STSDReader" class="vtkVisItCCSM_STSD_Reader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -461,8 +501,8 @@
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="CCSM STSD Files" />
      </Hints>
-    </SourceProxy> 
-    
+    </SourceProxy>
+
     <SourceProxy name="VisItParaDisReader" class="vtkVisItParaDISReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -470,7 +510,7 @@
                       file_description="ParaDIS Files" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItParaDisTecplotReader" class="vtkVisItParaDISTecplotReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -485,7 +525,7 @@
        <ReaderFactory extensions="nek3d nek2d nek5d nek5000 nek"
                       file_description="Nek5000 Files" />
      </Hints>
-    </SourceProxy>    
+    </SourceProxy>
 
     <SourceProxy name="VisItOpenFOAMReader" class="vtkVisItOpenFOAMReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
@@ -712,7 +752,7 @@
                       file_description="VizSchema Files" />
      </Hints>
     </SourceProxy>
-    
+
     <SourceProxy name="VisItXmdvReader" class="vtkVisItXmdvReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Hints>
@@ -727,7 +767,7 @@
        <ReaderFactory extensions="xyz"
                       file_description="XYZ Files" />
      </Hints>
-    </SourceProxy>    
+    </SourceProxy>
 
   </ProxyGroup>
 </ServerManagerConfiguration>
