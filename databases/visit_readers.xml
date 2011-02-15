@@ -4,7 +4,8 @@
     <!-- ================================================================= -->
     <Proxy name="VisItReaderBase">
       <Documentation
-        long_help="Note this reader is automatically generated from wrapping a third party reader.">
+        long_help="Note this reader is automatically generated from wrapping a third party reader.
+        For more information on the reader see https://wci.llnl.gov/codes/visit/">
       </Documentation>
 
       <StringVectorProperty
@@ -12,6 +13,10 @@
         command="SetFileName"
         number_of_elements="1">
         <FileListDomain name="files"/>
+        <Documentation>
+        This property specifies the file name for the reader
+        </Documentation>
+        
       </StringVectorProperty>
 
      <StringVectorProperty
