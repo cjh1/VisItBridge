@@ -160,7 +160,9 @@
 
     <SourceProxy name="VisItAUXFileReader" class="vtkVisItAuxFileReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-
+    <Documentation>
+       The default file extension is .aux.
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="aux"
                       file_description="AUXFile Files" />
@@ -169,7 +171,7 @@
 
     <SourceProxy name="VisItBOVReader" class="vtkVisItBOVReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-    <Documentation       
+    <Documentation
        long_help="BOV (Brick of Values) generates a rectilinear grid of values">
        The default file extension is .bov.
     </Documentation>
@@ -257,7 +259,7 @@
 
     <SourceProxy name="VisItCurve2DReader" class="vtkVisItCurve2DReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-    <Documentation       
+    <Documentation
        long_help="Reads ASCII 2D Curve Format. Which is a single x,y values per line to generate a 2D curve">
        The default file extensions are .curve, .ultra ,.ult, and .u
     </Documentation>
@@ -305,6 +307,9 @@
 
     <SourceProxy name="VisItExtrudedVolReader" class="vtkVisItExtrudedVolReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Documentation>
+       The default file extension is .exvol.
+     </Documentation>      
      <Hints>
        <ReaderFactory extensions="exvol"
                       file_description="ExtrudedVol Files" />
@@ -361,6 +366,9 @@
 
     <SourceProxy name="VisItGTCReader" class="vtkVisItGTCReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation>
+       The default file extension is .h5.
+    </Documentation>      
      <Hints>
        <ReaderFactory extensions="h5"
                       file_description="GTC Files" />
@@ -384,7 +392,7 @@
      <Documentation
        long_help="NIMROD HDF5 data model reader">
        The default file extension is .h5nimrod
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="h5nimrod"
                       file_description="H5Nimrod Files" />
@@ -396,7 +404,7 @@
      <Documentation
        long_help="Multiple Image format reader">
        The default file extensions are .pnm, .ppm, .sdt, .spr and .imgvol
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="pnm ppm sdt spr imgvol"
                       file_description="Image Files" />
@@ -408,7 +416,7 @@
     <Documentation
        long_help="LAMMPS Molecular Dynamics Simulator reader">
        The default file extensions are .eam, .meam, .rigid, and .lammps
-    </Documentation>     
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="eam meam rigid lammps"
                       file_description="LAMMPSStructure Files" />
@@ -420,7 +428,7 @@
     <Documentation
        long_help="LAMMPS Molecular Dynamics Simulator dump reader">
        The default file extension is .dump
-    </Documentation> 
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="dump"
                       file_description="LAMMPS Dump Files" />
@@ -429,6 +437,9 @@
 
     <SourceProxy name="VisItLinesReader" class="vtkVisItLinesReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+    <Documentation>
+       The default file extension is .lines.
+    </Documentation>      
      <Hints>
        <ReaderFactory extensions="lines"
                       file_description="Lines Files" />
@@ -441,7 +452,7 @@
        long_help="M3D fusion code reader">
        The default file extension is .m3d
     </Documentation>
-       
+
      <Hints>
        <ReaderFactory extensions="m3d h5"
                       file_description="Multilevel 3D Plasma Files" />
@@ -453,7 +464,7 @@
     <Documentation
        long_help="M3DC1 fusion code reader">
        The default file extension is .h5
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="h5"
                       file_description="M3DC1 Files" />
@@ -466,8 +477,8 @@
       <Documentation
        long_help="LLNL engineering format reader">
        The default file extensions are .m, and .mili
-      </Documentation>      
-     <Hints>     
+      </Documentation>
+     <Hints>
        <ReaderFactory extensions="m mili"
                       file_description="Mili Files" />
      </Hints>
@@ -479,8 +490,8 @@
       <Documentation
        long_help="Readers the raw output format of LLNL's Miranda simulation.">
        The default file extensions are .mir, and .raw
-      </Documentation>        
-      
+      </Documentation>
+
      <Hints>
        <ReaderFactory extensions="mir raw"
                       file_description="Miranda Files" />
@@ -492,7 +503,7 @@
       <Documentation
        long_help="Reads PSU/NCAR mesoscale model simulation files.">
        The default file extension is mm5
-      </Documentation>        
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="mm5"
                       file_description="MM5 Files" />
@@ -504,7 +515,7 @@
       <Documentation
        long_help="Reads NASTRAN Bulk ASCII unstructured meshes">
        The default file extensions are .nas, and .f06
-      </Documentation>              
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="nas f06"
                       file_description="NASTRAN Files" />
@@ -516,7 +527,7 @@
       <Documentation
        long_help="Reads NetCDF ADAPT files">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-      </Documentation>       
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="ADAPT Files" />
@@ -528,7 +539,7 @@
     <Documentation
        long_help="Reads NetCDF LODI files">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>       
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="LODI Files" />
@@ -540,7 +551,7 @@
     <Documentation
        long_help="Reads NetCDF LODI particle files">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>             
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="LODI Particle Files" />
@@ -552,7 +563,7 @@
     <Documentation
        long_help="Reads FVCOM  primitive equations ocean models">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation> 
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="FVCOM STSD Files" />
@@ -564,7 +575,7 @@
     <Documentation
        long_help="Reads FVCOM  primitive equations ocean models">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="FVCOM MTMD Files" />
@@ -576,7 +587,7 @@
     <Documentation
        long_help="Reads FVCOM  primitive equations ocean models">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="FVCOM MTSD Files" />
@@ -588,7 +599,7 @@
     <Documentation
        long_help="Reads FVCOM primitive equations ocean model particle files">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="FVCOM Particle Files" />
@@ -600,7 +611,7 @@
     <Documentation
        long_help="Reads CCSM climate data files">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>      
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="CCSM MTSD Files" />
@@ -612,7 +623,7 @@
     <Documentation
        long_help="Reads CCSM climate data files">
        The default file extensions are .nc, .cdf, .elev, and .ncd
-    </Documentation>            
+    </Documentation>
      <Hints>
        <ReaderFactory extensions="nc cdf elev ncd"
                       file_description="CCSM STSD Files" />
@@ -624,7 +635,7 @@
       <Documentation
        long_help="Reads Parallel Dislocation Simulator (ParaDiS) files">
        The default file extensions are .prds, .data, .dat
-      </Documentation> 
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="prds data dat"
                       file_description="ParaDIS Files" />
@@ -648,7 +659,7 @@
       <Documentation
        long_help="Reads simulation results from Nek5000 which is a DNS/LES computational fluid dynamics solver">
        The default file extensions are .nek3, .nek2d, .nek5d, .nek5000, .nek
-      </Documentation>   
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="nek3d nek2d nek5d nek5000 nek"
                       file_description="Nek5000 Files" />
@@ -660,14 +671,14 @@
       <Documentation
        long_help="Reads simulation results from OpenFOAM (Open Field Operation and Manipulation) CFD Toolbox">
        The default file extension is .controlDict
-      </Documentation>        
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="controlDict"
                       file_description="OpenFOAM Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
-    <SourceProxy name="VisItOVERFLOWReader" class="vtkVisItOVERFLOWReader"    
+    <SourceProxy name="VisItOVERFLOWReader" class="vtkVisItOVERFLOWReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
       long_help="Reads Binary Fortran output files containing overlayed curvilinear meshes files.">
@@ -692,7 +703,10 @@
     </SourceProxy>
 
     <SourceProxy name="VisItPFLOTRANReader" class="vtkVisItPFLOTRANReader"
-      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">     
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Documentation>
+       The default file extension is .h5.
+     </Documentation>      
      <Hints>
        <ReaderFactory extensions="h5"
                       file_description="PFLOTRAN Files" />
@@ -704,7 +718,7 @@
       <Documentation
         long_help="Reads 2D and 3D simulation data saved in Pixie HDF5 format.">
         The default file extension is .h5
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="h5"
                       file_description="Pixie Files" />
@@ -713,6 +727,9 @@
 
     <SourceProxy name="VisItPlainTextReader" class="vtkVisItPlainTextReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Documentation>
+       The default file extensions are .csv, .tsv, and .txt.
+     </Documentation>      
      <Hints>
        <ReaderFactory extensions="csv tsv txt"
                       file_description="Plain Text Files" />
@@ -725,7 +742,7 @@
         long_help="Reads structured simulation data from Plot2D.">
         The default file extension is .p2d
       </Documentation>
-      
+
      <Hints>
        <ReaderFactory extensions="p2d"
                       file_description="PLOT2D Files" />
@@ -737,7 +754,7 @@
       <Documentation
         long_help="Reads structured simulation data from Plot3D.">
         The default file extensions are .q, .x, and .vp3d
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="q x vp3d"
                       file_description="PLOT3D Files (VisIt)" />
@@ -774,7 +791,7 @@
         long_help="Reads RAW mesh geometry format.">
         Allows mesh geometry to be shared with CAD programs such as Blender and POVRAY
         The default file extension is .raw
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="raw"
                       file_description="RAW Files" />
@@ -784,7 +801,7 @@
     <SourceProxy name="VisItSAMRAIReader" class="vtkVisItSAMRAIReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads Structured AMR data stored in HDF5 file formats.">        
+        long_help="Reads Structured AMR data stored in HDF5 file formats.">
         The default file extension is .samrai
       </Documentation>
      <Hints>
@@ -796,9 +813,9 @@
     <SourceProxy name="VisItSARReader" class="vtkVisItSARReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads Specific Absorption Rate image volume files.">        
+        long_help="Reads Specific Absorption Rate image volume files.">
         The default file extension is .sar
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="SAR sar"
                       file_description="SAR Files" />
@@ -808,7 +825,7 @@
     <SourceProxy name="VisItSASReader" class="vtkVisItSASReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads SAS files.">        
+        long_help="Reads SAS files.">
         The default file extensions are .sas, sasgeom, and .sasdata
       </Documentation>
      <Hints>
@@ -821,7 +838,7 @@
     <SourceProxy name="VisItSiloReader" class="vtkVisItSiloReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads Silo rectilinear, curvilinear, unstructured, or point meshes">        
+        long_help="Reads Silo rectilinear, curvilinear, unstructured, or point meshes">
         The default file extension is .silo
       </Documentation>
      <Hints>
@@ -831,11 +848,11 @@
     </SourceProxy>
 #endif
     <SourceProxy name="VisItSpheralReader" class="vtkVisItSpheralReader"
-      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">      
+      base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads ASCII coupled hydrodynamical and gravitational simulations">        
+        long_help="Reads ASCII coupled hydrodynamical and gravitational simulations">
         The default file extensions are .spheral, and .sv
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="spheral sv"
                       file_description="Spheral Files" />
@@ -845,9 +862,9 @@
     <SourceProxy name="VisItTecplotReader" class="vtkVisItTecplotReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads a subset of the ASCII Tecplot file format">        
+        long_help="Reads a subset of the ASCII Tecplot file format">
         The default file extensions are .tp, and .tec
-      </Documentation>       
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="tp tec"
                       file_description="Tecplot Files (VisIt)" />
@@ -857,9 +874,9 @@
     <SourceProxy name="VisItTecplotBinaryReader" class="vtkVisItTecplotBinaryReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads a subset of the Tecplot binary file format">        
+        long_help="Reads a subset of the Tecplot binary file format">
         The default file extension is .plt
-      </Documentation>       
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="plt"
                       file_description="Tecplot Binary Files (VisIt)" />
@@ -869,9 +886,9 @@
     <SourceProxy name="VisItTetradReader" class="vtkVisItTetradReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads tetrahedral meshes and variables stored in HDF5 file format.">        
+        long_help="Reads tetrahedral meshes and variables stored in HDF5 file format.">
         The default file extensions are .hdf5, and .h5
-      </Documentation> 
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="hdf5 h5"
                       file_description="Tetrad Files" />
@@ -881,9 +898,9 @@
     <SourceProxy name="VisItTFTReader" class="vtkVisItTFTReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads ASCII TFT Fortran simulation results.">        
+        long_help="Reads ASCII TFT Fortran simulation results.">
         The default file extensions are .dat, and .tft
-      </Documentation>       
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="dat tft"
                       file_description="TFT Files" />
@@ -892,6 +909,9 @@
 
     <SourceProxy name="VisItTSurfReader" class="vtkVisItTSurfReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Documentation>
+       The default file extension is .ts_deg83.
+     </Documentation>
      <Hints>
        <ReaderFactory extensions="ts_deg83"
                       file_description="TSurf Files" />
@@ -901,9 +921,9 @@
     <SourceProxy name="VisItUNICReader" class="vtkVisItUNICReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
-        long_help="Reads UNIC neutronics code result files.">        
+        long_help="Reads UNIC neutronics code result files.">
         The default file extension is .h5
-      </Documentation>       
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="h5"
                       file_description="UNIC Files" />
@@ -914,10 +934,10 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VASP simulation result files.">
-        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD) 
+        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD)
         using pseudopotentials and a plane wave basis set.
         The default file extension is out*
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="OUT*"
                       file_description="VASP OUT Files" />
@@ -928,10 +948,10 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VASP simulation result files.">
-        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD) 
+        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD)
         using pseudopotentials and a plane wave basis set.
         The default file extension is CHG*
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="CHG*"
                       file_description="VASP CHGCA Files" />
@@ -942,10 +962,10 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VASP simulation result files.">
-        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD) 
+        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD)
         using pseudopotentials and a plane wave basis set.
         The default file extension is POS*
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="POS*"
                       file_description="VASP POSCAR Files" />
@@ -958,7 +978,7 @@
         long_help="Reads Velodyne structural mechainces simulation result files.">
       Velodyne as an advanced structural mechanics code written by Corvid Technologies.
       The default file extensions are .vld, and .rst
-      </Documentation>      
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="vld rst"
                       file_description="Velodyne Files" />
@@ -971,9 +991,9 @@
         long_help="Reads VizSchema hdf5 files.">
       VizSchema is a specification for markup added to hdf5 files
       to describe the data contained within. VizSchema also allows users to specify
-      run information and other miscellaneous data in a standardized manner. 
+      run information and other miscellaneous data in a standardized manner.
       The default file extensions are .h5, and .vsh5
-      </Documentation> 
+      </Documentation>
      <Hints>
        <ReaderFactory extensions="h5 vsh5"
                       file_description="VizSchema Files" />
@@ -986,8 +1006,8 @@
         long_help="Reads XmdvTool ASCII files.">
       XmdvTool is a public-domain software package for the interactive visual exploration of multivariate data sets.
       The default file extension is .okc
-      </Documentation>      
-      File format used by 
+      </Documentation>
+      File format used by
      <Hints>
        <ReaderFactory extensions="okc"
                       file_description="Xmdv Files" />
@@ -996,6 +1016,9 @@
 
     <SourceProxy name="VisItXYZReader" class="vtkVisItXYZReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
+     <Documentation>
+       The default file extension is .xyz.
+     </Documentation>      
      <Hints>
        <ReaderFactory extensions="xyz"
                       file_description="XYZ Files" />
