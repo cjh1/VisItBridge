@@ -2,12 +2,7 @@
   <ProxyGroup name="internal_readers">
 
     <!-- ================================================================= -->
-    <Proxy name="VisItReaderBase">
-      <Documentation>
-        Note this reader is automatically generated from wrapping a third party reader.
-        For more information on the reader see https://wci.llnl.gov/codes/visit/
-      </Documentation>
-
+    <Proxy name="VisItReaderBase">      
       <StringVectorProperty
         name="FileName"
         command="SetFileName"
@@ -139,7 +134,8 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Format that stores fMRI data of brain scans">
-       The default file extensions are .img and .hdr.
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
+       The default file extensions are .img and .hdr.       
     </Documentation>
       <Hints>
         <ReaderFactory extensions="img hdr"
@@ -150,8 +146,8 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="ASCII file format used for input to the ANSYS suite">
-       The default file extension is .inp.
-    </Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
+       The default file extension is .inp.    
       <Hints>
         <ReaderFactory extensions="inp"
           file_description="ANSYS Files" />
@@ -160,7 +156,8 @@
 
     <SourceProxy name="VisItAUXFileReader" class="vtkVisItAuxFileReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
-    <Documentation>
+    <Documentation>    
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .aux.
     </Documentation>
      <Hints>
@@ -173,6 +170,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="BOV (Brick of Values) generates a rectilinear grid of values">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .bov.
     </Documentation>
      <Hints>
@@ -184,6 +182,7 @@
     <SourceProxy name="VisItCEAucdReader" class="vtkVisItCEAucdReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions .ucd, and .inp
     </Documentation>
      <Hints>
@@ -197,6 +196,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads CFD General Notation System Files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .cgns.
      </Documentation>
      <Hints>
@@ -211,6 +211,7 @@
     <Documentation
        long_help="Reads files from the Chombo package.
        Loads block-structured adaptively refined rectangular grids">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .h5 and .hdf5.
     </Documentation>
      <Hints>
@@ -224,6 +225,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="A material-ordered format very similar to IOUT=1.">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .claw
     </Documentation>
      <Hints>
@@ -237,6 +239,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="ASCII output of CMAT Fortran simulation.">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .cmat
     </Documentation>
      <Hints>
@@ -249,6 +252,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads control files for TB-LMTO">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .ctrl
       </Documentation>
      <Hints>
@@ -261,6 +265,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads ASCII 2D Curve Format. Which is a single x,y values per line to generate a 2D curve">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .curve, .ultra ,.ult, and .u
     </Documentation>
      <Hints>
@@ -273,6 +278,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads ddcMD particle and atom files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .ddcmd
     </Documentation>
      <Hints>
@@ -285,6 +291,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads Dyna3D finite element files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .dyn
     </Documentation>
      <Hints>
@@ -297,6 +304,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads enzo cosmological simulation AMR files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .boundary, and .hierarchy
     </Documentation>
      <Hints>
@@ -308,6 +316,7 @@
     <SourceProxy name="VisItExtrudedVolReader" class="vtkVisItExtrudedVolReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .exvol.
      </Documentation>      
      <Hints>
@@ -320,6 +329,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="ASC / Alliances Center for Astrophysical Thermonuclear Flash Reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .flash, and .f5
     </Documentation>
      <Hints>
@@ -332,6 +342,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
        long_help="Fluent CFD simulation result reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .cas
     </Documentation>
      <Hints>
@@ -344,6 +355,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
        long_help="Gadget 2 cosmological N-body/SPH simulation code reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .gadget
     </Documentation>
      <Hints>
@@ -356,6 +368,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
        long_help="Reads Geospace General Circulation Model files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .3df, and .mer
     </Documentation>
      <Hints>
@@ -367,6 +380,7 @@
     <SourceProxy name="VisItGTCReader" class="vtkVisItGTCReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .h5.
     </Documentation>      
      <Hints>
@@ -379,6 +393,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
        long_help="GULP trajectory file reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .trg
     </Documentation>
      <Hints>
@@ -391,6 +406,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
        long_help="NIMROD HDF5 data model reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .h5nimrod
     </Documentation>
      <Hints>
@@ -403,6 +419,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
        long_help="Multiple Image format reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .pnm, .ppm, .sdt, .spr and .imgvol
     </Documentation>
      <Hints>
@@ -415,6 +432,7 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="LAMMPS Molecular Dynamics Simulator reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .eam, .meam, .rigid, and .lammps
     </Documentation>
      <Hints>
@@ -427,6 +445,7 @@
     base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="LAMMPS Molecular Dynamics Simulator dump reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .dump
     </Documentation>
      <Hints>
@@ -438,6 +457,7 @@
     <SourceProxy name="VisItLinesReader" class="vtkVisItLinesReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .lines.
     </Documentation>      
      <Hints>
@@ -450,6 +470,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="M3D fusion code reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .m3d
     </Documentation>
 
@@ -463,6 +484,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="M3DC1 fusion code reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .h5
     </Documentation>
      <Hints>
@@ -476,6 +498,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="LLNL engineering format reader">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .m, and .mili
       </Documentation>
      <Hints>
@@ -489,6 +512,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Readers the raw output format of LLNL's Miranda simulation.">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .mir, and .raw
       </Documentation>
 
@@ -502,6 +526,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads PSU/NCAR mesoscale model simulation files.">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is mm5
       </Documentation>
      <Hints>
@@ -514,6 +539,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads NASTRAN Bulk ASCII unstructured meshes">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nas, and .f06
       </Documentation>
      <Hints>
@@ -526,6 +552,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads NetCDF ADAPT files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
       </Documentation>
      <Hints>
@@ -538,6 +565,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads NetCDF LODI files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -550,6 +578,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads NetCDF LODI particle files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -562,6 +591,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads FVCOM  primitive equations ocean models">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -574,6 +604,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads FVCOM  primitive equations ocean models">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -586,6 +617,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads FVCOM  primitive equations ocean models">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -598,6 +630,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads FVCOM primitive equations ocean model particle files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -610,6 +643,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads CCSM climate data files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -622,6 +656,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads CCSM climate data files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nc, .cdf, .elev, and .ncd
     </Documentation>
      <Hints>
@@ -634,6 +669,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads Parallel Dislocation Simulator (ParaDiS) files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .prds, .data, .dat
       </Documentation>
      <Hints>
@@ -646,6 +682,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
     <Documentation
        long_help="Reads Parallel Dislocation Simulator (ParaDiS) tecplot like files">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .fld, .field, .cyl, .cylinder, .dat
     </Documentation>
      <Hints>
@@ -658,6 +695,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads simulation results from Nek5000 which is a DNS/LES computational fluid dynamics solver">
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .nek3, .nek2d, .nek5d, .nek5000, .nek
       </Documentation>
      <Hints>
@@ -670,7 +708,8 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
        long_help="Reads simulation results from OpenFOAM (Open Field Operation and Manipulation) CFD Toolbox">
-       The default file extension is .controlDict
+         Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
+         The default file extension is .controlDict
       </Documentation>
      <Hints>
        <ReaderFactory extensions="controlDict"
@@ -682,7 +721,8 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
       long_help="Reads Binary Fortran output files containing overlayed curvilinear meshes files.">
-      The default file extensions are .dat, and .save
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
+        The default file extensions are .dat, and .save
       </Documentation>
      <Hints>
        <ReaderFactory extensions="dat save"
@@ -694,6 +734,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads PATRAN neutral files, which are ASCII format files that contain unstructured geometry and simulation results">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .neu
       </Documentation>
      <Hints>
@@ -705,6 +746,7 @@
     <SourceProxy name="VisItPFLOTRANReader" class="vtkVisItPFLOTRANReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .h5.
      </Documentation>      
      <Hints>
@@ -717,6 +759,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads 2D and 3D simulation data saved in Pixie HDF5 format.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .h5
       </Documentation>
      <Hints>
@@ -728,6 +771,7 @@
     <SourceProxy name="VisItPlainTextReader" class="vtkVisItPlainTextReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extensions are .csv, .tsv, and .txt.
      </Documentation>      
      <Hints>
@@ -740,6 +784,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads structured simulation data from Plot2D.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .p2d
       </Documentation>
 
@@ -753,6 +798,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads structured simulation data from Plot3D.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extensions are .q, .x, and .vp3d
       </Documentation>
      <Hints>
@@ -765,6 +811,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation
         long_help="Reads an ASCII file containing X,Y,Z, and data value columns.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .3D
      </Documentation>
      <Hints>
@@ -777,6 +824,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads Protein Databank files contain molecular data.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extensions are .ent, and .pdb
       </Documentation>
      <Hints>
@@ -790,6 +838,7 @@
       <Documentation
         long_help="Reads RAW mesh geometry format.">
         Allows mesh geometry to be shared with CAD programs such as Blender and POVRAY
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .raw
       </Documentation>
      <Hints>
@@ -802,6 +851,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads Structured AMR data stored in HDF5 file formats.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .samrai
       </Documentation>
      <Hints>
@@ -814,6 +864,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads Specific Absorption Rate image volume files.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .sar
       </Documentation>
      <Hints>
@@ -826,6 +877,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads SAS files.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extensions are .sas, sasgeom, and .sasdata
       </Documentation>
      <Hints>
@@ -839,6 +891,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads Silo rectilinear, curvilinear, unstructured, or point meshes">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .silo
       </Documentation>
      <Hints>
@@ -851,6 +904,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads ASCII coupled hydrodynamical and gravitational simulations">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extensions are .spheral, and .sv
       </Documentation>
      <Hints>
@@ -863,6 +917,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads a subset of the ASCII Tecplot file format">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extensions are .tp, and .tec
       </Documentation>
      <Hints>
@@ -875,6 +930,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads a subset of the Tecplot binary file format">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .plt
       </Documentation>
      <Hints>
@@ -899,6 +955,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads ASCII TFT Fortran simulation results.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extensions are .dat, and .tft
       </Documentation>
      <Hints>
@@ -910,6 +967,7 @@
     <SourceProxy name="VisItTSurfReader" class="vtkVisItTSurfReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .ts_deg83.
      </Documentation>
      <Hints>
@@ -922,6 +980,7 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads UNIC neutronics code result files.">
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is .h5
       </Documentation>
      <Hints>
@@ -934,8 +993,8 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VASP simulation result files.">
-        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD)
-        using pseudopotentials and a plane wave basis set.
+        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD) using pseudopotentials and a plane wave basis set.
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is out*
       </Documentation>
      <Hints>
@@ -948,8 +1007,8 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VASP simulation result files.">
-        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD)
-        using pseudopotentials and a plane wave basis set.
+        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD) using pseudopotentials and a plane wave basis set.
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is CHG*
       </Documentation>
      <Hints>
@@ -962,8 +1021,8 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VASP simulation result files.">
-        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD)
-        using pseudopotentials and a plane wave basis set.
+        VAMP/VASP is a package for performing ab-initio quantum-mechanical molecular dynamics (MD) using pseudopotentials and a plane wave basis set.
+        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
         The default file extension is POS*
       </Documentation>
      <Hints>
@@ -977,6 +1036,7 @@
       <Documentation
         long_help="Reads Velodyne structural mechainces simulation result files.">
       Velodyne as an advanced structural mechanics code written by Corvid Technologies.
+      Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
       The default file extensions are .vld, and .rst
       </Documentation>
      <Hints>
@@ -989,9 +1049,8 @@
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
       <Documentation
         long_help="Reads VizSchema hdf5 files.">
-      VizSchema is a specification for markup added to hdf5 files
-      to describe the data contained within. VizSchema also allows users to specify
-      run information and other miscellaneous data in a standardized manner.
+      VizSchema is a specification for markup added to hdf5 files to describe the data contained within. VizSchema also allows users to specify run information and other miscellaneous data in a standardized manner.
+      Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
       The default file extensions are .h5, and .vsh5
       </Documentation>
      <Hints>
@@ -1005,6 +1064,7 @@
       <Documentation
         long_help="Reads XmdvTool ASCII files.">
       XmdvTool is a public-domain software package for the interactive visual exploration of multivariate data sets.
+      Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
       The default file extension is .okc
       </Documentation>
       File format used by
@@ -1017,6 +1077,7 @@
     <SourceProxy name="VisItXYZReader" class="vtkVisItXYZReader"
       base_proxygroup="internal_readers" base_proxyname="VisItReaderBase">
      <Documentation>
+       Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
        The default file extension is .xyz.
      </Documentation>      
      <Hints>
