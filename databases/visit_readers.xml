@@ -147,7 +147,8 @@
     <Documentation
        long_help="ASCII file format used for input to the ANSYS suite">
        Note this reader is automatically generated from wrapping a third party reader. For more information on the reader see https://wci.llnl.gov/codes/visit
-       The default file extension is .inp.    
+       The default file extension is .inp.
+    </Documentation>       
       <Hints>
         <ReaderFactory extensions="inp"
           file_description="ANSYS Files" />
