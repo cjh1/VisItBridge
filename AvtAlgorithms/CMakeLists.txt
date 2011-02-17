@@ -24,7 +24,7 @@ VTK_EXPORT_KIT("${KIT}" "${KIT_UPCASE}" "${Kit_SRCS}")
 #########################################################################  
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/vtkAvtAlgorithmsExport.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
- set(dynamicHeaders "$dynamicHeaders;${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
+ set(dynamicHeaders "${dynamicHeaders};${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
 
 INCLUDE_DIRECTORIES(
 ${CMAKE_CURRENT_SOURCE_DIR}
@@ -57,4 +57,4 @@ ENDIF(VISIT_PARALLEL)
 
 #Install
 #-------------------------------------------------------------------------------------------------
-VISIT_INSTALL_TARGETS(vtkVisItAVTAlgorithms "${CMAKE_CURRENT_BINARY_DIR}/vtkAvtAlgorithmsExport.h")
+VISIT_INSTALL_TARGETS(vtkVisItAVTAlgorithms)
