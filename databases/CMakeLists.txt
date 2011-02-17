@@ -177,6 +177,31 @@ if(HAVE_LIBMILI AND VISIT_BUILD_READER_Mili)
   target_link_libraries(vtk${KIT} ${MILI_LIBRARY})
 endif(HAVE_LIBMILI AND VISIT_BUILD_READER_Mili)
 
+#Wrap for Python
+#-------------------------------------------------------------------------------------------------
+IF (PARAVIEW_ENABLE_PYTHON)  
+  SET(Kit_PYTHON_EXTRA_SRCS)
+  SET(KIT_PYTHON_LIBS vtk${KIT}PythonD vtk${KIT}CS
+    vtkVisItAVTAlgorithmsPythonD vtkVisItAVTAlgorithmsCS)
+  # Tell vtkWrapPython.cmake to set VTK_PYTHON_LIBRARIES for us.
+  SET(VTK_WRAP_PYTHON_FIND_LIBS 1)
+  SET(VTK_WRAP_INCLUDE_DIRS ${VTK_INCLUDE_DIR})
+  INCLUDE("${VTK_CMAKE_DIR}/vtkWrapPython.cmake")
+  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+  SET(KIT_PYTHON_DEPS)
+  SET(VTK_INSTALL_NO_LIBRARIES 1)
+  IF(VTKPythonWrapping_INSTALL_BIN_DIR)
+    SET(VTK_INSTALL_NO_LIBRARIES)
+  ENDIF(VTKPythonWrapping_INSTALL_BIN_DIR)
+
+  SET(VTK_INSTALL_LIB_DIR "${VTKPythonWrapping_INSTALL_LIB_DIR}")
+  SET(VTK_INSTALL_BIN_DIR "${VTKPythonWrapping_INSTALL_BIN_DIR}")
+  SET(VTK_INSTALL_LIB_DIR_CM24 "${VTKPythonWrapping_INSTALL_LIB_DIR}")
+  SET(VTK_INSTALL_BIN_DIR_CM24 "${VTKPythonWrapping_INSTALL_BIN_DIR}")
+
+  # include python wrapping from VTK
+  INCLUDE(KitCommonPythonWrapBlock)
+ENDIF (PARAVIEW_ENABLE_PYTHON)
 
 #Install
 #-------------------------------------------------------------------------------------------------
