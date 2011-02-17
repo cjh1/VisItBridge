@@ -9,6 +9,10 @@ IF (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 
+#setup the INSTALL paths for the kits
+set(VTK_INSTALL_PACKAGE_DIR_CM24 ${PV_INSTALL_LIB_DIR})  
+set(VTK_INSTALL_PACKAGE_DIR ${PV_INSTALL_LIB_DIR})
+
 #disable compiler warnings from the bridge
 option(VISIT_DISABLE_COMPILER_WARNINGS "Disable compiler warnings" ON)
 mark_as_advanced(VISIT_DISABLE_COMPILER_WARNINGS)
