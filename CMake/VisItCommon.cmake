@@ -9,10 +9,13 @@ MACRO(VISIT_INSTALL_TARGETS target)
   endif(NOT PV_INSTALL_NO_LIBRARIES)
   # Development
   if(NOT PV_INSTALL_NO_DEVELOPMENT)
-    GLOB_INSTALL_DEVELOPMENT(
+   #VisIt has subdirectories so we need
+   #to glob everything in the root directory
+   #and all the headers in all the subdirectores
+    GLOB_RECURSIVE_INSTALL_DEVELOPMENT(
       ${CMAKE_CURRENT_SOURCE_DIR}
       ${PV_INSTALL_INCLUDE_DIR}
-      "*.h;*.hxx;*.txx")     
+      "*.h;*.hxx;*.txx")
     if(dynamicHeaders)
       INSTALL(
         FILES ${dynamicHeaders}
