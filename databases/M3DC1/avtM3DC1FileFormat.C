@@ -40,6 +40,13 @@
 //                            avtM3DC1FileFormat.C                           //
 // ************************************************************************* //
 
+// For whatever reason hdf5 1.8.4 on Ubunut defines the 1.6 API as default...
+// Force using the 1.8 API in this situation. These must be defined before
+// including hdf5.h
+#define H5Gopen_vers 2
+#define H5Dopen_vers 2
+#define H5Eset_auto_vers 2
+
 #include <avtM3DC1FileFormat.h>
 #include <avtIVPM3DC1Field.h>
 
@@ -60,7 +67,6 @@
 #include <InvalidFilesException.h>
 #include <UnexpectedValueException.h>
 #include <DebugStream.h>
-
 
 using namespace std;
 

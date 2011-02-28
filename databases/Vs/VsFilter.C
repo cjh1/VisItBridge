@@ -1,3 +1,14 @@
+
+
+// For whatever reason hdf5 1.8.4 on Ubunut defines the 1.6 API as default...
+// Force using the 1.8 API in this situation. These must be defined before
+// including hdf5.h
+
+#define H5Dopen_vers 2
+#define H5Gopen_vers 2
+#define H5Oopen_vers 2
+#define H5Aiterate_vers 2
+
 #include <hdf5.h>
 #include <visit-hdf5.h>
 #if HDF5_VERSION_GE(1,8,1)
@@ -114,11 +125,7 @@ herr_t VsFilter::visitLinks(hid_t locId, const char* name,
 
           // Open the linked object.
           H5O_info_t objinfo;
-          hid_t obj_id = H5Oopen(locId, name
-#ifndef H5_USE_16_API
-              , H5P_DEFAULT
-#endif
-          );
+          hid_t obj_id = H5Oopen(locId, name, H5P_DEFAULT);
           if ( obj_id < 0 ) {
             // DO TO - THROW AN ERROR
           }
