@@ -109,7 +109,7 @@ LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS})
 
 
 #********************************* SERIAL ************************************
-ADD_LIBRARY(avtdatabase_ser ${AVTDATABASE_SOURCES})
+VTK_ADD_LIBRARY(avtdatabase_ser ${AVTDATABASE_SOURCES})
 TARGET_LINK_LIBRARIES(avtdatabase_ser visitcommon avtdbatts ${AVTMIR_SER} avtpipeline_ser visit_vtk)
 VISIT_INSTALL_TARGETS(avtdatabase_ser)
 

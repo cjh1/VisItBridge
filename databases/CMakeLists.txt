@@ -126,13 +126,10 @@ SET(KIT_UPCASE "VISITDATABASES")
 include_directories(BEFORE
   ${VISIT_DB_INC_DIRS}
   )
-  
+
 include_directories(
   ${VISITBRIDGE_INCLUDE_DIRS}
   )
-
-
-
 
 if(HAVE_LIBSILO AND VISIT_BUILD_READER_Silo)
   include_directories(${SILO_INCLUDE_DIR})
@@ -151,14 +148,13 @@ SET_SOURCE_FILES_PROPERTIES(
   WRAP_EXCLUDE
   )
 
-  
 #setup the kit so we get client server bindings  
 SET(VTK_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 INCLUDE(${VTK_CMAKE_DIR}/vtkExportKit.cmake)
 VTK_EXPORT_KIT("${KIT}" "${KIT_UPCASE}" "${Kit_SRCS}")
   
 #build all the readers into a single library
-add_library(vtk${KIT} ${Kit_SRCS} ${VISIT_DB_SOURCES})    
+vtk_add_library(vtk${KIT} ${Kit_SRCS} ${VISIT_DB_SOURCES})
 
 target_link_libraries(vtk${KIT} vtkVisItAVTAlgorithms vtkNetCDF) 
 if(PARAVIEW_HDF5_LIBRARIES)
