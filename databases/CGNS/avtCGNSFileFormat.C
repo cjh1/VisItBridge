@@ -75,7 +75,7 @@
 // ****************************************************************************
 // Method: MakeSafeVariableName
 //
-// Purpose: 
+// Purpose:
 //   Replace characters that might confuse VisIt's expression parser.
 //
 // Arguments:
@@ -83,13 +83,13 @@
 //
 // Returns:    A safe variable name.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Apr 17 10:16:39 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 std::string
@@ -172,14 +172,14 @@ avtCGNSFileFormat::avtCGNSFileFormat(const char *filename)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::~avtCGNSFileFormat
 //
-// Purpose: 
+// Purpose:
 //   Destructor for the avtCGNSFileFormat class.
 //
 // Programmer: Brad Whitlock
 // Creation:   Tue Aug 30 16:12:20 PST 2005
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 avtCGNSFileFormat::~avtCGNSFileFormat()
@@ -234,7 +234,7 @@ avtCGNSFileFormat::FreeUpResources(void)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetFileHandle
 //
-// Purpose: 
+// Purpose:
 //   This method opens the CGNS file and returns the file handle.
 //
 // Returns:    The file handle.
@@ -271,7 +271,7 @@ avtCGNSFileFormat::GetFileHandle()
 // ****************************************************************************
 // Method: avtCGNSFileFormat::ReadTimes
 //
-// Purpose: 
+// Purpose:
 //   This method reads the times from the file and stores them in the
 //   local times vector.
 //
@@ -321,7 +321,7 @@ avtCGNSFileFormat::ReadTimes()
                 int narrays = 0;
                 if(cg_narrays(&narrays) == CG_OK)
                 {
-                    debug4 << mName << narrays 
+                    debug4 << mName << narrays
                        << " array(s) under BaseIterative" << endl;
                     for(int i = 0; i < narrays; ++i)
                     {
@@ -438,7 +438,7 @@ avtCGNSFileFormat::ReadTimes()
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetTimes
 //
-// Purpose: 
+// Purpose:
 //   Returns the times for the database.
 //
 // Arguments:
@@ -448,7 +448,7 @@ avtCGNSFileFormat::ReadTimes()
 // Creation:   Wed Aug 31 09:34:21 PDT 2005
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -461,7 +461,7 @@ avtCGNSFileFormat::GetTimes(std::vector<double> &t)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetCycles
 //
-// Purpose: 
+// Purpose:
 //   Returns the cycles for the database.
 //
 // Arguments:
@@ -471,7 +471,7 @@ avtCGNSFileFormat::GetTimes(std::vector<double> &t)
 // Creation:   Mon Mar  3 18:18:32 NOVT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -485,7 +485,7 @@ avtCGNSFileFormat::GetCycles(std::vector<int> &c)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::BaseContainsUnits
 //
-// Purpose: 
+// Purpose:
 //   Returns whether the base contains units.
 //
 // Arguments:
@@ -493,13 +493,13 @@ avtCGNSFileFormat::GetCycles(std::vector<int> &c)
 //
 // Returns:    True if the base contains units; false otherwise.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Apr 17 10:18:33 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 bool
@@ -556,7 +556,7 @@ avtCGNSFileFormat::BaseContainsUnits(int base)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetVariablesForBase
 //
-// Purpose: 
+// Purpose:
 //   Iterates over a base and populates BaseInformation, which contains the
 //   zone names, list of variables, and how each variable is mapped onto zones.
 //
@@ -566,13 +566,13 @@ avtCGNSFileFormat::BaseContainsUnits(int base)
 //
 // Returns:    True on success; false on failure.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Apr 17 10:19:18 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 bool
@@ -623,7 +623,7 @@ avtCGNSFileFormat::GetVariablesForBase(int base, avtCGNSFileFormat::BaseInformat
             debug4 << "\tzone " << zone << endl;
             // Print the name and size.
             if(cg_zone_read(GetFileHandle(), base, zone, zonename, zsize) != CG_OK)
-                debug4 << cg_get_error() << endl;                     
+                debug4 << cg_get_error() << endl;
             else
             {
                 debug4 << "\t\tname=" << zonename << endl;
@@ -761,7 +761,7 @@ avtCGNSFileFormat::GetVariablesForBase(int base, avtCGNSFileFormat::BaseInformat
                         debug4 << "Could not get number of fields for solution "
                                << sol << endl;
                         debug4 << cg_get_error() << endl;
-                        continue;                       
+                        continue;
                     }
                     debug4 << "\t\t\t\t\tfield[" << f << "]=" << fieldname << endl;
 
@@ -773,7 +773,7 @@ avtCGNSFileFormat::GetVariablesForBase(int base, avtCGNSFileFormat::BaseInformat
                     if(fUnits)
                         unitStack.PopUnits();
 
-                    // Now that we have a field in a solution in a zone, let's 
+                    // Now that we have a field in a solution in a zone, let's
                     // add information about it to the variable information that
                     // we're populating for the current base.
                     StringVarInfoMap::iterator pos = baseInfo.vars.find(fieldname);
@@ -820,26 +820,26 @@ avtCGNSFileFormat::GetVariablesForBase(int base, avtCGNSFileFormat::BaseInformat
 // ****************************************************************************
 // Method: avtCGNSFileFormat::AddVectorExpression
 //
-// Purpose: 
+// Purpose:
 //   Adds a vector expression.
 //
 // Arguments:
 //   md            : The metadata to which the expression will be added.
-//   haveComponent : An array of 3 bools indicating whether we have certain 
+//   haveComponent : An array of 3 bools indicating whether we have certain
 //                   vector components.
 //   nBases        : The number of bases in the file.
 //   baseName      : The current base name.
 //   vecName       : The name of the vector.
 //
-// Returns:    
+// Returns:
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Apr 17 10:20:41 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -898,28 +898,28 @@ avtCGNSFileFormat::AddVectorExpression(avtDatabaseMetaData *md, bool *haveCompon
 // ****************************************************************************
 // Method: avtCGNSFileFormat::AddVectorExpressions
 //
-// Purpose: 
+// Purpose:
 //   Adds vector expressions for velocity and momentum.
 //
 // Arguments:
 //   md            : The metadata to which the expression will be added.
-//   haveVelocity  : An array of 3 bools indicating whether we have certain 
+//   haveVelocity  : An array of 3 bools indicating whether we have certain
 //                   vector velocity components.
-//   haveMomentum  : An array of 3 bools indicating whether we have certain 
+//   haveMomentum  : An array of 3 bools indicating whether we have certain
 //                   vector momentum components.
 //   nBases        : The number of bases in the file.
 //   baseName      : The current base name.
 //   vecName       : The name of the vector.
 //
-// Returns:    
+// Returns:
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Thu Apr 17 10:22:32 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -933,7 +933,7 @@ avtCGNSFileFormat::AddVectorExpressions(avtDatabaseMetaData *md, bool *haveVeloc
 // ****************************************************************************
 // Method: avtCGNSFileFormat::AddReferenceStateExpressions
 //
-// Purpose: 
+// Purpose:
 //   Creates constant valued fields on the mesh based on values stored in
 //   the reference state.
 //
@@ -944,9 +944,9 @@ avtCGNSFileFormat::AddVectorExpressions(avtDatabaseMetaData *md, bool *haveVeloc
 //   baseName : The name of the current base.
 //   meshName : The name of the mesh on which we'll define the values.
 //
-// Returns:    
+// Returns:
 //
-// Note:       
+// Note:
 //
 // Programmer: Maxim Loginov
 // Creation:   Thu Apr 17 10:27:23 PDT 2008
@@ -968,7 +968,7 @@ avtCGNSFileFormat::AddReferenceStateExpressions(avtDatabaseMetaData *md,
 {
     const char *mName = "avtCGNSFileFormat::AddReferenceStateExpressions: ";
 
-    // some constants from ReferenceState_t should be available as array mesh variable 
+    // some constants from ReferenceState_t should be available as array mesh variable
     // TODO not finished yet!!!
     // Note: BJW - We don't have a good way to add constants in VisIt. I just add them
     //             to the 1st mesh as a node-centered constant using the point_constant
@@ -991,7 +991,7 @@ avtCGNSFileFormat::AddReferenceStateExpressions(avtDatabaseMetaData *md,
                     double dval;
                     char edef[100];
                     cg_array_read_as(i+1, RealDouble, &dval);
-                    debug5 << mName << "Reference state: " << namenode 
+                    debug5 << mName << "Reference state: " << namenode
                            << " = " << dval << endl;
                     if(strcmp(namenode,"Mach")==0)
                     {
@@ -1036,7 +1036,7 @@ avtCGNSFileFormat::AddReferenceStateExpressions(avtDatabaseMetaData *md,
 //
 //  Modifications:
 //   Maxim Loginov, Tue Mar  4 12:28:12 NOVT 2008
-//   Some constants from ReferenceState_t should be available as array mesh 
+//   Some constants from ReferenceState_t should be available as array mesh
 //   variables.
 //
 //   Brad Whitlock, Wed Apr 16 10:07:16 PDT 2008
@@ -1058,10 +1058,10 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
 
     // Read the times if we have not read them yet.
     ReadTimes();
-    md->SetTimesAreAccurate(cgnsTimesAccurate);    
+    md->SetTimesAreAccurate(cgnsTimesAccurate);
     if (cgnsTimesAccurate)
         md->SetTimes(times);
-    md->SetCyclesAreAccurate(cgnsCyclesAccurate);    
+    md->SetCyclesAreAccurate(cgnsCyclesAccurate);
     if (cgnsCyclesAccurate)
         md->SetCycles(cycles);
 
@@ -1073,7 +1073,7 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
         {
             md->SetDatabaseComment(refstate);
             debug4 << mName << "Reference string = " << refstate << endl;
-            free(refstate);
+            cg_free(refstate);
         }
         else
             debug4 << mName << cg_get_error() << endl;
@@ -1138,8 +1138,8 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
         debug4 << mName << "Step 1: meshName = " << meshName.c_str() << endl;
 
         //
-        // STEP 2: Determine how many meshes are required based on the 
-        //         unique lists of domains that we have used in the 
+        // STEP 2: Determine how many meshes are required based on the
+        //         unique lists of domains that we have used in the
         //         variables.
         //
         std::map<intVector, std::string> meshDef;
@@ -1158,7 +1158,7 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
             {
                 ++meshCount;
                 char tmp[100];
-                SNPRINTF(tmp, 100, "subgrid/%s%03d", 
+                SNPRINTF(tmp, 100, "subgrid/%s%03d",
                          baseName.c_str(), meshCount);
                 meshDef[it->second.zoneList] = std::string(tmp);
                 debug4 << mName << "Step 2: Need mesh " << tmp << endl;
@@ -1180,7 +1180,7 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
             else
                 validVariable = false;
 
-            avtMeshMetaData *mmd = new avtMeshMetaData(it->second, 
+            avtMeshMetaData *mmd = new avtMeshMetaData(it->second,
                 1, 1, 1, 0, baseInfo[bi].physicalDim, baseInfo[bi].cellDim, mt);
 
             stringVector domainNames;
@@ -1207,7 +1207,7 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
             bzl.zones = it->first;
             MeshDomainMapping[it->second] = bzl;
 
-            // Print the entry we just created in MeshDomainMapping 
+            // Print the entry we just created in MeshDomainMapping
             debug4 << mName << "Step 3: Creating mesh " << it->second.c_str() << " for base "
                    << bzl.base << " for zones [";
             for(int zi = 0; zi < it->first.size(); ++zi)
@@ -1239,7 +1239,7 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
             haveMomentum[1] |= (fieldName == "MomentumY");
             haveMomentum[2] |= (fieldName == "MomentumZ");
 
-            // If there is more than 1 base, prepend the base name to the 
+            // If there is more than 1 base, prepend the base name to the
             // field name to create the variable name.
             if(baseInfo.size() > 1)
                 fieldName = baseName + "/" + fieldName;
@@ -1276,13 +1276,13 @@ avtCGNSFileFormat::PopulateDatabaseMetaData(avtDatabaseMetaData *md,
         //
         // STEP 5: Create Velocity and Momentum vectors if present.
         //
-        AddVectorExpressions(md, haveVelocity, haveMomentum, baseInfo.size(), 
+        AddVectorExpressions(md, haveVelocity, haveMomentum, baseInfo.size(),
             baseName);
 
         //
         // STEP 6: Create expressions for reference state variables.
         //
-        AddReferenceStateExpressions(md, bi+1, baseInfo.size(), 
+        AddReferenceStateExpressions(md, bi+1, baseInfo.size(),
             baseName, meshName);
     }
 
@@ -1331,7 +1331,7 @@ avtCGNSFileFormat::GetMesh(int timestate, int domain, const char *meshname)
     //
     // See if this domain is turned off by default for this mesh.
     //
-    std::map<std::string, BaseAndZoneList>::const_iterator pos = 
+    std::map<std::string, BaseAndZoneList>::const_iterator pos =
         MeshDomainMapping.find(meshname);
     if(pos == MeshDomainMapping.end())
         return 0;
@@ -1385,11 +1385,11 @@ avtCGNSFileFormat::GetMesh(int timestate, int domain, const char *meshname)
             switch(zt)
             {
             case ZoneTypeNull:
-                EXCEPTION1(InvalidVariableException, 
+                EXCEPTION1(InvalidVariableException,
                            "Meshes with ZoneTypeNull are not supported.");
                 break;
             case ZoneTypeUserDefined:
-                EXCEPTION1(InvalidVariableException, 
+                EXCEPTION1(InvalidVariableException,
                            "Meshes with ZoneTypeUserDefined are not supported.");
                 break;
             case Structured:
@@ -1408,7 +1408,7 @@ avtCGNSFileFormat::GetMesh(int timestate, int domain, const char *meshname)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetCoords
 //
-// Purpose: 
+// Purpose:
 //   Read the coordinates for the specified zone.
 //
 // Arguments:
@@ -1421,7 +1421,7 @@ avtCGNSFileFormat::GetMesh(int timestate, int domain, const char *meshname)
 //
 // Returns:    True if the coordinates were read; false otherwise.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Wed Aug 31 11:45:55 PDT 2005
@@ -1460,7 +1460,7 @@ avtCGNSFileFormat::GetCoords(int base, int zone, const int *zsize,
         if(*ncoords > 3)
             *ncoords = 3;
         err = *ncoords != 2 && *ncoords != 3;
-        
+
         unsigned int nPts = 0;
         int rmin[3] = {1,1,1};
         int rmax[3] = {1,1,1};
@@ -1534,7 +1534,7 @@ avtCGNSFileFormat::GetCoords(int base, int zone, const int *zsize,
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetCurvilinearMesh
 //
-// Purpose: 
+// Purpose:
 //   Reads a curvilinear mesh from the file.
 //
 // Arguments:
@@ -1545,7 +1545,7 @@ avtCGNSFileFormat::GetCoords(int base, int zone, const int *zsize,
 //
 // Returns:    A curvilinear mesh or 0 if we can't read it from the file.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Wed Aug 31 09:30:30 PDT 2005
@@ -1569,7 +1569,7 @@ avtCGNSFileFormat::GetCurvilinearMesh(int base, int zone, const char *meshname,
     if(GetCoords(base, zone, zsize, true, coords, &ncoords))
     {
         // Create the curvilinear mesh.
-        vtkStructuredGrid *sgrid   = vtkStructuredGrid::New(); 
+        vtkStructuredGrid *sgrid   = vtkStructuredGrid::New();
         vtkPoints         *points  = vtkPoints::New();
         sgrid->SetPoints(points);
         points->Delete();
@@ -1638,7 +1638,7 @@ avtCGNSFileFormat::GetCurvilinearMesh(int base, int zone, const char *meshname,
 // ****************************************************************************
 // Method: avtCGNSFileFormat::GetUnstructuredMesh
 //
-// Purpose: 
+// Purpose:
 //   Reads an unstructured mesh from the file.
 //
 // Arguments:
@@ -1649,7 +1649,7 @@ avtCGNSFileFormat::GetCurvilinearMesh(int base, int zone, const char *meshname,
 //
 // Returns:    An unstructured mesh or 0 if we can't read it from the file.
 //
-// Note:       
+// Note:
 //
 // Programmer: Brad Whitlock
 // Creation:   Wed Aug 31 09:30:30 PDT 2005
@@ -1698,7 +1698,7 @@ avtCGNSFileFormat::GetUnstructuredMesh(int base, int zone, const char *meshname,
             pts->SetNumberOfPoints(nPts);
             const float *xc = coords[0];
             const float *yc = coords[1];
-            const float *zc = NULL; 
+            const float *zc = NULL;
             if (ncoords == 3)
             {
                 zc = coords[2];
@@ -1710,7 +1710,7 @@ avtCGNSFileFormat::GetUnstructuredMesh(int base, int zone, const char *meshname,
                 pt[1] = *yc++;
                 if (ncoords == 3)
                     pt[2] = *zc++;
-                else 
+                else
                     pt[2] = 0.;
                 pts->SetPoint(i, pt);
             }
@@ -1755,7 +1755,7 @@ avtCGNSFileFormat::GetUnstructuredMesh(int base, int zone, const char *meshname,
                     debug4 << mName << "Could not allocate memory for connectivity\n";
                     continue;
                 }
-                
+
                 if(cg_elements_read(GetFileHandle(), base, zone, sec, elements, NULL)
                    != CG_OK)
                 {
@@ -1777,7 +1777,7 @@ avtCGNSFileFormat::GetUnstructuredMesh(int base, int zone, const char *meshname,
                 const int *elem = elements;
                 for(unsigned int icell = 0; icell < (end-start+1); ++icell)
                 {
-                    // If we're reading mixed elements then the element type 
+                    // If we're reading mixed elements then the element type
                     // comes first.
                     ElementType_t currentType = et;
                     if(currentType == MIXED)
@@ -2030,7 +2030,7 @@ avtCGNSFileFormat::GetUnstructuredMesh(int base, int zone, const char *meshname,
 //    and read the right number of values.
 //
 //    Maxim Loginov, Tue Mar  4 12:28:12 NOVT 2008
-//    Read proper solution in accordance with ZoneIterativeData_t node 
+//    Read proper solution in accordance with ZoneIterativeData_t node
 //
 //    Brad Whitlock, Wed Apr 16 11:51:12 PDT 2008
 //    Adjust how the base is selected since we can read data from multiple
@@ -2064,7 +2064,7 @@ avtCGNSFileFormat::GetVar(int timestate, int domain, const char *varname)
         }
         else
             base = BaseNameToIndices[baseName];
-        debug4 << mName << "Using base " << base << " for the variable " 
+        debug4 << mName << "Using base " << base << " for the variable "
                << sVarName.c_str() << endl;
     }
     // Look up the real variable name in case it's been made safe for VisIt.
@@ -2128,11 +2128,11 @@ avtCGNSFileFormat::GetVar(int timestate, int domain, const char *varname)
             switch(zt)
             {
             case ZoneTypeNull:
-                EXCEPTION1(InvalidVariableException, 
+                EXCEPTION1(InvalidVariableException,
                            "ZoneTypeNull is not supported.");
                 break;
             case ZoneTypeUserDefined:
-                EXCEPTION1(InvalidVariableException, 
+                EXCEPTION1(InvalidVariableException,
                            "ZoneTypeUserDefined is not supported.");
                 break;
             default:
@@ -2204,7 +2204,7 @@ avtCGNSFileFormat::GetVar(int timestate, int domain, const char *varname)
                         debug4 << mName << "Could not get number of fields for "
                                << "solution " << sol << endl;
                         debug4 << cg_get_error() << endl;
-                        continue;                       
+                        continue;
                     }
 
                     //
@@ -2351,7 +2351,7 @@ avtCGNSFileFormat::GetVectorVar(int timestate, int domain, const char *varname)
 // ****************************************************************************
 // Method: avtCGNSFileFormat::PrintVarInfo
 //
-// Purpose: 
+// Purpose:
 //   Prints variable information to a stream.
 //
 // Arguments:
@@ -2363,7 +2363,7 @@ avtCGNSFileFormat::GetVectorVar(int timestate, int domain, const char *varname)
 // Creation:   Thu Apr 17 10:23:39 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
@@ -2387,7 +2387,7 @@ avtCGNSFileFormat::PrintVarInfo(ostream &out, const avtCGNSFileFormat::VarInfo &
 // ****************************************************************************
 // Method: avtCGNSFileFormat::PrintStringVarInfoMap
 //
-// Purpose: 
+// Purpose:
 //   Prints all variable information to a stream.
 //
 // Arguments:
@@ -2399,7 +2399,7 @@ avtCGNSFileFormat::PrintVarInfo(ostream &out, const avtCGNSFileFormat::VarInfo &
 // Creation:   Thu Apr 17 10:23:39 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 
@@ -2419,7 +2419,7 @@ avtCGNSFileFormat::PrintStringVarInfoMap(ostream &out, const avtCGNSFileFormat::
 // ****************************************************************************
 // Method: avtCGNSFileFormat::PrintBaseInformation
 //
-// Purpose: 
+// Purpose:
 //   Prints base information to a stream.
 //
 // Arguments:
@@ -2430,7 +2430,7 @@ avtCGNSFileFormat::PrintStringVarInfoMap(ostream &out, const avtCGNSFileFormat::
 // Creation:   Thu Apr 17 10:23:39 PDT 2008
 //
 // Modifications:
-//   
+//
 // ****************************************************************************
 
 void
