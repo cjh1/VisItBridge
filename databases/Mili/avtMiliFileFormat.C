@@ -1221,8 +1221,8 @@ avtMiliFileFormat::ReadMesh(int dom)
         // Make one pass through the data and read all of the connectivity
         // information.
         //
-        vector < vector<int *> > conn_list;
-        vector < vector<int *> > mat_list;
+        vector < vector<vtkIdType *> > conn_list;
+        vector < vector<vtkIdType *> > mat_list;
         vector < vector<int> > list_size;
         conn_list.resize(n_elem_types);
         list_size.resize(n_elem_types);
@@ -1248,9 +1248,30 @@ avtMiliFileFormat::ReadMesh(int dom)
                 int *mat = new int[nelems];
                 int *part = new int[nelems];
                 mc_load_conns(dbid[dom], mesh_id, short_name, conn, mat, part);
-
+                
+#if defined(VTK_USE_64BIT_IDS)                
+                //convert from int to idtype ( long long ) so we can compile with 64 bit support
+                vtkIdType *connIdType = new vtkIdType[nelems * conn_count[i]];
+                for (int idx=0; idx < nelems * conn_count[i]; ++idx)
+                  {
+                  connIdType[idx] = conn[idx];
+                  }
+                delete[] conn;
+                
+                vtkIdType *matIdType = new vtkIdType[nelems];
+                for (int idx=0; idx < nelems; ++idx)
+                  {
+                  matIdType[idx] = mat[idx];
+                  }
+                delete[] mat;
+                
+                
+                conn_list[i].push_back(connIdType);
+                mat_list[i].push_back(matIdType);
+#else
                 conn_list[i].push_back(conn);
                 mat_list[i].push_back(mat);
+#endif
                 list_size[i].push_back(nelems);
                 connectivity_offset[dom].push_back(ncells[dom][mesh_id]);
                 element_group_name[dom].push_back(short_name);
@@ -1289,7 +1310,7 @@ avtMiliFileFormat::ReadMesh(int dom)
         {
             for (j = 0 ; j < conn_list[i].size() ; j++)
             {
-                int *conn = conn_list[i][j];
+                vtkIdType *conn = conn_list[i][j];
                 int nelems = list_size[i][j];
                 for (k = 0 ; k < nelems ; k++)
                 {
@@ -1331,7 +1352,7 @@ avtMiliFileFormat::ReadMesh(int dom)
                         if (conn[2] == conn[3] && conn[4] == conn[5] &&
                             conn[5] == conn[6] && conn[6] == conn[7])
                         {
-                            int tet[4];
+                            vtkIdType tet[4];
                             tet[0] = conn[0]; tet[1] = conn[1];
                             tet[2] = conn[2]; tet[3] = conn[4];
                             connectivity[dom][mesh_id]->InsertNextCell(
