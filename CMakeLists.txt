@@ -324,8 +324,24 @@ add_subdirectory(databases)
 #######################################################################
 # INSTALL
 IF (NOT PV_INSTALL_NO_DEVELOPMENT)
-  SET(BUILD_TREE                                   ${ParaView_BINARY_DIR})
-  MESSAGE(STATUS "Configuring development install...")
+  SET(BUILD_TREE ${ParaView_BINARY_DIR})
+  
+  #install
+  SET(cmakeDevFiles
+    ${VISIT_CMAKE_DIR}/VisItCommon.cmake
+    ${VISIT_CMAKE_DIR}/VisItExport.h.in
+    ${VISIT_CMAKE_DIR}/VisItGUI.xml.in
+    ${VISIT_CMAKE_DIR}/VisItMT.h.in
+    ${VISIT_CMAKE_DIR}/VisItMT.cxx.in
+    ${VISIT_CMAKE_DIR}/VisItSM.xml.in
+    ${VISIT_CMAKE_DIR}/VisItST.h.in
+    ${VISIT_CMAKE_DIR}/VisItST.cxx.in)
+      
+  INSTALL(
+    FILES ${cmakeDevFiles} 
+    DESTINATION ${PV_INSTALL_CMAKE_DIR}
+    COMPONENT Development)
+      
   SET(VISITBRIDGE_INCLUDE_DIRS "\${ParaView_INSTALL_PREFIX}/${PV_INSTALL_INCLUDE_DIR}")
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/VisItBridgeUse.cmake.in
                 "${BUILD_TREE}/CMake/tmp/VisItBridgeUse.cmake" @ONLY IMMEDIATE)
