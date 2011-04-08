@@ -344,16 +344,9 @@ IF (NOT PV_INSTALL_NO_DEVELOPMENT)
       
   SET(VISITBRIDGE_INCLUDE_DIRS "\${ParaView_INSTALL_PREFIX}/${PV_INSTALL_INCLUDE_DIR}")
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/VisItBridgeUse.cmake.in
-                "${BUILD_TREE}/CMake/tmp/VisItBridgeUse.cmake" @ONLY IMMEDIATE)
-  IF(WIN32)
-    INSTALL(
-        FILES "${BUILD_TREE}/CMake/tmp/VisItBridgeUse.cmake"
-        DESTINATION .
-        COMPONENT Development)
-  ELSE(WIN32)
-    INSTALL(
-        FILES "${BUILD_TREE}/CMake/tmp/ParaViewConfig.cmake"          
-        DESTINATION ${PV_INSTALL_LIB_DIR}
-        COMPONENT Development)
-  ENDIF(WIN32)
+                "${BUILD_TREE}/CMake/tmp/VisItBridgeUse.cmake" @ONLY IMMEDIATE)  
+  INSTALL(
+        FILES "${BUILD_TREE}/CMake/tmp/VisItBridgeUse.cmake"          
+        DESTINATION ${PV_INSTALL_CMAKE_DIR}
+        COMPONENT Development)  
 ENDIF (NOT PV_INSTALL_NO_DEVELOPMENT)
