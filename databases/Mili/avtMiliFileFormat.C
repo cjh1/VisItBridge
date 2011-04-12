@@ -1533,8 +1533,8 @@ avtMiliFileFormat::ValidateVariables(int dom)
 // ****************************************************************************
 
 avtMaterial *
-avtMiliFileFormat::ConstructMaterials(vector< vector<int *> > &mat_list,
-                                      vector< vector<int> > &list_size, 
+avtMiliFileFormat::ConstructMaterials(vector< vector<vtkIdType *> > &mat_list,
+                                      vector< vector<int> > &list_size,
                                       int meshId)
 {
     int size = 0;
@@ -1555,10 +1555,10 @@ avtMiliFileFormat::ConstructMaterials(vector< vector<int *> > &mat_list,
     {
         for (gr = 0; gr < mat_list[elem].size(); ++gr)
         {
-            int *ml = mat_list[elem][gr];
+            vtkIdType *ml = mat_list[elem][gr];
             for (i = 0; i < list_size[elem][gr]; ++i)
             {
-                int mat = ml[i]; 
+                int mat = (int)ml[i];
                 mlist[count++] = mat;
             }
         }
