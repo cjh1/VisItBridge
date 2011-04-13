@@ -322,6 +322,12 @@ add_subdirectory(databases)
 
 
 #######################################################################
+# Update if we found SILO,CGNS,MILI
+  set(VISITBRIDGE_USE_MILI ${VISITBRIDGE_USE_MILI} PARENT_SCOPE)  
+  set(VISITBRIDGE_USE_CGNS ${VISITBRIDGE_USE_CGNS} PARENT_SCOPE)
+  set(VISITBRIDGE_USE_SILO ${VISITBRIDGE_USE_SILO} PARENT_SCOPE)
+
+#######################################################################
 # INSTALL
 IF (NOT PV_INSTALL_NO_DEVELOPMENT)
   SET(BUILD_TREE ${ParaView_BINARY_DIR})
