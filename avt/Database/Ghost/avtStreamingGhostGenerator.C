@@ -38,6 +38,8 @@
 
 #include <avtStreamingGhostGenerator.h>
 
+#include <cstdlib>
+
 
 avtStreamingGhostGenerator *avtStreamingGhostGenerator::instance = NULL;
 

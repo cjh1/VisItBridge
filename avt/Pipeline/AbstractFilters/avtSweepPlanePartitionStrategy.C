@@ -42,6 +42,8 @@
 
 #include <avtSweepPlanePartitionStrategy.h>
 
+#include <cstddef>
+
 
 // ****************************************************************************
 //  Method: avtSweepPlanePartitionStrategy constructor

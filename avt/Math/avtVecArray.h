@@ -42,6 +42,7 @@
 #include <avtVec.h>
 #include <iterator>
 #include <vector>
+#include <cstddef>
 
 // ****************************************************************************
 //  Modifications:
