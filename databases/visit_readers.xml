@@ -803,8 +803,8 @@
         The default file extensions are .q, .x, and .vp3d
       </Documentation>
      <Hints>
-       <ReaderFactory extensions="q x vp3d"
-                      file_description="PLOT3D Files (VisIt)" />
+       <ReaderFactory extensions="vp3d"
+                      file_description="VisIt MetaPLOT3D Files (VisIt)" />
      </Hints>
     </SourceProxy>
 
