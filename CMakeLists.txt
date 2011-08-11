@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 2.6.3)
 
+FOREACH(policy CMP0012 CMP0013 CMP0014 CMP0017)
+  IF(POLICY ${policy})
+    CMAKE_POLICY(SET ${policy} NEW)
+  ENDIF()
+ENDFOREACH()
+
 project(VisItBridgePlugin)
 
 #Setup the version since some files need this
