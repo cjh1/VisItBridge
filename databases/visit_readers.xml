@@ -60,7 +60,7 @@
           </RequiredProperties>
        </ArraySelectionDomain>
        <Documentation>
-         Select the Materiales to be loaded from the dataset, if any.
+         Select the materials to be loaded from the dataset, if any.
        </Documentation>
      </StringVectorProperty>
 
