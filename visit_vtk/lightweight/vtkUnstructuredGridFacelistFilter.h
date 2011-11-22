@@ -38,23 +38,24 @@
 
 #ifndef VTK_UNSTRUCTURED_GRID_FACELIST_FILTER_H
 #define VTK_UNSTRUCTURED_GRID_FACELIST_FILTER_H
-#include <vtkUnstructuredGridToPolyDataFilter.h>
+#include <vtkPolyDataAlgorithm.h>
 #include <visit_vtk_light_exports.h>
 
 class VISIT_VTK_LIGHT_API vtkUnstructuredGridFacelistFilter 
-    : public vtkUnstructuredGridToPolyDataFilter
+    : public vtkPolyDataAlgorithm
 {
   public:
     static vtkUnstructuredGridFacelistFilter *New();
     vtkTypeMacro(vtkUnstructuredGridFacelistFilter,
-                 vtkUnstructuredGridToPolyDataFilter);
+                 vtkPolyDataAlgorithm);
     void PrintSelf(ostream& os, vtkIndent indent);
 
   protected:
     vtkUnstructuredGridFacelistFilter() {;};
     ~vtkUnstructuredGridFacelistFilter() {;};
  
-    void Execute();
+    int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+    int FillInputPortInformation(int port, vtkInformation *info);
 };
 
 #endif

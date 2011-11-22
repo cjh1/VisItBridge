@@ -43,7 +43,7 @@
 #ifndef __vtkAxisDepthSort_h
 #define __vtkAxisDepthSort_h
 #include <visit_vtk_exports.h>
-#include <vtkPolyDataToPolyDataFilter.h>
+#include <vtkPolyDataAlgorithm.h>
 
 
 // ****************************************************************************
@@ -61,7 +61,7 @@
 //
 // ****************************************************************************
 
-class VISIT_VTK_API vtkAxisDepthSort : public vtkPolyDataToPolyDataFilter
+class VISIT_VTK_API vtkAxisDepthSort : public vtkPolyDataAlgorithm
 {
   public:
     static vtkAxisDepthSort      *New();
@@ -77,7 +77,7 @@ class VISIT_VTK_API vtkAxisDepthSort : public vtkPolyDataToPolyDataFilter
                                   vtkAxisDepthSort();
     virtual                      ~vtkAxisDepthSort() {;};
 
-    virtual void                  Execute(void);
+    virtual int                   RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   private:
                                   vtkAxisDepthSort(const vtkAxisDepthSort &);

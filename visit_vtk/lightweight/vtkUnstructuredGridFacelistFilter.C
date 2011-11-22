@@ -43,6 +43,8 @@
 #include "vtkUnstructuredGridFacelistFilter.h"
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkPolygon.h>
@@ -1777,14 +1779,19 @@ vtkUnstructuredGridFacelistFilter::PrintSelf(ostream& os, vtkIndent indent)
 //
 // ****************************************************************************
 
-void
-vtkUnstructuredGridFacelistFilter::Execute()
+int
+vtkUnstructuredGridFacelistFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                                               vtkInformationVector **inputVector,
+                                               vtkInformationVector *outputVector)
 {
     vtkDebugMacro(<<"Executing geometry filter for unstructured grid input");
-
-    vtkUnstructuredGrid *input= (vtkUnstructuredGrid *)this->GetInput();
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation* outInfo = outputVector->GetInformationObject(0);
+    vtkUnstructuredGrid *input = vtkUnstructuredGrid::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkCellData *cd = input->GetCellData();
-    vtkPolyData *output = this->GetOutput();
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+      outInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkCellData *outputCD = output->GetCellData();
 
     //
@@ -1824,8 +1831,23 @@ vtkUnstructuredGridFacelistFilter::Execute()
     {
         LoopOverPolygonalCells(input, output, cd, outputCD);
     }
+    return 1;
 }
 
+// ****************************************************************************
+//  Function: FillInputPortInformation
+//
+//  Purpose:
+//      Declares the type of the data object on the input port
+// ****************************************************************************
+
+int vtkUnstructuredGridFacelistFilter::FillInputPortInformation(int vtkNotUsed(port),
+                                                                vtkInformation *info)
+{
+  info->Remove(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE());
+  info->Append(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkUnstructuredGrid");
+  return 1;
+}
 
 // ****************************************************************************
 //  Function: LoopOverPolygonalCells

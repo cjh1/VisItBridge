@@ -42,6 +42,8 @@
 #include <vtkClipDataSet.h>
 #include <vtkFloatArray.h>
 #include <vtkImplicitFunction.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 #include <vtkPointData.h>
@@ -392,10 +394,15 @@ vtkVisItClipper::GetOtherOutput()
 //    these values a number of times.
 //
 // ****************************************************************************
-void
-vtkVisItClipper::Execute()
+int vtkVisItClipper::RequestData(vtkInformation* vtkNotUsed(request),
+                                 vtkInformationVector** inputVector,
+                                 vtkInformationVector* outputVector)
 {
-    vtkDataSet *ds = GetInput();
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation* outInfo = outputVector->GetInformationObject(0);
+    
+    vtkDataSet *ds = vtkDataSet::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     int do_type = ds->GetDataObjectType();
     vtkRectilinearGrid   *rg = NULL;
@@ -480,7 +487,7 @@ vtkVisItClipper::Execute()
         debug1 << "vtkVisItClipper: Can't operate on this dataset,\n";
         debug1 << "                 reverting to raw VTK code.\n";
         GeneralExecute();
-        return;
+        return 0;
     }
 
     //
@@ -954,6 +961,15 @@ vtkVisItClipper::Execute()
     }
 
     stuff_I_cant_clip->Delete();
+    return 1;
+}
+
+
+int vtkVisItClipper::FillInputPortInformation(int vtkNotUsed(port), vtkInformation* info)
+{
+    info->Remove(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE());
+    info->Append(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
+    return 1;
 }
 
 

@@ -42,6 +42,8 @@
 #include <vtkCellData.h>
 #include <vtkCleanPolyData.h>
 #include <vtkFloatArray.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
@@ -467,10 +469,14 @@ bool vtkConnectedTubeFilter::BuildConnectivityArrays()
 //    npts-1 sides, instead of npts sides.  Fixed that.
 //
 // ****************************************************************************
-void vtkConnectedTubeFilter::Execute()
+int vtkConnectedTubeFilter::RequestData(vtkInformation* vtkNotUsed(request),
+                                        vtkInformationVector** inputVector,
+                                        vtkInformationVector* outputVector)
 {
     // Get all the appropriate input arrays
-    vtkPolyData  *input   = this->GetInput();
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkPolyData  *input   = vtkPolyData::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkPoints    *inPts   = NULL;
     vtkCellArray *inLines = NULL;
     vtkCellData  *inCD    = input->GetCellData();
@@ -637,6 +643,7 @@ void vtkConnectedTubeFilter::Execute()
     // don't forget the sequence list; we're done with it
     delete pseqlist;
     pseqlist = NULL;
+    return 1;
 }
 
 // ****************************************************************************

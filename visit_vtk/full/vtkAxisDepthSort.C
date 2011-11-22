@@ -46,6 +46,8 @@
 
 #include <vtkCellData.h>
 #include <vtkGenericCell.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
@@ -138,12 +140,17 @@ vtkAxisDepthSort::GetMinusZOutput(void)
 }
 
 
-void
-vtkAxisDepthSort::Execute(void)
+int
+vtkAxisDepthSort::RequestData( vtkInformation* vtkNotUsed(request),
+                               vtkInformationVector** inputVector,
+                               vtkInformation* outputVector)
 {
     int   i;
-
-    vtkPolyData *input = GetInput();
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation* outInfo = outputVector->GetInformationObject(0);
+    
+    vtkPolyData *input = vtkPolyData::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
     int ncells = input->GetNumberOfCells();
 
     coord_cell_id_pair *pairs = new coord_cell_id_pair[ncells];
@@ -323,6 +330,7 @@ vtkAxisDepthSort::Execute(void)
     //
     delete [] loc;
     delete [] pairs;
+    return 1;
 }
 
 
