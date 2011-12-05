@@ -211,7 +211,7 @@ endif(MILI_FOUND)
 include_directories(${VTK_ZLIB_INCLUDE_DIRS})
 
 #setup netcdf
-VISIT_VTK_THIRD_PARTY_INCLUDE(NETCDF vtknetcdf)
+VISIT_VTK_THIRD_PARTY_INCLUDE(NETCDF vtknetcdf/include)
 
 #setup png
 VISIT_VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
