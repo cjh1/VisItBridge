@@ -66,8 +66,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtVectorMetaData.h"
 #include "TimingsManager.h"
 
-#include "vtkAMRUtilities.h"
-
 #include "limits.h"
 #include <vtkstd/set>
 
@@ -364,20 +362,14 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
         this->AssignProperties( grid, name, timestep, meshIndex);
 
         //now create the AMR Box
-//        vtkAMRBox box(extents);
-//        amr->SetDataSet(i,j,box,grid);
+        vtkAMRBox box(extents);
+        amr->SetDataSet(i,j,box,grid);
 
-        // Just add the grid no box is needed
-        amr->SetDataSet(i,j,grid);
         grid->Delete();
         }
       ++meshIndex;
       }
     }
-
-  vtkAMRUtilities::GenerateMetaData( amr, NULL );
-  amr->GenerateVisibilityArrays();
-
   delete[] numDataSets;
   return 1;
 
