@@ -75,7 +75,7 @@
 #define __vtkPolyDataOnionPeelFilter_h
 #include <visit_vtk_exports.h>
 
-#include <vtkPolyDataToPolyDataFilter.h>
+#include <vtkPolyDataAlgorithm.h>
 
 #define VTK_NODE_ADJACENCY 0
 #define VTK_FACE_ADJACENCY 1
@@ -109,11 +109,11 @@ class vtkIdList;
 typedef void (*BadSeedCallback)(void *, int, int, bool);
 
 class VISIT_VTK_API  
-vtkPolyDataOnionPeelFilter : public vtkPolyDataToPolyDataFilter
+vtkPolyDataOnionPeelFilter : public vtkPolyDataAlgorithm
 {
 public:
   static vtkPolyDataOnionPeelFilter *New();
-  vtkTypeMacro(vtkPolyDataOnionPeelFilter,vtkPolyDataToPolyDataFilter);
+  vtkTypeMacro(vtkPolyDataOnionPeelFilter,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -156,7 +156,7 @@ public:
        { this->SetAdjacencyType(VTK_NODE_ADJACENCY); };
   const char *GetAdjacencyTypeAsString();
 
-  bool Initialize(const int = VTK_LARGE_INTEGER);
+  bool Initialize(vtkDataSet*, const int = VTK_LARGE_INTEGER);
 
   void SetBadSeedCallback(BadSeedCallback, void *);
  
@@ -166,15 +166,16 @@ protected:
   vtkPolyDataOnionPeelFilter();
   ~vtkPolyDataOnionPeelFilter();
 
-  void Execute();
-  void Grow();
-  void GenerateOutputGrid();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int FillInputPortInformation(int, vtkInformation*);
+  void Grow(vtkDataSet*);
+  void GenerateOutputGrid(vtkDataSet*, vtkPolyData*);
 
-  void FindCellNeighborsByNodeAdjacency(vtkIdList *, vtkIdList*);
-  void FindCellNeighborsByFaceAdjacency(vtkIdList *, vtkIdList*);
-  void FindCellsCorrespondingToOriginal(int, vtkIdList*);
-  void FindCellsCorrespondingToOriginal(vtkIdList *, vtkIdList*);
-  void FindNodesCorrespondingToOriginal(int, vtkIdList*);
+  void FindCellNeighborsByNodeAdjacency(vtkIdList *, vtkIdList*, vtkDataSet*);
+  void FindCellNeighborsByFaceAdjacency(vtkIdList *, vtkIdList*, vtkDataSet*);
+  void FindCellsCorrespondingToOriginal(int, vtkIdList*, vtkDataSet*);
+  void FindCellsCorrespondingToOriginal(vtkIdList *, vtkIdList*, vtkDataSet*);
+  void FindNodesCorrespondingToOriginal(int, vtkIdList*, vtkDataSet*);
 
 // Protected Data Members
 

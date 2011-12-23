@@ -46,6 +46,8 @@
 #include <vtkStructuredPoints.h>
 #include <vtkStructuredPointsReader.h>
 #include <vtkStructuredPointsWriter.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 #include <avtImageRepresentation.h>
 #include <avtCommonDataFunctions.h>
@@ -591,14 +593,11 @@ vtkImageData *
 avtImageRepresentation::NewImage(int width, int height)
 {
     vtkImageData *image = vtkImageData::New();
-    image->SetWholeExtent(0, width-1, 0, height-1, 0, 0);
-    image->SetUpdateExtent(0, width-1, 0, height-1, 0, 0);
     image->SetExtent(0, width-1, 0, height-1, 0, 0);
     image->SetSpacing(1., 1., 1.);
     image->SetOrigin(0., 0., 0.);
-    image->SetNumberOfScalarComponents(3);
-    image->SetScalarType(VTK_UNSIGNED_CHAR);
-    image->AllocateScalars();
+    image->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
+
 
     return image;
 }
@@ -694,7 +693,7 @@ CreateStringFromVTKInput(vtkImageData *img, unsigned char *&str, int &len)
     vtkStructuredPointsWriter *writer = vtkStructuredPointsWriter::New();
     writer->SetFileTypeToBinary();
     writer->WriteToOutputStringOn();
-    writer->SetInput(tmp);
+    writer->SetInputData(tmp);
     writer->SetFileTypeToBinary();
     writer->Write();
 
@@ -765,9 +764,8 @@ void avtImageRepresentation::GetImageFromString(unsigned char *str,
     charArray->SetArray((char *) str, strLength, iOwnIt);
     reader->SetReadFromInputString(1);
     reader->SetInputArray(charArray);
+    reader->Update();
     img = reader->GetOutput();
-    img->Update();
-    img->SetScalarType(VTK_UNSIGNED_CHAR);
     img->Register(NULL);
     //  calling SetSource sets' PipelineInformation to NULL, and then
     //  vtkImageData no longer knows its scalar data type, and who knows

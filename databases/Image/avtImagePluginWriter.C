@@ -259,8 +259,6 @@ CreateImageData(int *dims, const double *spacing, vtkDataArray *da,
         image->SetSpacing(1.0,1.0,is3D?1.0:0.0);
     else
         image->SetSpacing(spacing[0],spacing[1],is3D?spacing[2]:0.0);
-    image->SetNumberOfScalarComponents(da->GetNumberOfComponents());
-    image->SetScalarTypeToUnsignedChar();
     int n = isCellData ? 2 : 1;
     image->SetExtent(0,dims[0]-n,0,dims[1]-n,0,is3D?dims[2]-n:0);
 
@@ -276,7 +274,8 @@ CreateImageData(int *dims, const double *spacing, vtkDataArray *da,
         image->GetPointData()->SetScalars(da);
     }
 
-    image->Update();
+    // Not needed (VTK Team)
+    // image->Update();	
 
     return image;
 
@@ -389,7 +388,7 @@ WriteImage(int format, int compression, int quality,
         writer->SetFileName(filename);
     }
 
-    writer->SetInput(image);
+    writer->SetInputData(image);
     writer->Write();
     writer->Delete();
 }

@@ -97,8 +97,21 @@ vtkVisItStreamLine::vtkVisItStreamLine()
     this->NumberOfStreamers = 0;
 }
 
-void vtkVisItStreamLine::Execute()
+int vtkVisItStreamLine::RequestData(
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector)
 {
+    // get the info objects
+    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+    // get the input and output
+    vtkDataSet *input = vtkDataSet::SafeDownCast(
+       inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+       outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
     vtkStreamer::StreamPoint *sPrev, *sPtr;
     vtkPoints      *newPts;
     vtkFloatArray  *newVectors;
@@ -108,8 +121,6 @@ void vtkVisItStreamLine::Execute()
     int j;
     vtkIdList *pts;
     double tOffset, x[3], v[3], s, r;
-    vtkPolyData   *output = this->GetOutput();
-    vtkDataSet   *input = vtkDataSet::SafeDownCast(this->GetOutput());
 
 #ifdef VORTICITY
     double theta;
@@ -121,11 +132,11 @@ void vtkVisItStreamLine::Execute()
     this->SavePointInterval = this->StepLength;
 
     // This can take a long time.
-    this->Integrate();
+    this->Integrate(input);
 
     if(this->NumberOfStreamers <= 0)
     {
-        return;
+        return 0;
     }
 
     pts = vtkIdList::New();
@@ -307,6 +318,8 @@ void vtkVisItStreamLine::Execute()
     this->NumberOfStreamers = 0;
 
     output->Squeeze();
+
+    return 1;
 }
 
 void vtkVisItStreamLine::PrintSelf(ostream& os, vtkIndent indent)
@@ -326,7 +339,7 @@ void vtkVisItStreamLine::PrintSelf(ostream& os, vtkIndent indent)
 // ****************************************************************************
 
 VTK_THREAD_RETURN_TYPE
-vtkVisItStreamLine::ThreadedIntegrate( void *arg)
+vtkVisItStreamLine::ThreadedIntegrate( void *arg, vtkDataSet *input)
 {
     vtkVisItStreamLine       *self;
     int                      thread_count;
@@ -340,7 +353,6 @@ vtkVisItStreamLine::ThreadedIntegrate( void *arg)
     double                    xNext[3], vel[3], *cellVel, derivs[9];
     double                    *w, pcoords[3];
     double                    coords[4];
-    vtkDataSet               *input;
     vtkGenericCell           *cell;
     vtkPointData             *pd;
     vtkDataArray             *inScalars;
@@ -355,7 +367,6 @@ vtkVisItStreamLine::ThreadedIntegrate( void *arg)
     thread_count = ((vtkMultiThreader::ThreadInfo *)(arg))->NumberOfThreads;
     self = (vtkVisItStreamLine *)(((vtkMultiThreader::ThreadInfo *)(arg))->UserData);
 
-    input     = vtkDataSet::SafeDownCast(self->GetInput());
     pd        = input->GetPointData();
     inScalars = pd->GetScalars();
     inVectors = pd->GetVectors();
@@ -582,9 +593,8 @@ vtkVisItStreamLine::ThreadedIntegrate( void *arg)
     return VTK_THREAD_RETURN_VALUE;
 }
 
-void vtkVisItStreamLine::Integrate()
+void vtkVisItStreamLine::Integrate(vtkDataSet *input)
 {
-    vtkDataSet *input = vtkDataSet::SafeDownCast(this->GetInput());
     vtkDataSet *source = this->GetSource();
     vtkPointData *pd=input->GetPointData();
     vtkDataArray *inScalars;
@@ -777,7 +787,7 @@ void vtkVisItStreamLine::Integrate()
     t.ThreadID = 0;
     t.NumberOfThreads = 1;
     t.UserData = (void *)this;
-    ThreadedIntegrate((void *)&t);
+    ThreadedIntegrate((void *)&t, input);
 #endif
 
     //

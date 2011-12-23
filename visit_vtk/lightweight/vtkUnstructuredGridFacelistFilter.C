@@ -1804,7 +1804,7 @@ vtkUnstructuredGridFacelistFilter::RequestData(vtkInformation *vtkNotUsed(reques
     outputPD->PassData(pd);
 
     // Pass the field data through
-    output->GetFieldData()->ShallowCopy(GetInput()->GetFieldData());
+    output->GetFieldData()->ShallowCopy(input->GetFieldData());
 
     int ntotalpts = input->GetNumberOfPoints();
     HashEntryList list(ntotalpts);

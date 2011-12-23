@@ -29,6 +29,8 @@
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 #include <math.h>
 
@@ -69,7 +71,7 @@ vtkVisItCutter::~vtkVisItCutter()
 // or contour values modified, then this object is modified as well.
 unsigned long vtkVisItCutter::GetMTime()
 {
-  unsigned long mTime=this->vtkDataSetToPolyDataFilter::GetMTime();
+  unsigned long mTime=this->Superclass::GetMTime();
   unsigned long contourValuesMTime=this->ContourValues->GetMTime();
   unsigned long time;
  
@@ -92,41 +94,52 @@ unsigned long vtkVisItCutter::GetMTime()
 
 // Cut through data generating surface.
 //
-void vtkVisItCutter::Execute()
+int vtkVisItCutter::RequestData(vtkInformation *vtkNotUsed(request),
+                                vtkInformationVector **inputVector,
+                                vtkInformationVector *outputVector)
 {
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkDataSet *input = vtkDataSet::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(
+      outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   vtkDebugMacro(<< "Executing cutter");
-
-  vtkDataSet *input = this->GetInput();
 
   if (!input)
     {
     vtkErrorMacro("No input specified");
-    return;
+    return 0;
     }
   
   if (!this->CutFunction)
     {
     vtkErrorMacro("No cut function specified");
-    return;
+    return 0;
     }
 
   if ( input->GetNumberOfPoints() < 1 )
     {
     vtkErrorMacro("Input data set is empty");
-    return;
+    return 0;
     }
   
   if (input->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
     { 
     vtkDebugMacro(<< "Executing Unstructured Grid Cutter");   
-    this->UnstructuredGridCutter();
+    this->UnstructuredGridCutter(input, output);
     }
   else
     {
     vtkDebugMacro(<< "Executing DataSet Cutter");
-    this->DataSetCutter();
+    this->DataSetCutter(input, output);
     }
+
+  return 1;
 }
 
 // ***************************************************************************
@@ -137,7 +150,7 @@ void vtkVisItCutter::Execute()
 //    Verts, Lines, Polys.
 //
 // ***************************************************************************
-void vtkVisItCutter::DataSetCutter()
+void vtkVisItCutter::DataSetCutter(vtkDataSet *input, vtkPolyData *output)
 {
   vtkIdType cellId, i;
   int iter;
@@ -148,8 +161,6 @@ void vtkVisItCutter::DataSetCutter()
   vtkPoints *newPoints;
   vtkFloatArray *cutScalars;
   double value, s;
-  vtkPolyData *output = this->GetOutput();
-  vtkDataSet *input=this->GetInput();
   vtkIdType estimatedSize, numCells=input->GetNumberOfCells();
   vtkIdType numPts=input->GetNumberOfPoints();
   int numCellPts;
@@ -355,8 +366,7 @@ void vtkVisItCutter::DataSetCutter()
 //    Fix memory leak.
 //
 // ***************************************************************************
-
-void vtkVisItCutter::UnstructuredGridCutter()
+void vtkVisItCutter::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *output)
 {
   vtkIdType cellId, i;
   int iter;
@@ -365,8 +375,6 @@ void vtkVisItCutter::UnstructuredGridCutter()
   vtkPoints *newPoints;
   vtkFloatArray *cutScalars;
   double value, s;
-  vtkPolyData *output = this->GetOutput();
-  vtkDataSet *input = this->GetInput();
   vtkIdType estimatedSize, numCells=input->GetNumberOfCells();
   vtkIdType numPts=input->GetNumberOfPoints();
   vtkIdType cellArrayIt = 0;

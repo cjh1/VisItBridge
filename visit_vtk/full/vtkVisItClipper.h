@@ -109,7 +109,6 @@ class VISIT_VTK_API vtkVisItClipper
 
     int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
     int FillInputPortInformation(int port, vtkInformation *info);
-    void GeneralExecute();
     void ClipDataset(vtkDataSet *, vtkUnstructuredGrid *);
 
     int *CellList;

@@ -57,12 +57,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __vtkTensorReduceFilter_h
 #include <visit_vtk_exports.h>
 
-#include "vtkDataSetToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 
-class VISIT_VTK_API vtkTensorReduceFilter : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkTensorReduceFilter : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkTensorReduceFilter, vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkTensorReduceFilter, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -76,7 +76,7 @@ protected:
   vtkTensorReduceFilter();
   ~vtkTensorReduceFilter() {};
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   int stride;
   int numEls;

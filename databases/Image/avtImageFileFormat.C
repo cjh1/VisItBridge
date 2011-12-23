@@ -675,7 +675,7 @@ void avtImageFileFormat::ReadInImage(void)
         reader->SetFileName(subImages[idx].c_str());
         image = reader->GetOutput();
         image->Register(NULL);
-        image->Update();
+        reader->Update();
         //image->SetSource(NULL);
         reader->Delete();
     }
@@ -685,7 +685,7 @@ void avtImageFileFormat::ReadInImage(void)
         reader->SetFileName(subImages[idx].c_str());
         image = reader->GetOutput();
         image->Register(NULL);
-        image->Update();
+        reader->Update();
         //image->SetSource(NULL);
         reader->Delete();
     }
@@ -696,8 +696,7 @@ void avtImageFileFormat::ReadInImage(void)
         reader->SetFileName(subImages[idx].c_str());
         image = reader->GetOutput();
         image->Register(NULL);
-        image->Update();
-        //image->SetSource(NULL);
+        reader->Update();
         reader->Delete();
     }
     else if ((image_fext == "tif") || (image_fext == "tiff") || 
@@ -707,7 +706,7 @@ void avtImageFileFormat::ReadInImage(void)
         reader->SetFileName(subImages[idx].c_str());
         image = reader->GetOutput();
         image->Register(NULL);
-        image->Update();
+        reader->Update();
         //image->SetSource(NULL);
         reader->Delete();
     }
@@ -719,7 +718,7 @@ void avtImageFileFormat::ReadInImage(void)
         reader->SetFileName(subImages[idx].c_str());
         image = reader->GetOutput();
         image->Register(NULL);
-        image->Update();
+        reader->Update();
         //image->SetSource(NULL);
         reader->Delete();
     }
@@ -730,7 +729,7 @@ void avtImageFileFormat::ReadInImage(void)
         reader->SetFileName(subImages[idx].c_str());
         image = reader->GetOutput();
         image->Register(NULL);
-        image->Update();
+        reader->Update();
         //image->SetSource(NULL);
         reader->GetOrigin(xStart, yStart);
         reader->GetStep(xStep, yStep);

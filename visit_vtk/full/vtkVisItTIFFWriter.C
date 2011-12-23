@@ -19,6 +19,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtk_tiff.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 vtkStandardNewMacro(vtkVisItTIFFWriter);
 
@@ -116,7 +118,7 @@ void vtkVisItTIFFWriter::WriteFileHeader(ofstream *file, vtkImageData *data)
   int predictor = 0;
 
   // Find the length of the rows to write.
-  data->GetWholeExtent(min0, max0, min1, max1, min2, max2);
+  data->GetExtent(min0, max0, min1, max1, min2, max2);
   width = (max0 - min0 + 1);
   height = (max1 - min1 + 1);
 

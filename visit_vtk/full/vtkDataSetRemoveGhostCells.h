@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __vtkDataSetRemoveGhostCells_h
 #include <visit_vtk_exports.h>
 
-#include "vtkDataSetToDataSetFilter.h"
+#include "vtkDataSetAlgorithm.h"
 
 
 //  Modifications: 
@@ -62,11 +62,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //    Hank Childs, Sun Oct 28 10:48:50 PST 2007
 //    Added GhostZoneTypesToRemove
 //
-class VISIT_VTK_API vtkDataSetRemoveGhostCells : public vtkDataSetToDataSetFilter
+class VISIT_VTK_API vtkDataSetRemoveGhostCells : public vtkDataSetAlgorithm
 {
 public:
   static vtkDataSetRemoveGhostCells *New();
-  vtkTypeMacro(vtkDataSetRemoveGhostCells, vtkDataSetToDataSetFilter);
+  vtkTypeMacro(vtkDataSetRemoveGhostCells, vtkDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   vtkSetMacro(GhostNodeTypesToRemove,unsigned char);
@@ -83,13 +83,13 @@ protected:
   unsigned char GhostZoneTypesToRemove;
 
   // Usual data generation method
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   // Specific data generation methods
-  void StructuredGridExecute();
-  void UnstructuredGridExecute();
-  void RectilinearGridExecute();
-  void PolyDataExecute();
-  void GenericExecute();
+  void StructuredGridExecute(vtkStructuredGrid *input, vtkStructuredGrid *output);
+  void UnstructuredGridExecute(vtkUnstructuredGrid *input, vtkUnstructuredGrid *output);
+  void RectilinearGridExecute(vtkRectilinearGrid *input, vtkRectilinearGrid *output);
+  void PolyDataExecute(vtkPolyData *input, vtkPolyData *output);
+  void GenericExecute(vtkDataSet *input, vtkDataSet *output);
 
 private:
   vtkDataSetRemoveGhostCells(const vtkDataSetRemoveGhostCells&);

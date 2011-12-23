@@ -40,7 +40,7 @@
 #define __vtkRectilinearLinesNoDataFilter_h
 #include <visit_vtk_exports.h>
 
-#include "vtkRectilinearGridToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 class     vtkIdTypeArray;
 #include <vector>
 
@@ -61,10 +61,10 @@ class     vtkIdTypeArray;
 // ****************************************************************************
 
 class VISIT_VTK_API vtkRectilinearLinesNoDataFilter :
-    public vtkRectilinearGridToPolyDataFilter
+    public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkRectilinearLinesNoDataFilter,vtkRectilinearGridToPolyDataFilter);
+  vtkTypeMacro(vtkRectilinearLinesNoDataFilter,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -75,7 +75,8 @@ protected:
   vtkRectilinearLinesNoDataFilter();
   ~vtkRectilinearLinesNoDataFilter() {};
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int FillInputPortInformation(int, vtkInformation*);
 
 private:
   vtkRectilinearLinesNoDataFilter(const vtkRectilinearLinesNoDataFilter&);

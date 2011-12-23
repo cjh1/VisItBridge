@@ -46,8 +46,13 @@ public:
   // Description:
   // Specify the point locations used to probe input. Any geometry
   // can be used.
-  void SetSource(vtkDataSet *source);
+  void SetSourceData(vtkDataSet *source);
   vtkDataSet *GetSource();
+
+  // Description:
+  // Specify the point locations used to probe input. Any geometry
+  // can be used. New style. Equivalent to SetInputConnection(1, algOutput).
+  void SetSourceConnection(vtkAlgorithmOutput* algOutput);
 
   // Description:
   // This flag is used only when a piece is requested to update.  By default

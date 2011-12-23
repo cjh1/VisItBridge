@@ -62,12 +62,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __vtkVectorReduceFilter_h
 #include <visit_vtk_exports.h>
 
-#include "vtkDataSetToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 
-class VISIT_VTK_API vtkVectorReduceFilter : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkVectorReduceFilter : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkVectorReduceFilter, vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkVectorReduceFilter, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -82,7 +82,7 @@ protected:
   vtkVectorReduceFilter();
   ~vtkVectorReduceFilter() {};
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   int stride;
   int numEls;

@@ -66,6 +66,8 @@
 #include <vtkRectilinearGrid.h>
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 
 // ======================================================================
@@ -111,23 +113,36 @@ vtkSurfaceFilter::~vtkSurfaceFilter()
 // Modifications:
 //  
 //======================================================================
-void 
-vtkSurfaceFilter::Execute()
+int
+vtkSurfaceFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                              vtkInformationVector **inputVector,
+                              vtkInformationVector *outputVector)
 {
-  vtkDataSet *input= this->GetInput();
+  // get the info object
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkDataSet *input = vtkDataSet::SafeDownCast(
+     inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
+     outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   if (inScalars == NULL)
   {
       vtkErrorMacro(<<"Cannot execute, scalars not set");
-      return;
+      return 0;
   }
 
   if (input->GetDataObjectType() == VTK_RECTILINEAR_GRID)
-      this->ExecuteRectilinearGrid( (vtkRectilinearGrid *) input);
+      this->ExecuteRectilinearGrid(static_cast<vtkRectilinearGrid*>(input),
+                                   output);
   else
-      this->ExecutePointSet( (vtkPointSet*) input);
+      this->ExecutePointSet( vtkPointSet::SafeDownCast(input), output);
 
-} // Execute
+  return 1;
+
+} // RequestData
 
 //======================================================================
 //
@@ -150,10 +165,10 @@ vtkSurfaceFilter::Execute()
 //    vtkScalars has been deprecated in VTK 4.0, use vtkDataArray instead.
 //=======================================================================
 void 
-vtkSurfaceFilter::ExecuteRectilinearGrid(vtkRectilinearGrid *rg)
+vtkSurfaceFilter::ExecuteRectilinearGrid(vtkRectilinearGrid *rg,
+                                         vtkUnstructuredGrid *output)
 {
   vtkDebugMacro(<<"ExecuteRectilinearGrid::");
-  vtkUnstructuredGrid *output = this->GetOutput(); 
   int numPoints = rg->GetNumberOfPoints();
   int numCells = rg->GetNumberOfCells();
   int *cellTypes = new int [numCells];
@@ -231,10 +246,9 @@ vtkSurfaceFilter::ExecuteRectilinearGrid(vtkRectilinearGrid *rg)
 //
 //=======================================================================
 void 
-vtkSurfaceFilter::ExecutePointSet(vtkPointSet *ps)
+vtkSurfaceFilter::ExecutePointSet(vtkPointSet *ps, vtkUnstructuredGrid *output)
 {
   vtkDebugMacro(<<"ExecutePointSet::");
-  vtkUnstructuredGrid *output = this->GetOutput(); 
 
   vtkPoints *inPoints = ps->GetPoints();
 
@@ -319,4 +333,12 @@ vtkSurfaceFilter::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "\n";
 }
 
+//----------------------------------------------------------------------------
+int vtkSurfaceFilter::FillInputPortInformation(
+  int vtkNotUsed(port), vtkInformation* info)
+{
+  // now add our info
+  info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkDataSet");
+  return 1;
+}
 

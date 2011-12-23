@@ -599,7 +599,8 @@ CUpdateData(avtDataRepresentation &data, void *, bool &modified)
     }
     vtkDataSet *ds = data.GetDataVTK();
     unsigned long mtime = ds->GetMTime();
-    ds->Update();
+    // Not needed (VTK Team)
+    // ds->Update();
     if (mtime != ds->GetMTime())
         modified = true;
 }
@@ -673,11 +674,11 @@ CAddInputToAppendFilter(avtDataRepresentation & data, void *arg, bool &)
     //
     if (ds->GetDataObjectType() == VTK_POLY_DATA)
     {
-        pmap->pf->AddInput((vtkPolyData*)ds);
+        pmap->pf->AddInputData((vtkPolyData*)ds);
     }
     else if (ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
     {
-        pmap->af->AddInput(ds);
+        pmap->af->AddInputData(ds);
     }
 }
 

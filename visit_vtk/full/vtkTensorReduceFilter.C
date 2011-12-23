@@ -49,6 +49,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 
 vtkStandardNewMacro(vtkTensorReduceFilter);
@@ -82,10 +84,16 @@ void vtkTensorReduceFilter::SetNumberOfElements(int n)
 //
 // ****************************************************************************
 
-void vtkTensorReduceFilter::Execute(void)
+int vtkTensorReduceFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                                       vtkInformationVector **inputVector,
+                                       vtkInformationVector *outputVector)
 {
-  vtkDataSet *input  = this->GetInput();
-  vtkPolyData *output = this->GetOutput();
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  // get the input and output
+  vtkDataSet *input = vtkDataSet::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(    outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   vtkCellData *inCd = input->GetCellData();
   vtkPointData *inPd = input->GetPointData();
@@ -101,14 +109,14 @@ void vtkTensorReduceFilter::Execute(void)
   if (inPtensors == NULL && inCtensors == NULL)
     {
     vtkErrorMacro(<<"No tensors to reduce");
-    return;
+    return 0;
     }
 
   // Determine what the stride is.
   if (stride <= 0 && numEls <= 0)
     {
     vtkErrorMacro(<<"Invalid stride");
-    return;
+    return 0;
     }
 
   float actingStride = stride;
@@ -194,6 +202,8 @@ void vtkTensorReduceFilter::Execute(void)
     onevertex[0] = i;
     output->InsertNextCell(VTK_VERTEX, 1, onevertex);
     }
+
+  return 1;
 }
 
   

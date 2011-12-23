@@ -59,6 +59,8 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkPolyData.h>
 #include <vtkCellType.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 #include <DBOptionsAttributes.h>
 
@@ -2193,7 +2195,6 @@ avtChomboFileFormat::GetMesh(int patch, const char *meshname)
                 }
 
                 rg->GetCellData()->AddArray(ghostCells);
-                rg->SetUpdateGhostLevel(0);
                 ghostCells->Delete();
             }
         }

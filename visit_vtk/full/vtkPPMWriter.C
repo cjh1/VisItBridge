@@ -40,6 +40,8 @@
 #include <vtkImageData.h>
 #include <vtkPointData.h>
 #include <vtkObjectFactory.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 
 //------------------------------------------------------------------------------
@@ -58,11 +60,16 @@ vtkPPMWriter::vtkPPMWriter()
 
 void vtkPPMWriter::WriteFileHeader(ofstream *file, vtkImageData *cache)
 {
-  int min0, max0, min1, max1, min2, max2;
+  int ext[6];
+  int min0, max0, min1, max1;
   int width, height;
-  
   // Find the length of the rows to write.
-  cache->GetWholeExtent(min0, max0, min1, max1, min2, max2);
+  this->GetInputInformation()->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), ext);
+
+  min0 = ext[0];
+  max0 = ext[1];
+  min1 = ext[2];
+  max1 = ext[3];
   width = (max0 - min0 + 1);
   height = (max1 - min1 + 1);
 
@@ -106,7 +113,7 @@ void vtkPPMWriter::WriteFile(ofstream *file, vtkImageData *data,
   // Row length of x axis
   rowLength = extent[1] - extent[0] + 1;
 
-  wExtent = this->GetInput()->GetWholeExtent();
+  wExtent = this->GetInputInformation()->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT());
   area = ((extent[5] - extent[4] + 1)*(extent[3] - extent[2] + 1)*
           (extent[1] - extent[0] + 1)) / 
     ((wExtent[5] -wExtent[4] + 1)*(wExtent[3] -wExtent[2] + 1)*

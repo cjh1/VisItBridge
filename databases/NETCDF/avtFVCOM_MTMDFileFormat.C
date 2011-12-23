@@ -1464,7 +1464,6 @@ avtFVCOM_MTMDFileFormat::GetMesh(int timestate, int domain, const char *meshname
         }
     
         retval->GetCellData()->AddArray(ghostCells);
-        retval->SetUpdateGhostLevel(0);
         ghostCells->Delete();
         debug4 << mName << "Found Ghost Zones" << endl;
 

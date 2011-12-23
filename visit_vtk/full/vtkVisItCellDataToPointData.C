@@ -49,9 +49,9 @@ vtkVisItCellDataToPointData::vtkVisItCellDataToPointData()
 //
 // **************************************************************************** 
 
-void vtkVisItCellDataToPointData::RequestData(vtkInformation *vtkNotUsed(request),
-                                              vtkInformationVector **inputVector,
-                                              vtkInformationVector *outputVector)
+int vtkVisItCellDataToPointData::RequestData(vtkInformation *vtkNotUsed(request),
+                                             vtkInformationVector **inputVector,
+                                             vtkInformationVector *outputVector)
 {
   vtkIdType cellId, ptId, i, j, k, l, m;
   vtkIdType numCells, numPts;
@@ -79,7 +79,7 @@ void vtkVisItCellDataToPointData::RequestData(vtkInformation *vtkNotUsed(request
     {
     vtkErrorMacro(<<"No input point data!");
     cellIds->Delete();
-    return;
+    return 0;
     }
   weights = new double[VTK_MAX_CELLS_PER_POINT];
   

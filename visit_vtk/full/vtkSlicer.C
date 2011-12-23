@@ -31,6 +31,9 @@
 #include <vtkSurfaceFromVolume.h>
 #include <vtkTriangulationTables.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+
 
 #include <math.h>
 #include <vector>
@@ -56,27 +59,42 @@ void vtkSlicer::SetCellList(int *cl, int size)
     this->CellListSize = size;
 }
 
-void vtkSlicer::Execute()
+int vtkSlicer::RequestData(
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector)
 {
-    vtkDataSet *input  = GetInput();
+    // get the info object
+    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+    // get the input and output
+    vtkDataSet *input = vtkDataSet::SafeDownCast(
+        inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+      outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
 
     int do_type = input->GetDataObjectType();
     if (do_type == VTK_RECTILINEAR_GRID)
     {
-        RectilinearGridExecute();
+        RectilinearGridExecute(static_cast<vtkRectilinearGrid*>(input), output);
     }
     else if (do_type == VTK_STRUCTURED_GRID)
     {
-        StructuredGridExecute();
+        StructuredGridExecute(static_cast<vtkStructuredGrid*>(input), output);
     }
     else if (do_type == VTK_UNSTRUCTURED_GRID)
     {
-        UnstructuredGridExecute();
+        UnstructuredGridExecute(static_cast<vtkUnstructuredGrid*>(input),
+                                output);
     }
     else
     {
-        GeneralExecute();
+        GeneralExecute(input, output);
     }
+
+    return 1;
 }
 
 // Modifications:
@@ -88,17 +106,15 @@ void vtkSlicer::Execute()
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-void
-vtkSlicer::StructuredGridExecute(void)
+void vtkSlicer::StructuredGridExecute(vtkStructuredGrid *sg, vtkPolyData *output)
 {
     int  i, j;
 
-    vtkStructuredGrid *sg = (vtkStructuredGrid *) GetInput();
     int pt_dims[3];
     sg->GetDimensions(pt_dims);
     if (pt_dims[0] <= 1 || pt_dims[1] <= 1 || pt_dims[2] <= 1)
     {
-        GeneralExecute();
+        GeneralExecute(sg, output);
         return;
     }
 
@@ -106,7 +122,6 @@ vtkSlicer::StructuredGridExecute(void)
     vtkPoints         *inPts  = sg->GetPoints();
     vtkCellData       *inCD   = sg->GetCellData();
     vtkPointData      *inPD   = sg->GetPointData();
-    vtkPolyData       *output = GetOutput();
 
     int ptSizeGuess = (this->CellList == NULL
                          ? (int) pow(float(nCells), 0.6667f) * 5 + 100
@@ -192,16 +207,15 @@ vtkSlicer::StructuredGridExecute(void)
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-void vtkSlicer::RectilinearGridExecute(void)
+void vtkSlicer::RectilinearGridExecute(vtkRectilinearGrid *rg, vtkPolyData *output)
 {
     int  i, j;
 
-    vtkRectilinearGrid *rg = (vtkRectilinearGrid *) GetInput();
     int pt_dims[3];
     rg->GetDimensions(pt_dims);
     if (pt_dims[0] <= 1 || pt_dims[1] <= 1 || pt_dims[2] <= 1)
     {
-        GeneralExecute();
+        GeneralExecute(rg, output);
         return;
     }
 
@@ -211,7 +225,6 @@ void vtkSlicer::RectilinearGridExecute(void)
     float        *Z      = (float* ) rg->GetZCoordinates()->GetVoidPointer(0);
     vtkCellData  *inCD   = rg->GetCellData();
     vtkPointData *inPD   = rg->GetPointData();
-    vtkPolyData  *output = GetOutput();
 
     int ptSizeGuess = (this->CellList == NULL
                          ? (int) pow(float(nCells), 0.6667f) * 5 + 100
@@ -298,7 +311,8 @@ void vtkSlicer::RectilinearGridExecute(void)
 //
 // ****************************************************************************
 
-void vtkSlicer::UnstructuredGridExecute(void)
+void vtkSlicer::UnstructuredGridExecute(vtkUnstructuredGrid *ug,
+                                        vtkPolyData *output)
 {
     // The routine here is a bit trickier than for the Rectilinear or
     // Structured grids.  We want to slice an unstructured grid -- but that
@@ -312,13 +326,10 @@ void vtkSlicer::UnstructuredGridExecute(void)
 
     int   i, j;
 
-    vtkUnstructuredGrid *ug = (vtkUnstructuredGrid *) GetInput();
-
     int                nCells = ug->GetNumberOfCells();
     vtkPoints         *inPts  = ug->GetPoints();
     vtkCellData       *inCD   = ug->GetCellData();
     vtkPointData      *inPD   = ug->GetPointData();
-    vtkPolyData       *output = GetOutput();
 
     int ptSizeGuess = (this->CellList == NULL
                          ? (int) pow(float(nCells), 0.6667f) * 5 + 100
@@ -479,21 +490,21 @@ void vtkSlicer::UnstructuredGridExecute(void)
         {
             vtkPolyData *not_from_zoo  = vtkPolyData::New();
             SliceDataset(stuff_I_cant_slice, not_from_zoo);
-            appender->AddInput(not_from_zoo);
+            appender->AddInputData(not_from_zoo);
             not_from_zoo->Delete();
         }
 
         if (numVertices > 0)
         {
-            appender->AddInput(vertices_on_slice);
+            appender->AddInputData(vertices_on_slice);
         }
 
         vtkPolyData *just_from_zoo = vtkPolyData::New();
         sfv.ConstructPolyData(inPD, inCD, just_from_zoo, pts_ptr);
-        appender->AddInput(just_from_zoo);
+        appender->AddInputData(just_from_zoo);
         just_from_zoo->Delete();
 
-        appender->GetOutput()->Update();
+        this->Update();
 
         output->ShallowCopy(appender->GetOutput());
         appender->Delete();
@@ -508,9 +519,9 @@ void vtkSlicer::UnstructuredGridExecute(void)
 }
 
 
-void vtkSlicer::GeneralExecute(void)
+void vtkSlicer::GeneralExecute(vtkDataSet *input, vtkPolyData *output)
 {
-    SliceDataset(GetInput(), GetOutput());
+    SliceDataset(input, output);
 }
 
 // ****************************************************************************
@@ -527,7 +538,7 @@ void vtkSlicer::SliceDataset(vtkDataSet *in_ds, vtkPolyData *out_pd)
     plane->SetNormal(Normal[0], Normal[1], Normal[2]);
     cutter->SetCutFunction(plane);
 
-    cutter->SetInput(in_ds);
+    cutter->SetInputData(in_ds);
     cutter->Update();
 
     out_pd->ShallowCopy(cutter->GetOutput());
@@ -544,4 +555,12 @@ void vtkSlicer::PrintSelf(ostream& os, vtkIndent indent)
      << Normal[2] << "\n";
   os << indent << "Origin: " << Origin[0] << ", " << Origin[1] << ", "
      << Origin[2] << "\n";
+}
+
+int vtkSlicer::FillInputPortInformation(
+  int vtkNotUsed(port), vtkInformation* info)
+{
+  info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
+
+  return 1;
 }

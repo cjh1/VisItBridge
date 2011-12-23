@@ -419,7 +419,7 @@ vtkConnectedTubeFilter::~vtkConnectedTubeFilter()
 // ****************************************************************************
 bool vtkConnectedTubeFilter::BuildConnectivityArrays()
 {
-    vtkPolyData  *input   = this->GetInput();
+    vtkPolyData  *input   = this->GetPolyDataInput(0);
     vtkPoints    *inPts   = NULL;
     vtkCellArray *inLines = NULL;
     int numPts;
@@ -475,8 +475,13 @@ int vtkConnectedTubeFilter::RequestData(vtkInformation* vtkNotUsed(request),
 {
     // Get all the appropriate input arrays
     vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
     vtkPolyData  *input   = vtkPolyData::SafeDownCast(
       inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+        outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
     vtkPoints    *inPts   = NULL;
     vtkCellArray *inLines = NULL;
     vtkCellData  *inCD    = input->GetCellData();
@@ -490,7 +495,7 @@ int vtkConnectedTubeFilter::RequestData(vtkInformation* vtkNotUsed(request),
     {
         vtkErrorMacro(<< ": Connectivity was not built yet; need to call "
                          "vtkConnectedTubeFilter::BuildConnectivityArrays()\n");
-        return;
+        return 0;
     }
 
     if (!(inPts=input->GetPoints())               ||
@@ -499,7 +504,7 @@ int vtkConnectedTubeFilter::RequestData(vtkInformation* vtkNotUsed(request),
         (numCells = inLines->GetNumberOfCells()) < 1)
     {
         vtkDebugMacro(<< ": No input data!\n");
-        return;
+        return 0;
     }
 
     float *pts = (float*)(inPts->GetVoidPointer(0));
@@ -507,7 +512,6 @@ int vtkConnectedTubeFilter::RequestData(vtkInformation* vtkNotUsed(request),
     // Set up the output arrays
     int maxNewCells  = numCells * (NumberOfSides + 2);
     int maxNewPoints = numCells * NumberOfSides * 2;
-    vtkPolyData   *output     = this->GetOutput();
     vtkPoints     *newPts     = vtkPoints::New();
     newPts->Allocate(maxNewPoints);
     vtkCellArray  *newCells   = vtkCellArray::New();

@@ -52,12 +52,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __vtkVertexFilter_h
 #include <visit_vtk_exports.h>
 
-#include "vtkDataSetToPolyDataFilter.h"
+#include <vtkPolyDataAlgorithm.h>
 
-class VISIT_VTK_API vtkVertexFilter : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkVertexFilter : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkVertexFilter, vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkVertexFilter, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   vtkSetMacro(VertexAtPoints,int);
@@ -74,7 +74,7 @@ protected:
   vtkVertexFilter();
   ~vtkVertexFilter() {};
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
 private:
   vtkVertexFilter(const vtkVertexFilter&);

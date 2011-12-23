@@ -35,7 +35,6 @@
 * DAMAGE.
 *
 *****************************************************************************/
-
 #include "vtkVisItSplitter.h"
 #include <vtkAppendFilter.h>
 #include <vtkCellData.h>
@@ -50,6 +49,8 @@
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkBinaryPartitionVolumeFromVolume.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 #include <ImproperUseException.h>
 
@@ -378,10 +379,18 @@ vtkVisItSplitter::SetRemoveWholeCells(bool rwc)
 //    merely split+tag output, not remove cells.
 //
 // ****************************************************************************
-void
-vtkVisItSplitter::Execute()
+int
+vtkVisItSplitter::RequestData(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *vtkNotUsed(outputVector))
 {
-    vtkDataSet *ds = GetInput();
+    // get the info objects
+    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+
+    // get the input
+    vtkDataSet *ds = vtkDataSet::SafeDownCast(
+        inInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     int do_type = ds->GetDataObjectType();
     vtkRectilinearGrid   *rg = NULL;
@@ -837,10 +846,19 @@ vtkVisItSplitter::Execute()
         vfv.ConstructDataSet(inPD, inCD, output, pt_dims,X,Y,Z,
                              oldTags, newTags, newTagBit);
     visitTimer->StopTimer(th2, "VFV Constructing data set");
+
+    return 1;
 }
 
 
 void vtkVisItSplitter::PrintSelf(ostream& os, vtkIndent indent)
 {
     Superclass::PrintSelf(os,indent);
+}
+
+int vtkVisItSplitter::FillInputPortInformation(int vtkNotUsed(port), vtkInformation* info)
+{
+    info->Remove(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE());
+    info->Append(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
+    return 1;
 }

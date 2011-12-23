@@ -41,6 +41,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <string.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 typedef struct {
   unsigned char imagic[2];
@@ -198,7 +200,7 @@ void vtkRGBWriter::WriteFile(ofstream *file, vtkImageData *data,
     float progress = this->Progress;
     float area;
     int *wExtent;
-    wExtent = this->GetInput()->GetWholeExtent();
+    wExtent = this->GetInputInformation()->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT());
     area = ((extent[5] - extent[4] + 1)*(extent[3] - extent[2] + 1)*
             (extent[1] - extent[0] + 1)) / 
            ((wExtent[5] -wExtent[4] + 1)*(wExtent[3] -wExtent[2] + 1)*

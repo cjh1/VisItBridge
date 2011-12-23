@@ -66,12 +66,12 @@ class VISIT_VTK_API vtkAxisDepthSort : public vtkPolyDataAlgorithm
   public:
     static vtkAxisDepthSort      *New();
 
-    vtkPolyData                  *GetPlusXOutput();
-    vtkPolyData                  *GetMinusXOutput();
-    vtkPolyData                  *GetPlusYOutput();
-    vtkPolyData                  *GetMinusYOutput();
-    vtkPolyData                  *GetPlusZOutput();
-    vtkPolyData                  *GetMinusZOutput();
+    vtkPolyData                  *GetPlusXOutput(vtkInformationVector*);
+    vtkPolyData                  *GetMinusXOutput(vtkInformationVector*);
+    vtkPolyData                  *GetPlusYOutput(vtkInformationVector*);
+    vtkPolyData                  *GetMinusYOutput(vtkInformationVector*);
+    vtkPolyData                  *GetPlusZOutput(vtkInformationVector*);
+    vtkPolyData                  *GetMinusZOutput(vtkInformationVector*);
 
   protected:
                                   vtkAxisDepthSort();
@@ -80,6 +80,7 @@ class VISIT_VTK_API vtkAxisDepthSort : public vtkPolyDataAlgorithm
     virtual int                   RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   private:
+    vtkPolyData                   *GetOutput(int, vtkInformationVector*);
                                   vtkAxisDepthSort(const vtkAxisDepthSort &);
                                   void operator=(const vtkAxisDepthSort &);
 };

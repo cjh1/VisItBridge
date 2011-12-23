@@ -88,7 +88,7 @@
 #define __vtkVisItPLOT3DReaderInternal_h
 
 #include <stdio.h>
-#include "vtkStructuredGridSource.h"
+#include "vtkStructuredGridAlgorithm.h"
 #include <visit-config.h>
 
 class vtkIntArray;
@@ -128,11 +128,11 @@ class vtkStructuredGrid;
 #define FORTRAN_BINARY 1
 
 
-class vtkVisItPLOT3DReaderInternal : public vtkStructuredGridSource 
+class vtkVisItPLOT3DReaderInternal : public vtkStructuredGridAlgorithm
 {
 public:
   static vtkVisItPLOT3DReaderInternal *New();
-  vtkTypeRevisionMacro(vtkVisItPLOT3DReaderInternal,vtkStructuredGridSource);
+  vtkTypeRevisionMacro(vtkVisItPLOT3DReaderInternal,vtkStructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -296,8 +296,8 @@ protected:
   vtkVisItPLOT3DReaderInternal();
   ~vtkVisItPLOT3DReaderInternal();
 
-  void ExecuteInformation();
-  void Execute();
+  int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 //  int GetFileType(FILE *fp);
 
   //plot3d FileNames
@@ -424,6 +424,10 @@ private:
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkStructuredGrid.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+#include <vtkExecutive.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 #include <ctype.h>
 #include <math.h>
@@ -549,22 +553,29 @@ void vtkVisItPLOT3DReaderInternal::RemoveFunction(int fnum)
 
 
 
-void vtkVisItPLOT3DReaderInternal::ExecuteInformation()
+int vtkVisItPLOT3DReaderInternal::RequestInformation(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *outputVector)
 {
+  // get the info objects
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
   FILE *xyzFp;
   int error = 0;
-  vtkStructuredGrid *output = this->GetOutput();
+  vtkStructuredGrid *output = vtkStructuredGrid::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   // must go through all the same checks as actual read.
   if (this->XYZFileName == NULL)
     {
     vtkErrorMacro(<< "Must specify geometry file");
-    return;
+    return 0;
     }
   if ((xyzFp = fopen(this->XYZFileName, "r")) == NULL)
     {
     vtkErrorMacro(<< "File: " << this->XYZFileName << " not found");
-    return;
+    return 0;
     }
 
   error = this->ReadGridDimensions(xyzFp,output);
@@ -573,8 +584,10 @@ void vtkVisItPLOT3DReaderInternal::ExecuteInformation()
   if (error)
     {
     vtkErrorMacro(<<"Error reading XYZ file");
-    return;
+    return 0;
     }
+
+  return 1;
 }
 
 
@@ -785,11 +798,20 @@ int vtkVisItPLOT3DReaderInternal::getInfoLine(char * line, int size, FILE*fp)
 
 
 
-void vtkVisItPLOT3DReaderInternal::Execute()
+int vtkVisItPLOT3DReaderInternal::RequestData(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **vtkNotUsed(inputVector),
+  vtkInformationVector *outputVector)
 {
+  // get the info objects
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the output
+  vtkStructuredGrid *output = vtkStructuredGrid::SafeDownCast(
+          outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
   FILE *xyzFp, *QFp, *funcFp;
   int error = 0;
-  vtkStructuredGrid *output = this->GetOutput();
   vtkPointData *outputPD = output->GetPointData();
  
   //Initialize output and read geometry
@@ -799,13 +821,13 @@ void vtkVisItPLOT3DReaderInternal::Execute()
     {
     output->Initialize();
     vtkErrorMacro(<< "Must specify geometry file");
-    return;
+    return 0;
     }
   if ((xyzFp = fopen(this->XYZFileName, "r")) == NULL)
     {
     output->Initialize();
     vtkErrorMacro(<< "File: " << this->XYZFileName << " not found");
-    return;
+    return 0;
     }
   if (this->FileType == ASCII)
   {
@@ -824,7 +846,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
   {
     output->Initialize();
     vtkErrorMacro(<<"Error reading XYZ file");
-    return;
+    return 0;
   }
 
   // Read solution file (if available and requested)
@@ -838,7 +860,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
       {
       output->Initialize();
       vtkErrorMacro(<< "File: " << this->QFileName << " not found");
-      return;
+      return 0;
       }
 
     if (this->FileType == ASCII) 
@@ -858,7 +880,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
     {
       output->Initialize();
       vtkErrorMacro(<<"Error reading solution file");
-      return;
+      return 0;
     }
 
     // Read solutions as general point attribute data
@@ -885,7 +907,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
       {
       output->Initialize();
       vtkErrorMacro(<< "File: " << this->FunctionFileName << " not found");
-      return;
+      return 0;
       }
 
     if (this->FileType == ASCII) 
@@ -904,7 +926,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
     if (error)
       {
       vtkErrorMacro(<<"Error reading function file");
-      return;
+      return 0;
       }
     }
 
@@ -916,7 +938,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
       {
       output->Initialize();
       vtkErrorMacro(<< "File: "<<this->VectorFunctionFileName <<" not found");
-      return;
+      return 0;
       }
 
     if (this->FileType == ASCII)
@@ -936,7 +958,7 @@ void vtkVisItPLOT3DReaderInternal::Execute()
       {
       output->Initialize();
       vtkErrorMacro(<<"Error reading vector function file");
-      return;
+      return 0;
       }
     }
 
@@ -967,6 +989,8 @@ void vtkVisItPLOT3DReaderInternal::Execute()
     this->Momentum->UnRegister(this);
     this->Momentum = NULL;
     }
+
+  return 1;
 }
 
 
@@ -1136,6 +1160,8 @@ int vtkVisItPLOT3DReaderInternal::ReadGridDimensions(FILE *fp,
     ReadNumbers(fp,1,&numGrids);
   }
 
+  vtkInformation *outInfo = this->GetExecutive()->GetOutputInformation(0);
+
   if (this->Dimension == THREE)
   {
     if (ReadNumbers(fp,3*this->NumberOfGrids,dim))
@@ -1145,9 +1171,10 @@ int vtkVisItPLOT3DReaderInternal::ReadGridDimensions(FILE *fp,
     gridSize = dim[3 * this->GridNumber] * dim[1 + 3 * this->GridNumber] 
                                          * dim[2 + 3 * this->GridNumber];
 
-    output->SetWholeExtent( 0, dim[3 * this->GridNumber] -1,
-                             0, dim[1 + 3 * this->GridNumber] -1,
-                             0, dim[2 + 3 * this->GridNumber] -1);
+    int wholeExtent[6] = { 0, dim[1 + 3 * this->GridNumber] -1,
+                           0, dim[2 + 3 * this->GridNumber] -1 };
+
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExtent, 6);
   }
   else
   {
@@ -1156,8 +1183,11 @@ int vtkVisItPLOT3DReaderInternal::ReadGridDimensions(FILE *fp,
       return 1;
     }
     gridSize = dim[ 2 * this->GridNumber] * dim[ 1 + 2 * GridNumber];
-    output->SetWholeExtent(0, dim[2 * this->GridNumber] -1,
-                            0, dim[1 + 2 * this->GridNumber] -1, 0, 1);
+
+    int wholeExtent[6] = { 0, dim[2 * this->GridNumber] -1, 0,
+                           dim[1 + 2 * this->GridNumber] -1, 0, 1 };
+
+    outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),wholeExtent,6);
   }
 
   this->NumberOfPoints = gridSize;
@@ -2903,7 +2933,7 @@ avtPLOT3DFileFormat::GetMesh(int dom, const char *name)
     reader->SetGridNumber(dom);
     reader->SetScalarFunctionNumber(-1);
     reader->SetVectorFunctionNumber(-1);
-    reader->GetOutput()->Update();
+    reader->Update();
     vtkDataSet *rv = (vtkDataSet *) reader->GetOutput()->NewInstance();
     rv->ShallowCopy(reader->GetOutput());
 
@@ -2983,7 +3013,7 @@ avtPLOT3DFileFormat::GetVar(int dom, const char *name)
 
     reader->SetScalarFunctionNumber(var);
     reader->SetGridNumber(dom);
-    reader->GetOutput()->Update();
+    reader->Update();
 
     vtkDataArray *dat = reader->GetOutput()->GetPointData()->GetScalars();
     if (dat == NULL)
@@ -3048,7 +3078,8 @@ avtPLOT3DFileFormat::GetVectorVar(int dom, const char *name)
 
     reader->SetVectorFunctionNumber(var);
     reader->SetGridNumber(dom);
-    reader->GetOutput()->Update();
+
+    reader->Update();
 
     vtkDataArray *dat = reader->GetOutput()->GetPointData()->GetVectors();
     if (dat == NULL)
