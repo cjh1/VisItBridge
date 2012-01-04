@@ -67,14 +67,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TimingsManager.h"
 
 #include "limits.h"
-#include <vtkstd/set>
+#include <set>
 
 struct vtkAvtSTMDFileFormatAlgorithm::vtkAvtSTMDFileFormatAlgorithmInternal
 {  
   unsigned int MinDataset;
   unsigned int MaxDataset;
   bool HasUpdateRestriction;
-  vtkstd::set<int> UpdateIndices;
+  std::set<int> UpdateIndices;
   vtkAvtSTMDFileFormatAlgorithmInternal():
     MinDataset(0),
     MaxDataset(0),
@@ -203,7 +203,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
       {
       const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
-      vtkstd::string name = meshMetaData.name;
+      std::string name = meshMetaData.name;
 
       //before we get the mesh see if the user wanted to load this mesh
       if (this->MeshArraySelection &&
@@ -302,7 +302,7 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
     }
 
   //assign the info the the AMR, and create the uniform grids
-  vtkstd::string name = meshMetaData->name;
+  std::string name = meshMetaData->name;
   vtkRectilinearGrid *rgrid = NULL;
   int meshIndex=0;
   for ( int i=0; i < numGroups; ++i)
@@ -388,7 +388,7 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlock(
     return;
     }
 
-  vtkstd::string name = meshMetaData->name;
+  std::string name = meshMetaData->name;
 
   //block names
   stringVector blockNames = meshMetaData->blockNames;
@@ -456,7 +456,7 @@ void vtkAvtSTMDFileFormatAlgorithm::FillBlockWithCSG(
 {
   //this still does not support multi-block csg meshes
 
-  vtkstd::string meshName = meshMetaData->name;
+  std::string meshName = meshMetaData->name;
 
   //block names
   stringVector blockNames = meshMetaData->blockNames;
@@ -504,7 +504,7 @@ bool vtkAvtSTMDFileFormatAlgorithm::ValidAMR( const avtMeshMetaData *meshMetaDat
 {
 
   //I can't find an easy way to determine the type of a sub mesh
-  vtkstd::string name = meshMetaData->name;
+  std::string name = meshMetaData->name;
   vtkRectilinearGrid *rgrid = NULL;
 
   for ( int i=0; i < meshMetaData->numBlocks; ++i )
@@ -582,7 +582,7 @@ void vtkAvtSTMDFileFormatAlgorithm::GetDomainRange(const avtMeshMetaData *meshMe
     if (this->Internal->HasUpdateRestriction)
       {
       int* idx = outInfo->Get(vtkCompositeDataPipeline::UPDATE_COMPOSITE_INDICES());      
-      this->Internal->UpdateIndices = vtkstd::set<int>(idx, idx+length);
+      this->Internal->UpdateIndices = std::set<int>(idx, idx+length);
       }
     }
   if (!this->Internal->HasUpdateRestriction)

@@ -239,7 +239,7 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       continue;
       }
 
-    vtkstd::string name = scalarMeta.name;
+    std::string name = scalarMeta.name;
 
     //now check against what arrays the user has selected to load
     bool selected = false;
@@ -303,7 +303,7 @@ void vtkAvtFileFormatAlgorithm::AssignProperties( vtkDataSet *data,
       //this mesh doesn't have this vector property, go to next
       continue;
       }
-    vtkstd::string name = vectorMeta.name;
+    std::string name = vectorMeta.name;
 
     //now check agianst what arrays the user has selected to load
     bool selected = false;
@@ -374,7 +374,7 @@ void vtkAvtFileFormatAlgorithm::AssignMaterials( vtkDataSet *data,
       continue;
       }    
         
-    vtkstd::string name = materialMetaData->name;
+    std::string name = materialMetaData->name;
     //lets first try and see if the data has been cached
     //get the aux data from the cache for the material
     vr = this->Cache->GetVoidRef(name.c_str(),
@@ -580,8 +580,8 @@ void vtkAvtFileFormatAlgorithm::SetupTemporalInformation(
 
   int numTimeValues;
   double timeRange[2];
-  vtkstd::vector< double > timesteps;
-  vtkstd::vector< int > cycles;
+  std::vector< double > timesteps;
+  std::vector< int > cycles;
 
   try
     {
@@ -651,7 +651,7 @@ void vtkAvtFileFormatAlgorithm::SetupDataArraySelections( )
   //add them to the point & cell selection arrays for user control if they don't already exist
   //by default all properties are disabled
   int size = this->MetaData->GetNumScalars();
-  vtkstd::string name;
+  std::string name;
   for ( int i=0; i < size; ++i)
     {
     const avtScalarMetaData scalarMetaData = this->MetaData->GetScalars(i);
@@ -717,7 +717,7 @@ void vtkAvtFileFormatAlgorithm::SetupMeshSelections( )
   //go through the meta data and get all the mesh names
   //by default all meshes are disabled but the first one
   int size = this->MetaData->GetNumMeshes();
-  vtkstd::string name;
+  std::string name;
   for ( int i=0; i < size; ++i)
     {
     const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);
@@ -743,7 +743,7 @@ void vtkAvtFileFormatAlgorithm::SetupMaterialSelections()
     }
   //go through the meta data and get all the material names  
   int size = this->MetaData->GetNumMaterials();
-  vtkstd::string name;
+  std::string name;
   for ( int i=0; i < size; ++i)
     {
     const avtMaterialMetaData* matMetaData = this->MetaData->GetMaterial(i);

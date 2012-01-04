@@ -138,7 +138,7 @@ void vtkAvtSTSDFileFormatAlgorithm::FillMultiBlock(vtkMultiBlockDataSet *output,
     }
   output->SetNumberOfBlocks( size );
 
-  vtkstd::string name;
+  std::string name;
   int blockIndex = 0;
   for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
     {

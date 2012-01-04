@@ -121,7 +121,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     for ( int i=0; i < this->MetaData->GetNumMeshes(); ++i)
       {
       const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( i );
-      vtkstd::string name = meshMetaData.name;
+      std::string name = meshMetaData.name;
 
       //before we get the mesh see if the user wanted to load this mesh
       if (this->MeshArraySelection &&
