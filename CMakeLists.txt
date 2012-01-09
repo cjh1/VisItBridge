@@ -216,6 +216,9 @@ VISIT_VTK_THIRD_PARTY_INCLUDE(NETCDF vtknetcdf/include)
 #setup png
 VISIT_VTK_THIRD_PARTY_INCLUDE(PNG vtkpng)
 
+#setup tiff
+VISIT_VTK_THIRD_PARTY_INCLUDE(TIFF vtktiff)
+
 
 #-----------------------------------------------------------------------------
 # Detect packages here. We could probably write macros that we can include from

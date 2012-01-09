@@ -115,6 +115,6 @@ set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
   "${VISIT_SOURCE_DIR}/parser;${tmp_include_dirs}")
 
 VTK_ADD_LIBRARY(visit_vtk ${VISIT_VTK_SOURCES})
-TARGET_LINK_LIBRARIES(visit_vtk lightweight_visit_vtk vtkGraphics vtkImaging vtktiff)
+TARGET_LINK_LIBRARIES(visit_vtk lightweight_visit_vtk vtkGraphics vtkImaging ${VTK_TIFF_LIBRARIES})
 
 VISIT_INSTALL_TARGETS(visit_vtk)
