@@ -55,6 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "avtMaterial.h"
 #include "avtMaterialMetaData.h"
 #include "avtScalarMetaData.h"
+#include "avtSpatialBoxSelection.h"
 #include "avtVariableCache.h"
 #include "avtVectorMetaData.h"
 #include "TimingsManager.h"
@@ -185,6 +186,10 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
     outInfo->Set(vtkStreamingDemandDrivenPipeline::MAXIMUM_NUMBER_OF_PIECES(),
       maxPieces);
     }
+
+  //setup any contracts that are needed for the dataset
+  //Currently we ask all datasets to load the entire mesh if possible
+  this->CreateAVTDataSelections();
 
   //Set up ghost levels
 
@@ -478,7 +483,8 @@ void vtkAvtFileFormatAlgorithm::SetupBlockBoundsInformation(
   int timeStep = this->GetCurrentTimeStep(outInfo);
   for ( int i=0; i < size; ++i)
     {    
-    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);    
+    const avtMeshMetaData *meshMetaData = this->MetaData->GetMesh(i);
+
     int numBlocks = meshMetaData->numBlocks;
     
     //setup the block that represents this mesh
@@ -544,6 +550,23 @@ bool vtkAvtFileFormatAlgorithm::GetDataSpatialExtents(const char* meshName,
       return true;
       }
   }
+
+//-----------------------------------------------------------------------------
+void vtkAvtFileFormatAlgorithm::CreateAVTDataSelections()
+{
+  //by default the box selection is a box from FLT MIN to FLT MAX so
+  //we will be asking the reader to load everything in.
+  avtSpatialBoxSelection* selectWholeMesh = new avtSpatialBoxSelection();
+
+  std::vector<avtDataSelection_p> selections;
+  selections.push_back(selectWholeMesh);
+
+  std::vector<bool> selectionResults(selections.size());
+
+  this->AvtFile->RegisterDataSelections(selections,&selectionResults);
+
+  std::cout << "Box Selection was a success: " <<selectionResults[0] << std::endl;
+}
 
 //-----------------------------------------------------------------------------
 unsigned int vtkAvtFileFormatAlgorithm::GetCurrentTimeStep(vtkInformation *outInfo)

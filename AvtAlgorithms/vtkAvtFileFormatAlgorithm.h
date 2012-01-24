@@ -45,6 +45,7 @@ class vtkInformation;
 class avtFileFormat;
 class avtDatabaseMetaData;
 class avtVariableCache;
+class avtMeshMetaData;
 //ETX
 
 class AVTALGORITHMS_EXPORT vtkAvtFileFormatAlgorithm : public vtkCompositeDataSetAlgorithm
@@ -149,6 +150,10 @@ protected:
     const int &timestep, const int &domain );
   bool GetDataSpatialExtents(const char* meshName,
     const int &timestep, const int &domain, double bounds[6]);
+
+  //creates a basic data selection based on bounds to pass to
+  //the reader so it loads everything
+  void CreateAVTDataSelections();
   //ETX
 
 
