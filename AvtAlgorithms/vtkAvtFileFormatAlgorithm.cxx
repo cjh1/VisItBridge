@@ -611,6 +611,28 @@ void vtkAvtFileFormatAlgorithm::SetupTemporalInformation(
     return;
     }
 
+
+  //in some case the times and cycles have all zero values
+  //that means the value should be actually the index I think.
+  //so we are going to 'fix' that
+  if(timesteps.size()>0 && timesteps[0] == timesteps[timesteps.size()-1])
+    {
+    //all the time steps are the same, do a fixup by saying
+    //we only have cycles
+    cycles.resize(timesteps.size());
+    timesteps.clear();
+    }
+
+  if(cycles.size()>0 && cycles[0] == cycles[cycles.size()-1])
+    {
+    //all the cycles are the same, do a fixup
+    int size = static_cast<int>(cycles.size());
+    for(int i=0; i < size; ++i)
+      {
+      cycles[i]=i;
+      }
+    }
+
   bool hasTime = timesteps.size() > 0;
   bool hasCycles = cycles.size() > 0;
   bool hasTimeAndCycles = hasTime && hasCycles;
