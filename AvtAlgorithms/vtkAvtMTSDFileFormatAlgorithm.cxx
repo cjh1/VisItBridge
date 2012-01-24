@@ -87,6 +87,7 @@ int vtkAvtMTSDFileFormatAlgorithm::RequestData(vtkInformation *request,
     {
     return 0;
     }
+  this->CreateAVTDataSelections();
 
   vtkMultiBlockDataSet *output = vtkMultiBlockDataSet::SafeDownCast(
     outInfo->Get(vtkDataObject::DATA_OBJECT()));

@@ -166,6 +166,8 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     {
     return 0;
     }
+  this->CreateAVTDataSelections();
+
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 

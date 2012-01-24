@@ -187,10 +187,6 @@ int vtkAvtFileFormatAlgorithm::RequestInformation(vtkInformation *request,
       maxPieces);
     }
 
-  //setup any contracts that are needed for the dataset
-  //Currently we ask all datasets to load the entire mesh if possible
-  this->CreateAVTDataSelections();
-
   //Set up ghost levels
 
   //setup user selection of meshes to load
@@ -564,8 +560,6 @@ void vtkAvtFileFormatAlgorithm::CreateAVTDataSelections()
   std::vector<bool> selectionResults(selections.size());
 
   this->AvtFile->RegisterDataSelections(selections,&selectionResults);
-
-  std::cout << "Box Selection was a success: " <<selectionResults[0] << std::endl;
 }
 
 //-----------------------------------------------------------------------------

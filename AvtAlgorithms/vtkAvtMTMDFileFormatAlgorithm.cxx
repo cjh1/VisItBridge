@@ -86,6 +86,7 @@ int vtkAvtMTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     {
     return 0;
     }
+  this->CreateAVTDataSelections();
 
   this->UpdatePiece =
     outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER());
