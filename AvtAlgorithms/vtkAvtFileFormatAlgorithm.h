@@ -88,10 +88,14 @@ protected:
   ~vtkAvtFileFormatAlgorithm();
 
   //helper method for none time aware readers
-  bool InitializeAVTReader(){ return InitializeAVTReader(0);};
+  bool InitializeAVTReader(){ return InitializeAVTReader(0);}
 
   //the visit reader wrapping will override the intialize method
   virtual bool InitializeAVTReader( const int &timestep );
+
+  //the visit readers that support time will overrid the ActivateTimestep method
+  virtual bool ActivateTimestep(const int &) {return false;}
+
   virtual void CleanupAVTReader();
 
   //Used to support requests for block and domain

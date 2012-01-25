@@ -53,6 +53,7 @@ protected:
   ~@PLUGIN_NAME@();
 
   virtual bool InitializeAVTReader( const int& timestep );
+  virtual bool ActivateTimestep( const int& timestep );
   char *FileName;
 
 private:

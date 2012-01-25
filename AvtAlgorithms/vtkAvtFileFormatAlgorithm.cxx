@@ -611,31 +611,28 @@ void vtkAvtFileFormatAlgorithm::SetupTemporalInformation(
     return;
     }
 
-
-  //in some case the times and cycles have all zero values
-  //that means the value should be actually the index I think.
-  //so we are going to 'fix' that
-  if(timesteps.size()>0 && timesteps[0] == timesteps[timesteps.size()-1])
-    {
-    //all the time steps are the same, do a fixup by saying
-    //we only have cycles
-    cycles.resize(timesteps.size());
-    timesteps.clear();
-    }
-
-  if(cycles.size()>0 && cycles[0] == cycles[cycles.size()-1])
-    {
-    //all the cycles are the same, do a fixup
-    int size = static_cast<int>(cycles.size());
-    for(int i=0; i < size; ++i)
-      {
-      cycles[i]=i;
-      }
-    }
-
   bool hasTime = timesteps.size() > 0;
   bool hasCycles = cycles.size() > 0;
   bool hasTimeAndCycles = hasTime && hasCycles;
+
+  //in some case the times and cycles have all zero values.
+  //This is caused by a file reader that generates the time value
+  //once the reader moves to that timestep.
+  //That kind of behaviour is not possible currently in ParaView. Instead
+  //we will force the reader to generate the time values for each timestep
+  //by cycling through everytime step but not requesting any data.
+  if(hasTime && timesteps[0] == timesteps[timesteps.size()-1])
+    {
+    //we have hit a timestep range that needs to be cycled
+    for(int i=0; i < timesteps.size();++i)
+      {
+      this->ActivateTimestep(i);
+      //Nek and other readers don't update the time info intill you
+      //call gettimes.
+      this->AvtFile->FormatGetTimes(timesteps);
+      }
+    }
+
 
   //need to figure out the use case of when cycles and timesteps don't match
   if (hasTimeAndCycles && timesteps.size()==cycles.size() )

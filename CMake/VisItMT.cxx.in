@@ -139,7 +139,21 @@ bool @PLUGIN_NAME@::InitializeAVTReader(  const int& timestep  )
   return true;
 }
 
-
+//-----------------------------------------------------------------------------
+bool @PLUGIN_NAME@::ActivateTimestep( const int& timestep )
+{
+  if(this->AvtFile)
+    {
+    @ARG_VISIT_READER_NAME@ *file = dynamic_cast<@ARG_VISIT_READER_NAME@*>
+      (this->AvtFile);
+    if ( file )
+      {
+      file->ActivateTimestep(timestep);
+      return true;
+      }
+    }
+  return false;
+}
 
 //-----------------------------------------------------------------------------
 void @PLUGIN_NAME@::PrintSelf(ostream& os, vtkIndent indent)
