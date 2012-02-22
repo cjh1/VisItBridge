@@ -38,7 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkDataArraySelection.h"
 
 #include "vtkAMRBox.h"
+#include "vtkOverlappingAMR.h"
 #include "vtkHierarchicalBoxDataSet.h"
+#include "vtkAMRUtilities.h"
 #include "vtkMultiBlockDataSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
@@ -127,7 +129,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
     //verify the mesh is correct
     if ( this->ValidAMR( &meshMetaData ) )
       {
-      this->OutputType = VTK_HIERARCHICAL_BOX_DATA_SET;
+      this->OutputType = VTK_OVERLAPPING_AMR;
       }
     }
 
@@ -143,6 +145,9 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestDataObject(vtkInformation *,
     {
     switch( this->OutputType )
       {
+      case VTK_OVERLAPPING_AMR:
+        output = vtkOverlappingAMR::New();
+        break;
       case VTK_HIERARCHICAL_BOX_DATA_SET:
         output = vtkHierarchicalBoxDataSet::New();
         break;
@@ -184,6 +189,16 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
     vtkHierarchicalBoxDataSet *output = vtkHierarchicalBoxDataSet::
       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
     this->FillAMR( output, &meshMetaData, 0, 0 );    
+    }
+
+  else if( this->OutputType == VTK_OVERLAPPING_AMR &&
+           this->MeshArraySelection &&
+           this->MeshArraySelection->GetNumberOfArraysEnabled()==1 )
+    {
+    const avtMeshMetaData meshMetaData = this->MetaData->GetMeshes( 0 );
+    vtkOverlappingAMR *output = vtkOverlappingAMR::
+       SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+    this->FillAMR( output, &meshMetaData, 0, 0 );
     }
 
   else if ( this->OutputType == VTK_MULTIBLOCK_DATA_SET )
@@ -242,7 +257,7 @@ int vtkAvtSTMDFileFormatAlgorithm::RequestData(vtkInformation *request,
 
 //-----------------------------------------------------------------------------
 int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
-  vtkHierarchicalBoxDataSet *amr, const avtMeshMetaData *meshMetaData,
+  vtkOverlappingAMR *amr, const avtMeshMetaData *meshMetaData,
   const int &timestep, const int &domain)
 {
   //we first need to determine if this AMR can be safely converted to a
@@ -344,10 +359,6 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
           fabs( rgrid->GetZCoordinates()->GetTuple1(1) -
           rgrid->GetZCoordinates()->GetTuple1(0)): 1;
 
-        //set up the extents for the grid
-        int extents[6];
-        rgrid->GetExtent( extents );
-
         int dims[3];
         rgrid->GetDimensions( dims );
 
@@ -363,15 +374,16 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
 
         this->AssignProperties( grid, name, timestep, meshIndex);
 
-        //now create the AMR Box
-        vtkAMRBox box(extents);
-        amr->SetDataSet(i,j,box,grid);
+        amr->SetDataSet(i,j,grid);
 
         grid->Delete();
         }
       ++meshIndex;
       }
     }
+
+  vtkAMRUtilities::GenerateMetaData(amr,NULL);
+  amr->GenerateVisibilityArrays();
   delete[] numDataSets;
   return 1;
 

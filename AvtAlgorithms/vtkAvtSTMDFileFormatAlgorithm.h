@@ -43,6 +43,7 @@ class vtkDataArray;
 class vtkDataArraySelection;
 class vtkDataSet;
 class vtkHierarchicalBoxDataSet;
+class vtkOverlappingAMR;
 class vtkMultiBlockDataSet;
 
 
@@ -76,9 +77,9 @@ protected:
                           vtkInformationVector* outputVector);
 
   //BTX
-  int FillAMR( vtkHierarchicalBoxDataSet *amr,
-                         const avtMeshMetaData *meshMetaData,
-                         const int &timestep, const int &domain);
+  int FillAMR( vtkOverlappingAMR *amr,
+               const avtMeshMetaData *meshMetaData,
+               const int &timestep, const int &domain);
   void FillBlock( vtkMultiBlockDataSet *block,
                          const avtMeshMetaData *meshMetaData,
                          const int &timestep);
