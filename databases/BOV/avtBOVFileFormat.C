@@ -703,10 +703,10 @@ avtBOVFileFormat::ReadWholeAndExtractBrick(void *dest, bool gzipped,
     {
         // Read past the specified offset.
         if(byteOffset > 0)
-            gzseek(gz_handle, byteOffset, SEEK_SET);
+            gzseek((gzFile)gz_handle, byteOffset, SEEK_SET);
 
         // Read the whole dataset
-        gzread(gz_handle, whole_buff, whole_nelem * unit_size);
+        gzread((gzFile)gz_handle, whole_buff, whole_nelem * unit_size);
     }
     else
     {
@@ -1046,9 +1046,9 @@ avtBOVFileFormat::GetVar(int dom, const char *var)
         {
             // Read past the specified offset.
             if(byteOffset > 0)
-                gzseek(gz_handle, byteOffset, SEEK_SET);
+                gzseek((gzFile)gz_handle, byteOffset, SEEK_SET);
 
-            gzread(gz_handle, rv->GetVoidPointer(0),
+            gzread((gzFile)gz_handle, rv->GetVoidPointer(0),
                    nvals * dataNumComponents * unit_size);
         }
         else
@@ -1192,7 +1192,7 @@ avtBOVFileFormat::GetVar(int dom, const char *var)
     // Close the file descriptors.
     //
     if (gzipped)
-        gzclose(gz_handle);
+        gzclose((gzFile)gz_handle);
     else
         fclose(file_handle);
 
