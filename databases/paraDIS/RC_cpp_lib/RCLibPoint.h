@@ -1,10 +1,11 @@
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#ifndef _RCLIBPOINT_H
+#define _RCLIBPOINT_H
 #include "EffectiveCPP.h" // gives us free operator - and operator +
 #include <iostream>
 #include <vector>
 #include <iomanip> 
 #include <istream>
+#include "stringutil.h"
 #include "DebugStream.h"
 
 namespace rclib {
