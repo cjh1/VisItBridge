@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkCompositeDataPipeline.h"
 #include "vtkSmartPointer.h"
+#include "vtkCompositeDataSet.h"
 
 #include "vtkCallbackCommand.h"
 #include "vtkDataArraySelection.h"
@@ -505,7 +506,7 @@ void vtkAvtFileFormatAlgorithm::SetupBlockBoundsInformation(
         {
         piece_metadata->Set(
         vtkStreamingDemandDrivenPipeline::PIECE_BOUNDING_BOX(),bounds,6);
-        piece_metadata->Set(vtkCompositeDataPipeline::COMPOSITE_INDEX(), index);
+        piece_metadata->Set(vtkCompositeDataSet::COMPOSITE_INDEX(), index);
         }
       ++index;
       }
