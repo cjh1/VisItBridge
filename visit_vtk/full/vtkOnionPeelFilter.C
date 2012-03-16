@@ -63,6 +63,8 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkUnsignedIntArray.h>
 #include <vtkVisItUtility.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 
 //======================================================================
@@ -197,23 +199,21 @@ vtkOnionPeelFilter::SetBadSeedCallback(BadSeedCallback cb, void *args)
 //======================================================================
 
 bool 
-vtkOnionPeelFilter::Initialize(const int numIds)
+vtkOnionPeelFilter::Initialize(vtkDataSet *input, const int numIds)
 {
     this->maxLayersReached = 0;
     this->maxLayerNum = VTK_LARGE_INTEGER;
-
-    vtkDataSet *input = this->GetInput();
 
     if (useLogicalIndex)
     {
         int dims[3] = { 1, 1, 1};
         if (input->GetDataObjectType() == VTK_STRUCTURED_GRID)
         {
-            ((vtkStructuredGrid*)this->GetInput())->GetDimensions(dims);
+            ((vtkStructuredGrid*)input)->GetDimensions(dims);
         }
         else if (input->GetDataObjectType() == VTK_RECTILINEAR_GRID)
         {
-            ((vtkRectilinearGrid*)this->GetInput())->GetDimensions(dims);
+            ((vtkRectilinearGrid*)input)->GetDimensions(dims);
         }
         if (this->logicalIndex[0] >= dims[0] ||
             this->logicalIndex[1] >= dims[1] ||
@@ -300,7 +300,7 @@ vtkOnionPeelFilter::Initialize(const int numIds)
         }
         else 
         {
-            this->FindCellsCorrespondingToOriginal(this->SeedId, this->layerCellIds);
+            this->FindCellsCorrespondingToOriginal(this->SeedId, this->layerCellIds, input);
             if (this->layerCellIds->GetNumberOfIds() == 0) 
             {
                 if (bsc_callback != NULL) 
@@ -315,7 +315,7 @@ vtkOnionPeelFilter::Initialize(const int numIds)
     {
         if (!this->ReconstructOriginalCells)
         {
-            GetInput()->GetPointCells(this->SeedId, this->layerCellIds); 
+            input->GetPointCells(this->SeedId, this->layerCellIds);
             if (this->layerCellIds->GetNumberOfIds() == 0) 
             {
                 if (bsc_callback != NULL) 
@@ -329,7 +329,7 @@ vtkOnionPeelFilter::Initialize(const int numIds)
         {
             int i;
             vtkIdList *nodes = vtkIdList::New();
-            this->FindNodesCorrespondingToOriginal(this->SeedId, nodes);
+            this->FindNodesCorrespondingToOriginal(this->SeedId, nodes, input);
             if (nodes->GetNumberOfIds() == 0)
             {
                 if (bsc_callback != NULL) 
@@ -350,7 +350,7 @@ vtkOnionPeelFilter::Initialize(const int numIds)
             nodes->Delete();
             neighbors->Delete();
             vtkUnsignedIntArray *origCells = vtkUnsignedIntArray::SafeDownCast(
-                this->GetInput()->GetCellData()->GetArray("avtOriginalCellNumbers"));
+                input->GetCellData()->GetArray("avtOriginalCellNumbers"));
 
             if (origCells)
             {
@@ -364,7 +364,7 @@ vtkOnionPeelFilter::Initialize(const int numIds)
                         int index = cellId *nc + comp;;
                         origIds->InsertNextId(oc[index]);
                 }
-                FindCellsCorrespondingToOriginal(origIds, this->layerCellIds);
+                FindCellsCorrespondingToOriginal(origIds, this->layerCellIds, input);
                 origIds->Delete();
             }
             
@@ -415,7 +415,7 @@ vtkOnionPeelFilter::Initialize(const int numIds)
 //
 //======================================================================
 void 
-vtkOnionPeelFilter::Grow()
+vtkOnionPeelFilter::Grow(vtkDataSet *input)
 {
     vtkIdList  *currentLayerList  = vtkIdList::New();
     int         totalCurrentCells = this->layerCellIds->GetNumberOfIds();
@@ -456,11 +456,11 @@ vtkOnionPeelFilter::Grow()
 
         if (this->AdjacencyType == VTK_FACE_ADJACENCY)  
         {
-            FindCellNeighborsByFaceAdjacency(currentLayerList, this->layerCellIds);
+            FindCellNeighborsByFaceAdjacency(currentLayerList, this->layerCellIds, input);
         }
         else
         {
-            FindCellNeighborsByNodeAdjacency(currentLayerList, this->layerCellIds);
+            FindCellNeighborsByNodeAdjacency(currentLayerList, this->layerCellIds, input);
         }
 
         // did we add new cells??? 
@@ -469,7 +469,7 @@ vtkOnionPeelFilter::Grow()
             if (this->ReconstructOriginalCells)
             {
                 vtkUnsignedIntArray *origCells = vtkUnsignedIntArray::SafeDownCast(
-                  this->GetInput()->GetCellData()->GetArray("avtOriginalCellNumbers"));
+                  input->GetCellData()->GetArray("avtOriginalCellNumbers"));
 
                 if (origCells)
                 {
@@ -484,7 +484,7 @@ vtkOnionPeelFilter::Grow()
                         int index = cellId *nc + comp;;
                         origIds->InsertNextId(oc[index]);
                     }
-                    FindCellsCorrespondingToOriginal(origIds, this->layerCellIds);
+                    FindCellsCorrespondingToOriginal(origIds, this->layerCellIds, input);
                     origIds->Delete();
                 }
             }
@@ -546,23 +546,33 @@ vtkOnionPeelFilter::Grow()
 //
 //======================================================================
 
-void 
-vtkOnionPeelFilter::Execute()
+int
+vtkOnionPeelFilter::RequestData(
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector)
 {
-    vtkDataSet *input= this->GetInput();
+    // get the info objects
+    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
+    // get the input and output
+    vtkDataSet *input = vtkDataSet::SafeDownCast(
+       inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
+      outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     vtkDebugMacro(<<"Generating OnionPeelFilter Layers");
 
     bool success;
     if (this->SeedIdIsForCell)
-       success = this->Initialize(input->GetNumberOfCells());
+       success = this->Initialize(input, input->GetNumberOfCells());
     else 
-       success = this->Initialize(input->GetNumberOfPoints());
+       success = this->Initialize(input, input->GetNumberOfPoints());
 
     if (!success)
     {
-        return;
+        return 0;
     }
     // check for out-of-range error on RequestedLayer
 
@@ -575,9 +585,11 @@ vtkOnionPeelFilter::Execute()
         this->RequestedLayer  = this->maxLayerNum ;
     }
 
-    Grow();
+    Grow(input);
 
-    this->GenerateOutputGrid();
+    this->GenerateOutputGrid(input, output);
+
+    return 1;
 
 } // Execute
 
@@ -616,14 +628,12 @@ vtkOnionPeelFilter::Execute()
 //
 //=======================================================================
 void 
-vtkOnionPeelFilter::GenerateOutputGrid()
+vtkOnionPeelFilter::GenerateOutputGrid(vtkDataSet *input, vtkUnstructuredGrid *output)
 {
     vtkDebugMacro(<<"GenerateOutputGrid::");
 
-    vtkDataSet          *input      = this->GetInput();
     vtkPointData        *inPD       = input->GetPointData();
     vtkCellData         *inCD       = input->GetCellData();
-    vtkUnstructuredGrid *output     = this->GetOutput();
     vtkPointData        *outPD      = output->GetPointData();
     vtkCellData         *outCD      = output->GetCellData();
     vtkIdList           *cellPts    = vtkIdList::New();
@@ -735,9 +745,8 @@ vtkOnionPeelFilter::PrintSelf(ostream& os, vtkIndent indent)
 //=======================================================================
 void 
 vtkOnionPeelFilter::FindCellNeighborsByNodeAdjacency
-(vtkIdList * prevLayerIds, vtkIdList* neighborCellIds)
+(vtkIdList * prevLayerIds, vtkIdList* neighborCellIds, vtkDataSet *input)
 {
-    vtkDataSet *input      = this->GetInput();
     vtkIdList  *ids        = vtkIdList::New();
     vtkIdList  *neighbors  = vtkIdList::New();
     int         pntId;
@@ -804,9 +813,8 @@ vtkOnionPeelFilter::FindCellNeighborsByNodeAdjacency
 
 void 
 vtkOnionPeelFilter::FindCellNeighborsByFaceAdjacency
-(vtkIdList* prevLayerIds, vtkIdList* neighborCellIds)
+(vtkIdList* prevLayerIds, vtkIdList* neighborCellIds, vtkDataSet *input)
 {
-    vtkDataSet *input     = this->GetInput();
     vtkIdList  *neighbors = vtkIdList::New();
     vtkIdList  *facePts   = NULL;
     vtkIdList  *edgePts   = NULL;
@@ -949,10 +957,11 @@ vtkOnionPeelFilter::SetSeedId(const int seed)
 //=======================================================================
 
 void
-vtkOnionPeelFilter::FindCellsCorrespondingToOriginal(int orig, vtkIdList *group)
+vtkOnionPeelFilter::FindCellsCorrespondingToOriginal(int orig, vtkIdList *group,
+                                                     vtkDataSet *input)
 {
     vtkUnsignedIntArray *origCells = vtkUnsignedIntArray::SafeDownCast(
-        this->GetInput()->GetCellData()->GetArray("avtOriginalCellNumbers"));
+        input->GetCellData()->GetArray("avtOriginalCellNumbers"));
 
     if (origCells)
     {
@@ -994,10 +1003,12 @@ vtkOnionPeelFilter::FindCellsCorrespondingToOriginal(int orig, vtkIdList *group)
 //=======================================================================
 
 void
-vtkOnionPeelFilter::FindCellsCorrespondingToOriginal(vtkIdList *origs, vtkIdList *group)
+vtkOnionPeelFilter::FindCellsCorrespondingToOriginal(vtkIdList *origs,
+                                                     vtkIdList *group,
+                                                     vtkDataSet *input)
 {
     vtkUnsignedIntArray *origCells = vtkUnsignedIntArray::SafeDownCast(
-        this->GetInput()->GetCellData()->GetArray("avtOriginalCellNumbers"));
+        input->GetCellData()->GetArray("avtOriginalCellNumbers"));
 
     if (origCells)
     {
@@ -1038,10 +1049,11 @@ vtkOnionPeelFilter::FindCellsCorrespondingToOriginal(vtkIdList *origs, vtkIdList
 //=======================================================================
 
 void
-vtkOnionPeelFilter::FindNodesCorrespondingToOriginal(int orig, vtkIdList *group)
+vtkOnionPeelFilter::FindNodesCorrespondingToOriginal(int orig, vtkIdList *group,
+                                                     vtkDataSet *input)
 {
     vtkIntArray *origNodes = vtkIntArray::SafeDownCast(
-        this->GetInput()->GetPointData()->GetArray("avtOriginalNodeNumbers"));
+        input->GetPointData()->GetArray("avtOriginalNodeNumbers"));
 
     if (origNodes)
     {
@@ -1058,4 +1070,11 @@ vtkOnionPeelFilter::FindNodesCorrespondingToOriginal(int orig, vtkIdList *group)
     }
 }
 
+//----------------------------------------------------------------------------
+int vtkOnionPeelFilter::FillInputPortInformation(int vtkNotUsed(port),
+                                                 vtkInformation* info)
+{
+  info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
+  return 1;
+}
 

@@ -1145,8 +1145,8 @@ avtTransformManager::CSGToDiscrete(const avtDatabaseMetaData *const md,
                     }
 
                 }
-                dgrid->Update();
-
+                // Not needed (VTK Team)
+                // dgrid->Update();
                 //
                 // Cache the discretized mesh for this timestep
                 //

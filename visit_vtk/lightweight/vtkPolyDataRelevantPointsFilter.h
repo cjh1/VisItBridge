@@ -56,7 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __vtkPolyDataRelevantPointsFilter_h
 #include <visit_vtk_light_exports.h>
 
-#include "vtkPolyDataToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 
 // ***************************************************************************
 // Modifications:
@@ -66,11 +66,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ***************************************************************************
 
 class VISIT_VTK_LIGHT_API vtkPolyDataRelevantPointsFilter : 
-public vtkPolyDataToPolyDataFilter
+public vtkPolyDataAlgorithm
 {
 public:
   static vtkPolyDataRelevantPointsFilter *New();
-  vtkTypeMacro(vtkPolyDataRelevantPointsFilter, vtkPolyDataToPolyDataFilter);
+  vtkTypeMacro(vtkPolyDataRelevantPointsFilter, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
 protected:
@@ -78,11 +78,11 @@ protected:
  ~vtkPolyDataRelevantPointsFilter(){};
 
   // Usual data generation method
-  void Execute();
+ int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
 private:
   vtkPolyDataRelevantPointsFilter(const vtkPolyDataRelevantPointsFilter&); 
-  void operator=(const vtkPolyDataRelevantPointsFilter&); 
+  void operator=(const vtkPolyDataRelevantPointsFilter&);
 };
 
 #endif

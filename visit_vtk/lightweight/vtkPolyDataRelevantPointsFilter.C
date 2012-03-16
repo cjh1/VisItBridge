@@ -42,6 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkPolyDataRelevantPointsFilter.h"
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
@@ -76,15 +78,23 @@ vtkStandardNewMacro(vtkPolyDataRelevantPointsFilter);
 //
 // ****************************************************************************
 
-void vtkPolyDataRelevantPointsFilter::Execute()
+int vtkPolyDataRelevantPointsFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                                                 vtkInformationVector **inputVector,
+                                                 vtkInformationVector *outputVector )
 {
   int   i, j, k;
 
   //
   // Initialize some frequently used values.
   //
-  vtkPolyData  *input  = this->GetInput();
-  vtkPolyData  *output = this->GetOutput();
+
+  vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation* outInfo = outputVector->GetInformationObject(0);
+  
+  vtkPolyData  *input  = vtkPolyData::SafeDownCast(
+    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData  *output = vtkPolyData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
   vtkPoints *inPts  = input->GetPoints();
   int numPts        = input->GetNumberOfPoints();
   int numCells      = input->GetNumberOfCells();
@@ -95,11 +105,11 @@ void vtkPolyDataRelevantPointsFilter::Execute()
   vtkDebugMacro(<<"Beginning PolyData Relevant Points Filter ");
   if (input == NULL) {
       vtkErrorMacro(<<"Input is NULL");
-      return;
+      return 0;
   }
   if ( (numPts<1) || (inPts == NULL ) ) {
       vtkErrorMacro(<<"No data to Operate On!");
-      return;
+      return 0;
   }
 
   //
@@ -211,6 +221,7 @@ void vtkPolyDataRelevantPointsFilter::Execute()
   delete [] pts;
   delete [] oldToNew;
   delete [] newToOld;
+  return 1;
 }
 
 //-----------------------------------------------------------------------------

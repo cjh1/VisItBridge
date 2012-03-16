@@ -36,14 +36,14 @@
 #ifndef __vtkVisItCellDataToPointData_h
 #define __vtkVisItCellDataToPointData_h
 
-#include "vtkDataSetToDataSetFilter.h"
+#include "vtkDataSetAlgorithm.h"
 #include <visit_vtk_exports.h>
 
-class VISIT_VTK_API vtkVisItCellDataToPointData : public vtkDataSetToDataSetFilter
+class VISIT_VTK_API vtkVisItCellDataToPointData : public vtkDataSetAlgorithm
 {
 public:
   static vtkVisItCellDataToPointData *New();
-  vtkTypeMacro(vtkVisItCellDataToPointData,vtkDataSetToDataSetFilter);
+  vtkTypeMacro(vtkVisItCellDataToPointData,vtkDataSetAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -58,7 +58,7 @@ protected:
   vtkVisItCellDataToPointData();
   ~vtkVisItCellDataToPointData() {};
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   int PassCellData;
 private:

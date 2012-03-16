@@ -167,7 +167,7 @@ void vtkAvtSTSDFileFormatAlgorithm::FillMultiBlock(vtkMultiBlockDataSet *output,
         vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::SafeDownCast(data);
         vtkUnstructuredGridRelevantPointsFilter *clean =
             vtkUnstructuredGridRelevantPointsFilter::New();
-        clean->SetInput( ugrid );
+        clean->SetInputData( ugrid );
         clean->Update();
         output->SetBlock(blockIndex,clean->GetOutput());
         clean->Delete();
@@ -175,7 +175,7 @@ void vtkAvtSTSDFileFormatAlgorithm::FillMultiBlock(vtkMultiBlockDataSet *output,
       else if(meshMetaData.meshType == AVT_SURFACE_MESH)
         {
         vtkCleanPolyData *clean = vtkCleanPolyData::New();
-        clean->SetInput( data );
+        clean->SetInputData( data );
         clean->ToleranceIsAbsoluteOn();
         clean->SetAbsoluteTolerance(0.0);
         clean->ConvertStripsToPolysOff();

@@ -51,6 +51,8 @@
 #include <vtkRectilinearGrid.h>
 #include <vtkStructuredGrid.h>
 #include <vtkUnsignedCharArray.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 #include <avtGhostData.h>
 #include <avtIntervalTree.h>
@@ -2496,7 +2498,6 @@ avtStructuredDomainBoundaries::CreateGhostZones(vtkDataSet *outMesh,
 
     outMesh->GetCellData()->AddArray(ghostCells);
     ghostCells->Delete();
-    outMesh->SetUpdateGhostLevel(0);
 
     //
     //  Create a field-data array indicating the extents of real zones.

@@ -49,6 +49,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkPolyData.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkVisItUtility.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 // **************************************************************************
 //  Modifications:
@@ -85,12 +87,17 @@ vtkVertexFilter::vtkVertexFilter()
 //
 // ****************************************************************************
 
-void vtkVertexFilter::Execute(void)
+int vtkVertexFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                                 vtkInformationVector **inputVector,
+                                 vtkInformationVector *outputVector)
 {
-  int   i, j;
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
-  vtkDataSet  *input  = this->GetInput();
-  vtkPolyData *output = this->GetOutput();
+  // get the input and output
+  vtkDataSet *input = vtkDataSet::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   vtkCellData  *inCd = input->GetCellData();
   vtkPointData *inPd = input->GetPointData();
@@ -108,16 +115,16 @@ void vtkVertexFilter::Execute(void)
     // We want to put vertices at each of the points, but only if the vertices
     // are incident to a cell.
     int *lookupList = new int[nPts];
-    for (i = 0 ; i < nPts ; i++)
+    for (int i = 0 ; i < nPts ; i++)
       {
       lookupList[i] = 0;
       }
 
-    for (i = 0 ; i < nCells ; i++)
+    for (int i = 0 ; i < nCells ; i++)
       {
       vtkCell *cell = input->GetCell(i);
       int nPtsForThisCell = cell->GetNumberOfPoints();
-      for (j = 0 ; j < nPtsForThisCell ; j++)
+      for (int j = 0 ; j < nPtsForThisCell ; j++)
         {
         int id = cell->GetPointId(j);
         lookupList[id] = 1;
@@ -125,7 +132,7 @@ void vtkVertexFilter::Execute(void)
       }
 
     nOutPts = 0;
-    for (i = 0 ; i < nPts ; i++)
+    for (int i = 0 ; i < nPts ; i++)
       {
       if (lookupList[i] != 0)
         {
@@ -136,7 +143,7 @@ void vtkVertexFilter::Execute(void)
     outPts->SetNumberOfPoints(nOutPts);
     outPD->CopyAllocate(inPd, nOutPts);
     int count = 0;
-    for (i = 0 ; i < nPts ; i++)
+    for (int i = 0 ; i < nPts ; i++)
       {
       if (lookupList[i] != 0)
         {
@@ -164,7 +171,7 @@ void vtkVertexFilter::Execute(void)
         ugrid = (vtkUnstructuredGrid *) input;
     }
 
-    for (i = 0 ; i < nOutPts ; i++)
+    for (int i = 0 ; i < nOutPts ; i++)
       {
       // Calling GetCellCenter on ConvexPointSet cells takes ~1/2 second,
       // so avoid that if possible.
@@ -177,7 +184,7 @@ void vtkVertexFilter::Execute(void)
           point[1] = 0.;
           point[2] = 0.;
           double weight = 1./npts;
-          for (j = 0 ; j < npts ; j++)
+          for (int j = 0 ; j < npts ; j++)
           {
               double pt2[3];
               ugrid->GetPoint(pts[j], pt2);
@@ -195,13 +202,15 @@ void vtkVertexFilter::Execute(void)
 
   vtkIdType onevertex[1];
   output->Allocate(nOutPts);
-  for (i = 0 ; i < nOutPts ; i++)
+  for (int i = 0 ; i < nOutPts ; i++)
     {
     onevertex[0] = i;
     output->InsertNextCell(VTK_VERTEX, 1, onevertex);
     }
   output->SetPoints(outPts);
   outPts->Delete();
+
+  return 1;
 }
 
 

@@ -49,6 +49,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkVisItUtility.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 // **************************************************************************
 //  Modifications:
@@ -107,10 +109,17 @@ void vtkVectorReduceFilter::SetLimitToOriginal(bool lto)
 //
 // ****************************************************************************
 
-void vtkVectorReduceFilter::Execute(void)
+int vtkVectorReduceFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                                       vtkInformationVector **inputVector,
+                                       vtkInformationVector *outputVector)
 {
-  vtkDataSet *input  = this->GetInput();
-  vtkPolyData *output = this->GetOutput();
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkPolyData *input = vtkPolyData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   vtkCellData *inCd = input->GetCellData();
   vtkPointData *inPd = input->GetPointData();
@@ -126,14 +135,14 @@ void vtkVectorReduceFilter::Execute(void)
   if (inPvecs == NULL && inCvecs == NULL)
     {
     vtkErrorMacro(<<"No vectors to reduce");
-    return;
+    return 0;
     }
 
   // Determine what the stride is.
   if (stride <= 0 && numEls <= 0)
     {
     vtkErrorMacro(<<"Invalid stride");
-    return;
+    return 0;
     }
 
   float actingStride = stride;
@@ -294,6 +303,8 @@ void vtkVectorReduceFilter::Execute(void)
     onevertex[0] = i;
     output->InsertNextCell(VTK_VERTEX, 1, onevertex);
     }
+
+  return 1;
 }
 
   

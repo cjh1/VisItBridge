@@ -40,7 +40,7 @@
 #define VTK_VISIT_CLIPPER_H
 
 #include <visit_vtk_exports.h>
-#include "vtkDataSetToUnstructuredGridFilter.h"
+#include "vtkUnstructuredGridAlgorithm.h"
 
 class vtkImplicitFunction;
 class vtkUnstructuredGrid;
@@ -83,10 +83,10 @@ class vtkUnstructuredGrid;
 // ****************************************************************************
 
 class VISIT_VTK_API vtkVisItClipper
-    : public vtkDataSetToUnstructuredGridFilter
+    : public vtkUnstructuredGridAlgorithm
 {
   public:
-    vtkTypeMacro(vtkVisItClipper,vtkDataSetToUnstructuredGridFilter);
+    vtkTypeMacro(vtkVisItClipper,vtkUnstructuredGridAlgorithm);
     void PrintSelf(ostream& os, vtkIndent indent);
 
     static vtkVisItClipper *New();
@@ -107,8 +107,8 @@ class VISIT_VTK_API vtkVisItClipper
     vtkVisItClipper();
     ~vtkVisItClipper();
 
-    void Execute();
-    void GeneralExecute();
+    int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+    int FillInputPortInformation(int port, vtkInformation *info);
     void ClipDataset(vtkDataSet *, vtkUnstructuredGrid *);
 
     int *CellList;

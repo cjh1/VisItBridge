@@ -49,6 +49,9 @@
 #include <vtkPolyData.h>
 #include <vtkVisItProbeFilter.h>
 #include <vtkUnsignedCharArray.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 
 vtkStandardNewMacro(vtkLineoutFilter);
@@ -118,11 +121,23 @@ vtkLineoutFilter::~vtkLineoutFilter()
 //   Removed cd2pd.
 //
 //======================================================================
-void
-vtkLineoutFilter::Execute()
+int
+vtkLineoutFilter::RequestData(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *outputVector)
 {
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkPolyData *inDS = vtkPolyData::SafeDownCast(
+    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *outPolys = vtkPolyData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
   vtkDebugMacro(<<"Executing vtkLineoutFilter");
-  vtkDataSet *inDS  = this->GetInput();
 
   this->LineSource->SetPoint1(this->Point1);
   this->LineSource->SetPoint2(this->Point2);
@@ -133,12 +148,12 @@ vtkLineoutFilter::Execute()
     if (inDS->GetCellData()->GetScalars() == NULL)
       {
        vtkErrorMacro(<<"No Scalars to probe!");
-       return;
+       return 0;
       }
     this->Probe->SetCellData(1);
     }
-  this->Probe->SetSource(inDS);
-  this->Probe->SetInput(this->LineSource->GetOutput());
+  this->Probe->SetSourceData(inDS);
+  this->Probe->SetInputData(this->LineSource->GetOutput());
   this->Probe->Update();
   
   //
@@ -153,10 +168,9 @@ vtkLineoutFilter::Execute()
     {
         probeOut->Delete();
         vtkDebugMacro(<<"Probe did not find any valid points");
-        return;
+        return 0;
     }
 
-  vtkPolyData *outPolys = this->GetOutput(); 
   vtkPoints *inPts = probeOut->GetPoints();
 
   vtkIdType i, index, numPoints = validPoints->GetNumberOfTuples();
@@ -176,14 +190,14 @@ vtkLineoutFilter::Execute()
   {
       probeOut->Delete();
       vtkErrorMacro(<<"Probe did not return point data scalars");
-      return;
+      return 0;
   }
 
   unsigned char* ghosts = 0;
   vtkDataArray *gl = 
       this->Probe->GetOutput()->GetPointData()->GetArray("avtGhostZones");
 
-  int updateLevel = GetOutput()->GetUpdateGhostLevel();
+  int updateLevel = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS());
   if (gl && gl->GetDataType() == VTK_UNSIGNED_CHAR && 
       gl->GetNumberOfComponents() == 1)
     {
@@ -236,6 +250,8 @@ vtkLineoutFilter::Execute()
   //
   probeOut->Delete();
   nonGhostValidPoints->Delete();
+
+  return 1;
 } 
 
 //======================================================================

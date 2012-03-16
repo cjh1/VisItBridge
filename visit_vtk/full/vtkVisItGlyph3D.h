@@ -70,7 +70,7 @@
 #ifndef __vtkVisItGlyph3D_h
 #define __vtkVisItGlyph3D_h
 
-#include <vtkDataSetToPolyDataFilter.h>
+#include <vtkPolyDataAlgorithm.h>
 #include <visit_vtk_exports.h>
 
 #define VTK_SCALE_BY_SCALAR 0
@@ -92,10 +92,10 @@
 #define VTK_INDEXING_BY_VECTOR 2
 
 
-class VISIT_VTK_API vtkVisItGlyph3D : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkVisItGlyph3D : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkVisItGlyph3D,vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkVisItGlyph3D,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description
@@ -113,11 +113,21 @@ public:
 
   // Description:
   // Set the source to use for he glyph.
-  void SetSource(vtkPolyData *pd) {this->SetSource(0,pd);};
+  void SetSourceData(vtkPolyData *pd) {this->SetSourceData(0,pd);};
 
   // Description:
   // Specify a source object at a specified table location.
-  void SetSource(int id, vtkPolyData *pd);
+  void SetSourceData(int id, vtkPolyData *pd);
+
+  // Description:
+  // Specify a source object at a specified table location. New style.
+  // Source connection is stored in port 1. This method is equivalent
+  // to SetInputConnection(1, id, outputPort).
+  void SetSourceConnection(int id, vtkAlgorithmOutput* algOutput);
+  void SetSourceConnection(vtkAlgorithmOutput* algOutput)
+    {
+      this->SetSourceConnection(0, algOutput);
+    }
 
   // Description:
   // Get a pointer to a source object at a specified table location.
@@ -266,9 +276,12 @@ protected:
   vtkVisItGlyph3D();
   ~vtkVisItGlyph3D();
 
-  void Execute();
-  void ExecuteInformation();
-  void ComputeInputUpdateExtents(vtkDataObject *output);
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int RequestInformation (vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int RequestUpdateExtent(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int FillInputPortInformation(int, vtkInformation *);
+
+  vtkPolyData* GetSource(int, vtkInformationVector *);
 
   int NumberOfSources; // Number of source objects
   vtkPolyData **Source; // Geometry to copy to each point

@@ -48,6 +48,9 @@
 #include <vtkVisItUtility.h>
 #include <vtkPolyData.h>
 #include <vtkUnsignedIntArray.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+
 
 
 //------------------------------------------------------------------------------
@@ -106,11 +109,22 @@ vtkLinesFromOriginalCells::~vtkLinesFromOriginalCells()
 //
 // ****************************************************************************
 
-void vtkLinesFromOriginalCells::Execute()
+int vtkLinesFromOriginalCells::RequestData(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *outputVector)
 {
-  vtkPolyData  *input  = this->GetInput();
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkPolyData *input = vtkPolyData::SafeDownCast(
+    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
   vtkCellData  *inCD   = input->GetCellData();
-  vtkPolyData  *output = this->GetOutput();
   vtkCellData  *outCD  = output->GetCellData();
 
   vtkPoints *pts2 = vtkVisItUtility::GetPoints(input);
@@ -135,11 +149,11 @@ void vtkLinesFromOriginalCells::Execute()
       vtkDebugMacro(<<"No proper match for OriginalCellNumbers found in "
                     "field data. Using vtkExtractEdges.");
       vtkExtractEdges *extractor = vtkExtractEdges::New();
-      extractor->SetInput(input);
-      extractor->GetOutput()->Update();
+      extractor->SetInputData(input);
+      this->Update();
       output->ShallowCopy(extractor->GetOutput());
       extractor->Delete();
-      return;
+      return 0;
   }
   unsigned int* origCellNums =
       ((vtkUnsignedIntArray*)origCellsArr)->GetPointer(0);
@@ -159,7 +173,7 @@ void vtkLinesFromOriginalCells::Execute()
   if ( numCells < 1 || numPts < 1 )
     {
     vtkErrorMacro(<<"No input data!");
-    return;
+    return 0;
     }
 
   // Set up processing
@@ -248,5 +262,7 @@ void vtkLinesFromOriginalCells::Execute()
   newLines->Delete();
 
   output->Squeeze();
+
+  return 1;
 }
 

@@ -2897,22 +2897,6 @@ avtGenericDatabase::GetMesh(const char *meshname, int ts, int domain,
             return NULL;
         }
 
-        //
-        // Force an Update.  This needs to be done and if we do it when we
-        // read it in, then it guarantees it only happens once.
-        //
-        mesh->Update();
-
-        //
-        // VTK creates a trivial producer for each data set.  It later does
-        // garbage collection and that takes a long time if we have a lot
-        // of trivial producers.  Make one trivial producer for all
-        // data sets here.
-        //
-        static vtkTrivialProducer *tp = vtkTrivialProducer::New();
-        tp->SetOutput(mesh);
-        tp->SetOutput(NULL);
-
         AssociateBounds(mesh);
 
         if (Interface->CanCacheVariable(real_meshname))
@@ -4164,7 +4148,7 @@ avtGenericDatabase::EnumScalarSelect(avtDatasetCollection &dsc,
         enumThreshold->SetEnumerationSelection(selection);
 
         // do the operation
-        enumThreshold->SetInput(ds);
+        enumThreshold->SetInputData(ds);
         vtkDataSet *outds = enumThreshold->GetOutput();
         enumThreshold->Update();
 
@@ -6483,10 +6467,10 @@ avtGenericDatabase::CommunicateGhostZonesFromGlobalNodeIds(
         ln->Delete();
         vtkUnstructuredGridFacelistFilter *ff =
                                       vtkUnstructuredGridFacelistFilter::New();
-        ff->SetInput(copy);
+        ff->SetInputData(copy);
         vtkPolyDataRelevantPointsFilter *rpf =
                                         vtkPolyDataRelevantPointsFilter::New();
-        rpf->SetInput(ff->GetOutput());
+        rpf->SetInputConnection(ff->GetOutputPort());
         rpf->Update();
         vtkIntArray *g = (vtkIntArray *)
             rpf->GetOutput()->GetPointData()->GetArray("avtGlobalNodeNumbers");

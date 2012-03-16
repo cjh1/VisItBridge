@@ -42,6 +42,8 @@
 #include <vtkCellData.h>
 #include <vtkCleanPolyData.h>
 #include <vtkFloatArray.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
@@ -417,7 +419,7 @@ vtkConnectedTubeFilter::~vtkConnectedTubeFilter()
 // ****************************************************************************
 bool vtkConnectedTubeFilter::BuildConnectivityArrays()
 {
-    vtkPolyData  *input   = this->GetInput();
+    vtkPolyData  *input   = this->GetPolyDataInput(0);
     vtkPoints    *inPts   = NULL;
     vtkCellArray *inLines = NULL;
     int numPts;
@@ -467,10 +469,19 @@ bool vtkConnectedTubeFilter::BuildConnectivityArrays()
 //    npts-1 sides, instead of npts sides.  Fixed that.
 //
 // ****************************************************************************
-void vtkConnectedTubeFilter::Execute()
+int vtkConnectedTubeFilter::RequestData(vtkInformation* vtkNotUsed(request),
+                                        vtkInformationVector** inputVector,
+                                        vtkInformationVector* outputVector)
 {
     // Get all the appropriate input arrays
-    vtkPolyData  *input   = this->GetInput();
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+    vtkPolyData  *input   = vtkPolyData::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+        outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
     vtkPoints    *inPts   = NULL;
     vtkCellArray *inLines = NULL;
     vtkCellData  *inCD    = input->GetCellData();
@@ -484,7 +495,7 @@ void vtkConnectedTubeFilter::Execute()
     {
         vtkErrorMacro(<< ": Connectivity was not built yet; need to call "
                          "vtkConnectedTubeFilter::BuildConnectivityArrays()\n");
-        return;
+        return 0;
     }
 
     if (!(inPts=input->GetPoints())               ||
@@ -493,7 +504,7 @@ void vtkConnectedTubeFilter::Execute()
         (numCells = inLines->GetNumberOfCells()) < 1)
     {
         vtkDebugMacro(<< ": No input data!\n");
-        return;
+        return 0;
     }
 
     float *pts = (float*)(inPts->GetVoidPointer(0));
@@ -501,7 +512,6 @@ void vtkConnectedTubeFilter::Execute()
     // Set up the output arrays
     int maxNewCells  = numCells * (NumberOfSides + 2);
     int maxNewPoints = numCells * NumberOfSides * 2;
-    vtkPolyData   *output     = this->GetOutput();
     vtkPoints     *newPts     = vtkPoints::New();
     newPts->Allocate(maxNewPoints);
     vtkCellArray  *newCells   = vtkCellArray::New();
@@ -637,6 +647,7 @@ void vtkConnectedTubeFilter::Execute()
     // don't forget the sequence list; we're done with it
     delete pseqlist;
     pseqlist = NULL;
+    return 1;
 }
 
 // ****************************************************************************

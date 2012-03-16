@@ -39,6 +39,7 @@ PURPOSE.  See the above copyright notice for more information.
 #include <vtkByteSwap.h>
 #include <vtkCellArray.h>
 #include <vtkExecutive.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 #include <list>
 
@@ -656,7 +657,6 @@ void vtkCEAucdReader::ReadGeometry(vtkInformationVector *outputVector)
             vtkUnstructuredGrid * ug = vtkUnstructuredGrid::New();
             ug->Initialize();
             this->GetExecutive()->SetOutputData (i, ug);
-            ug->SetMaximumNumberOfPieces (-1);
             ug->Delete();
          }     
 
@@ -723,7 +723,6 @@ void vtkCEAucdReader::ReadGeometry(vtkInformationVector *outputVector)
          vtkUnstructuredGrid * ug = vtkUnstructuredGrid::New();
          ug->Initialize();
          this->GetExecutive()->SetOutputData (i, ug);
-         ug->SetMaximumNumberOfPieces (-1);
          ug->Delete();
       }
 

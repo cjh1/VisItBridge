@@ -22,13 +22,16 @@
 #define __vtkSlicer_h
 
 #include <visit_vtk_exports.h>
-#include "vtkDataSetToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
+#include <vtkRectilinearGrid.h>
+#include <vtkStructuredGrid.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkPolyData.h>
 
-
-class VISIT_VTK_API vtkSlicer : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkSlicer : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkSlicer,vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkSlicer,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -50,11 +53,12 @@ protected:
   vtkSlicer();
   ~vtkSlicer();
 
-  void Execute();
-  void RectilinearGridExecute();
-  void StructuredGridExecute();
-  void UnstructuredGridExecute();
-  void GeneralExecute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int FillInputPortInformation(int, vtkInformation*);
+  void RectilinearGridExecute(vtkRectilinearGrid*, vtkPolyData*);
+  void StructuredGridExecute(vtkStructuredGrid*, vtkPolyData*);
+  void UnstructuredGridExecute(vtkUnstructuredGrid*, vtkPolyData*);
+  void GeneralExecute(vtkDataSet*, vtkPolyData*);
   void SliceDataset(vtkDataSet *, vtkPolyData *);
   
   int *CellList;

@@ -460,7 +460,6 @@ avtPFLOTRANFileFormat::AddGhostCellInfo(vtkDataSet *ds)
     ds->GetFieldData()->AddArray(baseIndex);
     ds->GetFieldData()->CopyFieldOn("base_index");    
 
-    ds->SetUpdateGhostLevel(0);
 }
 
 

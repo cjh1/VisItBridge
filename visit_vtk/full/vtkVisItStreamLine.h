@@ -40,6 +40,8 @@
 #define __vtkVisItStreamLine_h
 #include <visit_vtk_exports.h>
 #include "vtkStreamer.h"
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 class VISIT_VTK_API vtkVisItStreamLine : public vtkStreamer
 {
@@ -63,18 +65,18 @@ protected:
   ~vtkVisItStreamLine() {};
 
   // Convert streamer array into vtkPolyData
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   // the length of line primitives
   double StepLength;
 
-  void Integrate();
+  void Integrate(vtkDataSet *input);
 //  int GetNumberOfStreamers() { return vtkStreamer::GetNumberOfStreamers(); };
 private:
   vtkVisItStreamLine(const vtkVisItStreamLine&);  // Not implemented.
   void operator=(const vtkVisItStreamLine&);  // Not implemented.
 
-  static VTK_THREAD_RETURN_TYPE ThreadedIntegrate(void *arg);
+  static VTK_THREAD_RETURN_TYPE ThreadedIntegrate(void *arg, vtkDataSet *input);
 };
 
 #endif

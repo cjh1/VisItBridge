@@ -46,7 +46,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
 #include <vtkUnstructuredGrid.h>
-
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <DebugStream.h>
 #include <ImproperUseException.h>
 
@@ -88,12 +89,24 @@ vtkDisjointCubesFacelistFilter::PrintSelf(ostream& os, vtkIndent indent)
 //
 // ****************************************************************************
 
-void
-vtkDisjointCubesFacelistFilter::Execute()
+int
+vtkDisjointCubesFacelistFilter::RequestData(
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector)
 {
+    // get the info objects
+    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+    // get the input and output
+    vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::SafeDownCast(
+       inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+       outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
     int  i, j;
 
-    vtkUnstructuredGrid *ugrid = GetInput();
     int ncells = ugrid->GetNumberOfCells();
     float *cells = new float[ncells*9];
     vtkIdType *ptr = ugrid->GetCells()->GetPointer();
@@ -174,7 +187,6 @@ vtkDisjointCubesFacelistFilter::Execute()
     int nquads = numXquads + numYquads + numZquads;
     int npts = 4*nquads;
 
-    vtkPolyData *output = GetOutput();
     vtkPoints *newpts = vtkPoints::New();
     newpts->SetNumberOfPoints(npts);
     output->SetPoints(newpts);
@@ -261,8 +273,19 @@ vtkDisjointCubesFacelistFilter::Execute()
         output->InsertNextCell(VTK_QUAD, 4, coords);
         cellCount++;
     }
+
+    return 1;
 }
 
+
+//----------------------------------------------------------------------------
+int vtkDisjointCubesFacelistFilter::FillOutputPortInformation(
+  int vtkNotUsed(port), vtkInformation* info)
+{
+  // now add our info
+  info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkPolyData");
+  return 1;
+}
 
 // The below code was contributed by Peter Williams, plw@llnl.gov
 /* ff.h */

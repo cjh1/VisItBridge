@@ -40,7 +40,7 @@
 #ifndef __vtkVisItCutter_h
 #define __vtkVisItCutter_h
 
-#include "vtkDataSetToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 
 #include "vtkContourValues.h" // Needed for inline methods
 #include <visit_vtk_exports.h>
@@ -51,10 +51,10 @@
 class vtkImplicitFunction;
 class vtkPointLocator;
 
-class VISIT_VTK_API vtkVisItCutter : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkVisItCutter : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkVisItCutter,vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkVisItCutter,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -161,9 +161,9 @@ protected:
   vtkVisItCutter(vtkImplicitFunction *cf=NULL);
   ~vtkVisItCutter();
 
-  void Execute();
-  void UnstructuredGridCutter();
-  void DataSetCutter();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  void UnstructuredGridCutter(vtkDataSet *, vtkPolyData *);
+  void DataSetCutter(vtkDataSet *, vtkPolyData *);
   vtkImplicitFunction *CutFunction;
   
   vtkPointLocator *Locator;

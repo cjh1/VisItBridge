@@ -20,6 +20,8 @@
 #include "vtkCellData.h"
 #include "vtkDataSet.h"
 #include "vtkIdList.h"
+#include "vtkInformation.h"
+#include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
 #include "vtkPointData.h"
 #include "vtkRectilinearGrid.h"
@@ -47,12 +49,18 @@ vtkVisItCellDataToPointData::vtkVisItCellDataToPointData()
 //
 // **************************************************************************** 
 
-void vtkVisItCellDataToPointData::Execute()
+int vtkVisItCellDataToPointData::RequestData(vtkInformation *vtkNotUsed(request),
+                                             vtkInformationVector **inputVector,
+                                             vtkInformationVector *outputVector)
 {
   vtkIdType cellId, ptId, i, j, k, l, m;
   vtkIdType numCells, numPts;
-  vtkDataSet *input= this->GetInput();
-  vtkDataSet *output= this->GetOutput();
+  vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation* outInfo = outputVector->GetInformationObject(0);
+  vtkDataSet *input = vtkDataSet::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkDataSet *output = vtkDataSet::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
   vtkCellData *inPD=input->GetCellData();
   vtkPointData *outPD=output->GetPointData();
   vtkIdList *cellIds;
@@ -71,7 +79,7 @@ void vtkVisItCellDataToPointData::Execute()
     {
     vtkErrorMacro(<<"No input point data!");
     cellIds->Delete();
-    return;
+    return 0;
     }
   weights = new double[VTK_MAX_CELLS_PER_POINT];
   
@@ -232,6 +240,7 @@ void vtkVisItCellDataToPointData::Execute()
 
   cellIds->Delete();
   delete [] weights;
+  return 1;
 }
 
 void vtkVisItCellDataToPointData::PrintSelf(ostream& os, vtkIndent indent)

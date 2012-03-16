@@ -38,15 +38,15 @@
 #ifndef __vtkVisItFeatureEdges_h
 #define __vtkVisItFeatureEdges_h
 
-#include "vtkPolyDataToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 #include <visit_vtk_exports.h>
 
 class vtkPointLocator;
 
-class VISIT_VTK_API vtkVisItFeatureEdges : public vtkPolyDataToPolyDataFilter
+class VISIT_VTK_API vtkVisItFeatureEdges : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkVisItFeatureEdges,vtkPolyDataToPolyDataFilter);
+  vtkTypeMacro(vtkVisItFeatureEdges,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -108,8 +108,8 @@ protected:
   ~vtkVisItFeatureEdges();
 
   // Usual data generation method
-  void Execute();
-  void ComputeInputUpdateExtents(vtkDataObject *output);
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  int RequestUpdateExtent(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
   
   float FeatureAngle;
   int BoundaryEdges;

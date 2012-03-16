@@ -52,7 +52,7 @@
 #ifndef __vtkLineoutFilter_h
 #define __vtkLineoutFilter_h
 
-#include <vtkDataSetToPolyDataFilter.h>
+#include <vtkPolyDataAlgorithm.h>
 #include <visit_vtk_exports.h>
 
 class vtkCellDataToPointData;
@@ -64,11 +64,11 @@ class vtkVisItProbeFilter;
 //    Kathleen Bonnell, Fri Mar 28 12:09:01 PDT 2008
 //    Removed cd2pd, use VisIt version of vtkProbeFilter.
 //----------------------------------------------------------------------------
-class VISIT_VTK_API vtkLineoutFilter : public vtkDataSetToPolyDataFilter
+class VISIT_VTK_API vtkLineoutFilter : public vtkPolyDataAlgorithm
 {
 public:
   static vtkLineoutFilter *New();
-  vtkTypeMacro(vtkLineoutFilter,vtkDataSetToPolyDataFilter);
+  vtkTypeMacro(vtkLineoutFilter,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -90,7 +90,7 @@ protected:
   vtkLineSource          *LineSource;
   vtkVisItProbeFilter    *Probe;
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
 private:
   double          Point1[3];

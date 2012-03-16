@@ -987,7 +987,7 @@ void
 vtkVisItUtility::WriteDataSet(vtkDataSet *ds, const char *fname)
 {
     vtkDataSetWriter *writer = vtkDataSetWriter::New();
-    writer->SetInput(ds);
+    writer->SetInputData(ds);
     writer->SetFileName(fname);
     writer->SetFileTypeToASCII();
     writer->Write();

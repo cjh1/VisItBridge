@@ -47,6 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkObjectFactory.h>
 #include <vtkPointData.h>
 #include <vtkUnstructuredGrid.h>
+#include "vtkInformation.h"
+#include "vtkInformationVector.h"
 
 //------------------------------------------------------------------------------
 // Modifications:
@@ -67,19 +69,25 @@ vtkStandardNewMacro(vtkUnstructuredGridRelevantPointsFilter);
 //   Remove call to BuildLinks.
 //
 //------------------------------------------------------------------------------
-void vtkUnstructuredGridRelevantPointsFilter::Execute()
-{
-  int  i, j;
 
-  vtkUnstructuredGrid  *input  = this->GetInput();
-  vtkUnstructuredGrid  *output = this->GetOutput();
-  
+int vtkUnstructuredGridRelevantPointsFilter::RequestData(vtkInformation *vtkNotUsed(request),
+                                                         vtkInformationVector **inputVector,
+                                                         vtkInformationVector *outputVector)
+{
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkUnstructuredGrid *input = vtkUnstructuredGrid::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
   vtkDebugMacro(<<"Beginning UnstructuredGrid Relevant Points Filter ");
 
   if (input == NULL) 
     {
     vtkErrorMacro(<<"Input is NULL");
-    return;
+    return 0;
     }
 
   vtkPoints    *inPts  = input->GetPoints();
@@ -90,21 +98,21 @@ void vtkUnstructuredGridRelevantPointsFilter::Execute()
   if ( (numInPts<1) || (inPts == NULL ) ) 
     {
     vtkErrorMacro(<<"No data to Operate On!");
-    return;
+    return 0;
     }
   
   int *pointMap = new int[numInPts];
-  for (i = 0 ; i < numInPts ; i++)
+  for (int i = 0 ; i < numInPts ; i++)
     {
     pointMap[i] = -1;
     }
   vtkCellArray *cells = input->GetCells();
   vtkIdType *ptr = cells->GetPointer();
   int numOutPts = 0;
-  for (i = 0 ; i < numCells ; i++)
+  for (int i = 0 ; i < numCells ; i++)
     {
     int npts = *ptr++;
-    for (j = 0 ; j < npts ; j++)
+    for (int j = 0 ; j < npts ; j++)
       {
       int oldPt = *ptr++;
       if (pointMap[oldPt] == -1)
@@ -118,7 +126,7 @@ void vtkUnstructuredGridRelevantPointsFilter::Execute()
   vtkPointData *outputPD = output->GetPointData();
   outputPD->CopyAllocate(inputPD, numOutPts);
   
-  for (j = 0 ; j < numInPts ; j++)
+  for (int j = 0 ; j < numInPts ; j++)
     {
     if (pointMap[j] != -1)
       {
@@ -144,13 +152,13 @@ void vtkUnstructuredGridRelevantPointsFilter::Execute()
   vtkIdList *newIds = vtkIdList::New();
   int id, cellType;
   ptr = cells->GetPointer();
-  for (i = 0; i < numCells; i++) 
+  for (int i = 0; i < numCells; i++)
     {
     cellType = input->GetCellType(i);
     int npts = *ptr++;
 
     newIds->SetNumberOfIds(npts);
-    for (j = 0; j < npts ; j++)
+    for (int j = 0; j < npts ; j++)
       {
       id = *ptr++;
       newIds->SetId(j, pointMap[id]);
@@ -163,6 +171,8 @@ void vtkUnstructuredGridRelevantPointsFilter::Execute()
   newIds->Delete();
   cellIds->Delete();
   delete [] pointMap;
+
+  return 1;
 }
 
 //------------------------------------------------------------------------------

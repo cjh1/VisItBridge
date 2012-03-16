@@ -94,18 +94,23 @@ vtkVisItPolyDataNormals::vtkVisItPolyDataNormals()
 // ****************************************************************************
 int
 vtkVisItPolyDataNormals::RequestData(vtkInformation *vtkNotUsed(request),
-    vtkInformationVector **vtkNotUsed(inputVector),
-    vtkInformationVector *vtkNotUsed(outputVector))
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector)
 {
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation* outInfo = outputVector->GetInformationObject(0);
+
     // get the input and output
-    vtkPolyData *input = GetPolyDataInput(0);
-    vtkPolyData *output = GetOutput();
+    vtkPolyData *input = vtkPolyData::SafeDownCast(
+         inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *output = vtkPolyData::SafeDownCast(
+         outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     if (ComputePointNormals)
     {
         if (input->GetPointData()->GetNormals() != NULL)
         {
-            GetOutput()->ShallowCopy(this->GetInput());
+            output->ShallowCopy(input);
             return 1;
         }
 
@@ -124,7 +129,7 @@ vtkVisItPolyDataNormals::RequestData(vtkInformation *vtkNotUsed(request),
         // Cell normals
         if (input->GetCellData()->GetNormals() != NULL)
         {
-            GetOutput()->ShallowCopy(this->GetInput());
+            output->ShallowCopy(input);
             return 1;
         }
 

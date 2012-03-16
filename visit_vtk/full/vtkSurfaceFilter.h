@@ -64,7 +64,7 @@
 #define __vtkSurfaceFilter_h
 #include <visit_vtk_exports.h>
 
-#include <vtkDataSetToUnstructuredGridFilter.h>
+#include <vtkUnstructuredGridAlgorithm.h>
 #include <vtkFloatArray.h>
 
 class vtkPointSet;
@@ -78,11 +78,11 @@ class vtkRectilinearGrid;
 //=======================================================================
 
 class VISIT_VTK_API  
-vtkSurfaceFilter : public vtkDataSetToUnstructuredGridFilter
+vtkSurfaceFilter : public vtkUnstructuredGridAlgorithm
 {
 public:
   static vtkSurfaceFilter *New();
-  vtkTypeMacro(vtkSurfaceFilter,vtkDataSetToUnstructuredGridFilter);
+  vtkTypeMacro(vtkSurfaceFilter,vtkUnstructuredGridAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
@@ -95,9 +95,10 @@ protected:
   vtkSurfaceFilter();
   ~vtkSurfaceFilter() ;
 
-  void Execute();
-  void ExecuteRectilinearGrid(vtkRectilinearGrid*);
-  void ExecutePointSet(vtkPointSet*);
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  void ExecuteRectilinearGrid(vtkRectilinearGrid*, vtkUnstructuredGrid*);
+  void ExecutePointSet(vtkPointSet*, vtkUnstructuredGrid*);
+  int FillInputPortInformation(int, vtkInformation*);
 
 // Protected Data Members
 

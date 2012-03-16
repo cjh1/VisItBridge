@@ -2024,17 +2024,17 @@ vtkCSGGrid::DiscretizeSurfaces(
         regSample->CappingOn();
 
         vtkContourFilter *regContour = vtkContourFilter::New();
-        regContour->SetInput((vtkDataSet*)regSample->GetOutput());
+        regContour->SetInputConnection(regSample->GetOutputPort());
         regContour->SetValue(0, 0.0);
 
-        appender->AddInput(regContour->GetOutput());
+        appender->SetInputConnection(regContour->GetOutputPort());
         regContour->Delete();
         regSample->Delete();
         reg->Delete();
     }
 
+    appender->Update();
     vtkPolyData *rv = appender->GetOutput();
-    rv->Update();
     rv->Register(0);
     appender->Delete();
     return rv;
@@ -2115,19 +2115,20 @@ vtkCSGGrid::DiscretizeSpace(
 
         // Clip it!
         vtkVisItClipper *regClipper = vtkVisItClipper::New();
-        regClipper->SetInput(rgrid);
+        regClipper->SetInputData(rgrid);
         regClipper->SetClipFunction(reg);
         regClipper->SetInsideOut(true);
         regClipper->Update();
 
-        appender->AddInput(regClipper->GetOutput());
+        appender->SetInputConnection(regClipper->GetOutputPort());
+
         regClipper->Delete();
         rgrid->Delete();
         reg->Delete();
     }
 
+    appender->Update();
     vtkUnstructuredGrid *rv = appender->GetOutput();
-    rv->Update();
     rv->Register(0);
     appender->Delete();
     return rv;
@@ -2275,7 +2276,7 @@ vtkCSGGrid::DiscretizeSpaceMultiPass(double tol,
             oldtags = multipassTags;
             multipassTags = new vector<FixedLengthBitField<16> >;
         }
-        regClipper->SetInput(input);
+        regClipper->SetInputData(input);
         regClipper->SetOldTagBitField(oldtags);
         regClipper->SetNewTagBitField(multipassTags);
         regClipper->SetNewTagBit(bndId);
@@ -2288,7 +2289,6 @@ vtkCSGGrid::DiscretizeSpaceMultiPass(double tol,
         output = regClipper->GetOutput();
 
         output->Register(0);
-        output->SetSource(NULL);
         regClipper->Delete();
         quadric->Delete();
         input->Delete();
@@ -2340,7 +2340,7 @@ vtkCSGGrid::GetMultiPassDiscretization(int specificZone)
 
     // Threshold out the cells for this region
     vtkThreshold *threshold = vtkThreshold::New();
-    threshold->SetInput(rv);
+    threshold->SetInputData(rv);
     threshold->ThresholdByUpper(0.5);
     threshold->Update();
     rv = threshold->GetOutput();
@@ -2585,7 +2585,7 @@ vtkCSGGrid::MakeMeshZonesByCuttingBox4(const Box *theBox,
                 vtkQuadric *quadric = vtkQuadric::New();
                 quadric->SetCoefficients(&gridBoundaries[NUM_QCOEFFS*bndId]);
                 vtkVisItClipper *pieceCutter = vtkVisItClipper::New();
-                pieceCutter->SetInput((*piecesCurrent)[i]);
+                pieceCutter->SetInputData((*piecesCurrent)[i]);
                 pieceCutter->SetUseZeroCrossings(true);
                 pieceCutter->SetClipFunction(quadric);
 
@@ -2601,7 +2601,7 @@ vtkCSGGrid::MakeMeshZonesByCuttingBox4(const Box *theBox,
                     pieceCutter->Modified();
                     //pieceCutter->Update();
 
-                    pieceCutter->GetOutput()->Update();
+                    pieceCutter->Update();
                     vtkUnstructuredGrid *thePiece = vtkUnstructuredGrid::New();
                     thePiece->ShallowCopy(pieceCutter->GetOutput());
 
@@ -2713,7 +2713,7 @@ vtkCSGGrid::MakeMeshZonesByCuttingBox2(const Box *theBox,
             const int theInt = it->first;
 
             vtkVisItClipper *boxCutter = vtkVisItClipper::New();
-            boxCutter->SetInput(boxUgrid);
+            boxCutter->SetInputData(boxUgrid);
             boxCutter->SetUseZeroCrossings(true);
 
             vtkQuadric *quadric = vtkQuadric::New();
@@ -2725,7 +2725,8 @@ vtkCSGGrid::MakeMeshZonesByCuttingBox2(const Box *theBox,
             boxCutter->Update();
 
             vtkUnstructuredGrid *cutBox = boxCutter->GetOutput();
-            cutBox->Update();
+            // Not needed (VTK Team)
+            // cutBox->Update();
             cutBox->Register(NULL);
 
             quadric->Delete();

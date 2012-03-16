@@ -29,6 +29,10 @@
 #include <vtkPolyData.h>
 #include <vtkTransform.h>
 #include <vtkUnsignedCharArray.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
+#include <vtkTrivialProducer.h>
 
 vtkStandardNewMacro(vtkVisItGlyph3D);
 
@@ -48,7 +52,7 @@ vtkVisItGlyph3D::vtkVisItGlyph3D()
   this->VectorMode = VTK_USE_VECTOR;
   this->Clamping = 0;
   this->IndexMode = VTK_INDEXING_OFF;
-  this->NumberOfRequiredInputs = 1;
+  this->SetNumberOfInputPorts(2);
   this->GeneratePointIds = 0;
   this->TreatVectorsAs2D = 0;
   this->PointIdsName = NULL;
@@ -108,8 +112,20 @@ vtkVisItGlyph3D::~vtkVisItGlyph3D()
 //    Add support for treating vectors as 2D ... for data that is 10^15.
 //
 //*****************************************************************************
-void vtkVisItGlyph3D::Execute()
+int vtkVisItGlyph3D::RequestData(vtkInformation *vtkNotUsed(request),
+                                 vtkInformationVector **inputVector,
+                                 vtkInformationVector *outputVector)
 {
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+  // get the input and output
+  vtkPolyData *input = vtkPolyData::SafeDownCast(
+    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData *output = vtkPolyData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
   vtkPointData *pd;
   vtkDataArray *inScalars = NULL;
   vtkDataArray *inScalars_forColoring = NULL;
@@ -138,19 +154,18 @@ void vtkVisItGlyph3D::Execute()
   vtkIdType ptIncr, cellId;
   int haveVectors, haveNormals;
   double scalex,scaley,scalez, den;
-  vtkPolyData *output = this->GetOutput();
   vtkPointData *outputPD = output->GetPointData();
   vtkCellData *outputCD = output->GetCellData();
-  vtkDataSet *input = this->GetInput();
 
   vtkDataArray *inOrigNodes = NULL;
   vtkDataArray *inOrigCells = NULL;
   vtkDataArray *outOrigNodes = NULL;
   vtkDataArray *outOrigCells = NULL;
 
-  int numberOfSources = this->GetNumberOfSources();
+  int numberOfSources = this->GetNumberOfInputConnections(1);
   vtkPolyData *defaultSource = NULL;
   vtkIdTypeArray *pointIds=0;
+  vtkPolyData *source = this->GetSource(0, inputVector[1]);
 
   vtkDebugMacro(<<"Generating glyphs");
 
@@ -160,7 +175,7 @@ void vtkVisItGlyph3D::Execute()
   if (!input)
     {
     vtkErrorMacro(<<"No input");
-    return;
+    return 0;
     }
 
   pd = input->GetPointData();
@@ -191,7 +206,7 @@ void vtkVisItGlyph3D::Execute()
     inGhostLevels = ((vtkUnsignedCharArray*)temp)->GetPointer(0);
     }
 
-  requestedGhostLevel = output->GetUpdateGhostLevel();
+  requestedGhostLevel = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS());
   
   
   numPts = input->GetNumberOfPoints();
@@ -200,7 +215,7 @@ void vtkVisItGlyph3D::Execute()
     vtkDebugMacro(<<"No points to glyph!");
     pts->Delete();
     trans->Delete();
-    return;
+    return 0;
     }
 
   // Check input for consistency
@@ -234,12 +249,12 @@ void vtkVisItGlyph3D::Execute()
            this->VectorMode == VTK_USE_VECTOR) ||
         (!inNormals && this->VectorMode == VTK_USE_NORMAL))) )
     {
-    if ( this->GetSource(0) == NULL )
+    if ( !source )
       {
       vtkErrorMacro(<<"Indexing on but don't have data to index with");
       pts->Delete();
       trans->Delete();
-      return;
+      return 0;
       }
     else
       {
@@ -254,7 +269,7 @@ void vtkVisItGlyph3D::Execute()
   outputPD->CopyVectorsOff();
   outputPD->CopyNormalsOff();
 
-  if (!this->GetSource(0))
+  if (!source)
     {
     defaultSource = vtkPolyData::New();
     defaultSource->Allocate();
@@ -267,8 +282,6 @@ void vtkVisItGlyph3D::Execute()
     defaultPointIds[1] = 1;
     defaultSource->SetPoints(defaultPoints);
     defaultSource->InsertNextCell(VTK_LINE, 2, defaultPointIds);
-    defaultSource->SetUpdateExtent(0, 1, 0);
-    this->SetSource(defaultSource);
     defaultSource->Delete();
     defaultSource = NULL;
     defaultPoints->Delete();
@@ -282,24 +295,31 @@ void vtkVisItGlyph3D::Execute()
     haveNormals = 1;
     for (numSourcePts=numSourceCells=i=0; i < numberOfSources; i++)
       {
-      if ( this->GetSource(i) != NULL )
+      source  = this->GetSource(i, inputVector[1]);
+      if ( source != NULL )
         {
-        numSourcePts += this->GetSource(i)->GetNumberOfPoints();
-        numSourceCells += this->GetSource(i)->GetNumberOfCells();
-        if ( !(sourceNormals = this->GetSource(i)->GetPointData()->GetNormals()) )
-          {
-          haveNormals = 0;
-          }
+          if (source->GetNumberOfPoints() > numSourcePts)
+            {
+            numSourcePts += source->GetNumberOfPoints();
+            }
+          if(source->GetNumberOfCells() > numSourceCells)
+            {
+            numSourceCells += source->GetNumberOfCells();
+            }
+          if ( !(sourceNormals = source->GetPointData()->GetNormals()) )
+            {
+            haveNormals = 0;
+            }
         }
       }
     }
   else
     {
-    sourcePts = this->GetSource(0)->GetPoints();
+    sourcePts = source->GetPoints();
     numSourcePts = sourcePts->GetNumberOfPoints();
-    numSourceCells = this->GetSource(0)->GetNumberOfCells();
+    numSourceCells = source->GetNumberOfCells();
 
-    sourceNormals = this->GetSource(0)->GetPointData()->GetNormals();
+    sourceNormals = source->GetPointData()->GetNormals();
     if ( sourceNormals )
       {
       haveNormals = 1;
@@ -310,7 +330,7 @@ void vtkVisItGlyph3D::Execute()
       }
 
     // Prepare to copy output.
-    pd = this->GetSource(0)->GetPointData();
+    pd = source->GetPointData();
     outputPD->CopyAllocate(pd,numPts*numSourcePts);
     }
 
@@ -396,7 +416,7 @@ void vtkVisItGlyph3D::Execute()
     }
   else
     {
-    output->Allocate(this->GetSource(0),3*numPts*numSourceCells,numPts*numSourceCells);
+    output->Allocate(source,3*numPts*numSourceCells,numPts*numSourceCells);
     }
 
   // Traverse all Input points, transforming Source points and copying
@@ -501,17 +521,18 @@ void vtkVisItGlyph3D::Execute()
       index = (index < 0 ? 0 :
               (index >= numberOfSources ? (numberOfSources-1) : index));
       
-      if ( this->GetSource(index) != NULL )
+      source = this->GetSource(index, inputVector[1]);
+      if ( source != NULL )
         {
-        sourcePts = this->GetSource(index)->GetPoints();
-        sourceNormals = this->GetSource(index)->GetPointData()->GetNormals();
+        sourcePts = source->GetPoints();
+        sourceNormals = source->GetPointData()->GetNormals();
         numSourcePts = sourcePts->GetNumberOfPoints();
-        numSourceCells = this->GetSource(index)->GetNumberOfCells();
+        numSourceCells = source->GetNumberOfCells();
         }
       }
     
     // Make sure we're not indexing into empty glyph
-    if ( this->GetSource(index) == NULL )
+    if ( !source )
       {
       continue;
       }
@@ -553,7 +574,7 @@ void vtkVisItGlyph3D::Execute()
     // Copy all topology (transformation independent)
     for (cellId=0; cellId < numSourceCells; cellId++)
       {
-      cell = this->GetSource(index)->GetCell(cellId);
+      cell = source->GetCell(cellId);
       cellPts = cell->GetPointIds();
       npts = cellPts->GetNumberOfIds();
       for (pts->Reset(), i=0; i < npts; i++) 
@@ -750,19 +771,31 @@ void vtkVisItGlyph3D::Execute()
   output->Squeeze();
   trans->Delete();
   pts->Delete();
+
+  return 1;
 }
 
 //----------------------------------------------------------------------------
 // Since indexing determines size of outputs, EstimatedWholeMemorySize is
 // truly an estimate.  Ignore Indexing (although for a best estimate we
 // should average the size of the sources instead of using 0).
-void vtkVisItGlyph3D::ExecuteInformation()
+int vtkVisItGlyph3D::RequestInformation(
+  vtkInformation *vtkNotUsed(request),
+  vtkInformationVector **inputVector,
+  vtkInformationVector *vtkNotUsed(outputVector))
 {
-  if (this->GetInput() == NULL)
+  // get the info object
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+
+  vtkDataObject *input = inInfo->Get(vtkDataObject::DATA_OBJECT());
+
+  if (input == NULL)
     {
     vtkErrorMacro("Missing input");
-    return;
+    return 0;
     }
+
+  return 1;
 }
 
 
@@ -771,37 +804,65 @@ void vtkVisItGlyph3D::ExecuteInformation()
 void vtkVisItGlyph3D::SetNumberOfSources(int num)
 {
   // one more because input has index 0.
-  this->SetNumberOfInputs(num+1);
+  this->SetNumberOfInputPorts(num+1);
 }
 
 int vtkVisItGlyph3D::GetNumberOfSources()
 {
   // one less because input has index 0.
-  return this->NumberOfInputs - 1;
+  return this->GetNumberOfInputPorts() - 1;
 }
 
 // Specify a source object at a specified table location.
-void vtkVisItGlyph3D::SetSource(int id, vtkPolyData *pd)
+void vtkVisItGlyph3D::SetSourceData(int id, vtkPolyData *pd)
 {
-  if (id < 0)
+  int numConnections = this->GetNumberOfInputConnections(1);
+
+  if (id < 0 || id > numConnections)
     {
     vtkErrorMacro("Bad index " << id << " for source.");
     return;
     }
-  this->vtkProcessObject::SetNthInput(id + 1, pd);
+
+  vtkTrivialProducer* tp = 0;
+  if (pd)
+    {
+      tp = vtkTrivialProducer::New();
+      tp->SetOutput(pd);
+    }
+
+   if (id < numConnections)
+     {
+     if (tp)
+       {
+       this->SetNthInputConnection(1, id, tp->GetOutputPort());
+       }
+     else
+       {
+       this->SetNthInputConnection(1, id, 0);
+       }
+     }
+   else if (id == numConnections && tp)
+     {
+     this->AddInputConnection(1, tp->GetOutputPort());
+     }
+
+   if (tp)
+     {
+     tp->Delete();
+     }
 }
 
 // Get a pointer to a source object at a specified table location.
 vtkPolyData *vtkVisItGlyph3D::GetSource(int id)
 {
-  if ( id < 0 || id >= this->GetNumberOfSources() )
+  if ( id < 0 || id >= this->GetNumberOfInputConnections(1) )
     {
     return NULL;
     }
-  else
-    {
-    return (vtkPolyData *)this->Inputs[id+1];
-    }
+
+  return vtkPolyData::SafeDownCast(
+    this->GetExecutive()->GetInputData(1, id));
 }
 
 void vtkVisItGlyph3D::PrintSelf(ostream& os, vtkIndent indent)
@@ -875,26 +936,27 @@ void vtkVisItGlyph3D::PrintSelf(ostream& os, vtkIndent indent)
      << (this->InputNormalsSelection ? this->InputNormalsSelection : "(none)") << "\n";
 }
 
-void vtkVisItGlyph3D::ComputeInputUpdateExtents( vtkDataObject *output )
+int vtkVisItGlyph3D::RequestUpdateExtent(vtkInformation *vtkNotUsed(request),
+                                         vtkInformationVector **inputVector,
+                                         vtkInformationVector *outputVector)
 {
-  vtkPolyData *outPd;
+  // get the info objects
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
 
-  if (this->GetInput() == NULL)
-    {
-    vtkErrorMacro("Missing input");
-    return;
-    }
+  this->SetUpdateExtent(0, 1, 0);
 
-  output = output;
-  outPd = this->GetOutput();
-  if (this->GetSource())
-    {
-    this->GetSource()->SetUpdateExtent(0, 1, 0);
-    }
-  this->GetInput()->SetUpdateExtent(outPd->GetUpdatePiece(),
-                                    outPd->GetUpdateNumberOfPieces(),
-                                    outPd->GetUpdateGhostLevel());
-  this->GetInput()->RequestExactExtentOn();
+  int piece = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER());
+  int numPieces = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES());
+  int ghostLevel = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS());
+
+  inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER(), piece);
+  inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES(), numPieces);
+  inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS(), ghostLevel);
+
+  inInfo->Set(vtkStreamingDemandDrivenPipeline::EXACT_EXTENT(), 1);
+
+  return 1;
 }
 
 int
@@ -924,4 +986,59 @@ vtkVisItGlyph3D::SetFullFrameScaling(int useIt, const double *s)
       this->Modified();
 
   return ret;
+}
+
+//----------------------------------------------------------------------------
+vtkPolyData* vtkVisItGlyph3D::GetSource(int idx, vtkInformationVector *sourceInfo)
+{
+  vtkInformation *info = sourceInfo->GetInformationObject(idx);
+  if (!info)
+    {
+    return NULL;
+    }
+  return vtkPolyData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
+}
+
+//----------------------------------------------------------------------------
+int vtkVisItGlyph3D::FillInputPortInformation(int port, vtkInformation *info)
+{
+  if (port == 0)
+    {
+    info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
+    return 1;
+    }
+  else if (port == 1)
+    {
+    info->Set(vtkAlgorithm::INPUT_IS_REPEATABLE(), 1);
+    info->Set(vtkAlgorithm::INPUT_IS_OPTIONAL(), 1);
+    info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPolyData");
+    return 1;
+    }
+  return 0;
+}
+
+//----------------------------------------------------------------------------
+void vtkVisItGlyph3D::SetSourceConnection(int id, vtkAlgorithmOutput* algOutput)
+{
+  if (id < 0)
+    {
+    vtkErrorMacro("Bad index " << id << " for source.");
+    return;
+    }
+
+  int numConnections = this->GetNumberOfInputConnections(1);
+  if (id < numConnections)
+    {
+    this->SetNthInputConnection(1, id, algOutput);
+    }
+  else if (id == numConnections && algOutput)
+    {
+    this->AddInputConnection(1, algOutput);
+    }
+  else if (algOutput)
+    {
+    vtkWarningMacro("The source id provided is larger than the maximum "
+                    "source id, using " << numConnections << " instead.");
+    this->AddInputConnection(1, algOutput);
+    }
 }

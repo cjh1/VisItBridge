@@ -38,23 +38,24 @@
 
 #ifndef VTK_DISJOINT_CUBES_FACELIST_FILTER_H
 #define VTK_DISJOING_CUBES_FACELIST_FILTER_H
-#include <vtkUnstructuredGridToPolyDataFilter.h>
+#include <vtkUnstructuredGridAlgorithm.h>
 #include <visit_vtk_exports.h>
 
 class VISIT_VTK_API vtkDisjointCubesFacelistFilter 
-    : public vtkUnstructuredGridToPolyDataFilter
+    : public vtkUnstructuredGridAlgorithm 
 {
   public:
     static vtkDisjointCubesFacelistFilter *New();
     vtkTypeMacro(vtkDisjointCubesFacelistFilter,
-                 vtkUnstructuredGridToPolyDataFilter);
+            vtkUnstructuredGridAlgorithm);
     void PrintSelf(ostream& os, vtkIndent indent);
 
   protected:
     vtkDisjointCubesFacelistFilter() {;};
     ~vtkDisjointCubesFacelistFilter() {;};
  
-    void Execute();
+    int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+    int FillOutputPortInformation(int port, vtkInformation* info);
 };
 
 #endif

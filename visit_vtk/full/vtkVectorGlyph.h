@@ -53,7 +53,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __vtkVectorGlyph_h
 #include <visit_vtk_exports.h>
 
-#include "vtkPolyDataSource.h"
+#include "vtkPolyDataAlgorithm.h"
 
 //  Modifications:
 //    Jeremy Meredith, Fri Nov 21 11:25:27 PST 2003
@@ -68,10 +68,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 
-class VISIT_VTK_API vtkVectorGlyph : public vtkPolyDataSource
+class VISIT_VTK_API vtkVectorGlyph : public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeMacro(vtkVectorGlyph, vtkPolyDataSource);
+  vtkTypeMacro(vtkVectorGlyph, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   vtkSetMacro(HighQuality,int);
@@ -110,7 +110,7 @@ protected:
   vtkVectorGlyph();
   ~vtkVectorGlyph() {};
 
-  void Execute();
+  int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   int HighQuality;
   int CapEnds;

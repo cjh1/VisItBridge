@@ -40,7 +40,7 @@
 #define __vtkConnectedTubeFilter_h
 #include <visit_vtk_exports.h>
 
-#include "vtkPolyDataToPolyDataFilter.h"
+#include "vtkPolyDataAlgorithm.h"
 
 class vtkCellArray;
 class vtkPoints;
@@ -57,10 +57,10 @@ class vtkPoints;
 //
 // ****************************************************************************
 class VISIT_VTK_API vtkConnectedTubeFilter :
-    public vtkPolyDataToPolyDataFilter
+    public vtkPolyDataAlgorithm
 {
   public:
-    vtkTypeMacro(vtkConnectedTubeFilter,vtkPolyDataToPolyDataFilter);
+    vtkTypeMacro(vtkConnectedTubeFilter,vtkPolyDataAlgorithm);
     void PrintSelf(ostream& os, vtkIndent indent);
     bool BuildConnectivityArrays();
 
@@ -151,7 +151,7 @@ class VISIT_VTK_API vtkConnectedTubeFilter :
     ~vtkConnectedTubeFilter();
 
     // Usual data generation method
-    void Execute();
+    int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
     float Radius;      // minimum radius of tube
     int NumberOfSides; // number of sides to create tube

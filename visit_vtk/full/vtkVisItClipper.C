@@ -42,6 +42,8 @@
 #include <vtkClipDataSet.h>
 #include <vtkFloatArray.h>
 #include <vtkImplicitFunction.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 #include <vtkPointData.h>
@@ -392,10 +394,18 @@ vtkVisItClipper::GetOtherOutput()
 //    these values a number of times.
 //
 // ****************************************************************************
-void
-vtkVisItClipper::Execute()
+int vtkVisItClipper::RequestData(vtkInformation* vtkNotUsed(request),
+                                 vtkInformationVector** inputVector,
+                                 vtkInformationVector* outputVector)
 {
-    vtkDataSet *ds = GetInput();
+    vtkInformation* inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation* outInfo = outputVector->GetInformationObject(0);
+    
+    vtkDataSet *ds = vtkDataSet::SafeDownCast(
+      inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
+          outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
 
     int do_type = ds->GetDataObjectType();
     vtkRectilinearGrid   *rg = NULL;
@@ -426,7 +436,6 @@ vtkVisItClipper::Execute()
     int                  nCells = ds->GetNumberOfCells();
     vtkCellData         *inCD   = ds->GetCellData();
     vtkPointData        *inPD   = ds->GetPointData();
-    vtkUnstructuredGrid *output = (vtkUnstructuredGrid*)GetOutput();
     vtkUnstructuredGrid *stuff_I_cant_clip = vtkUnstructuredGrid::New();
 
     bool twoD = false;
@@ -479,8 +488,8 @@ vtkVisItClipper::Execute()
     {
         debug1 << "vtkVisItClipper: Can't operate on this dataset,\n";
         debug1 << "                 reverting to raw VTK code.\n";
-        GeneralExecute();
-        return;
+        ClipDataset(ds, output);
+        return 0;
     }
 
     //
@@ -906,15 +915,15 @@ vtkVisItClipper::Execute()
             vfvIn.ConstructDataSet(inPD, inCD, just_from_zoo, pt_dims,X,Y,Z);
 
         vtkAppendFilter *appender = vtkAppendFilter::New();
-        appender->AddInput(not_from_zoo);
-        appender->AddInput(just_from_zoo);
-        appender->GetOutput()->Update();
+        appender->AddInputData(not_from_zoo);
+        appender->AddInputData(just_from_zoo);
+        appender->Update();
 
         output->ShallowCopy(appender->GetOutput());
 
         if (computeInsideAndOut)
         {
-            appender->RemoveInput(just_from_zoo);
+            appender->RemoveInputData(just_from_zoo);
             just_from_zoo->Delete();
 
             just_from_zoo = vtkUnstructuredGrid::New();
@@ -923,8 +932,8 @@ vtkVisItClipper::Execute()
             else
                 vfvOut.ConstructDataSet(inPD, inCD, just_from_zoo, pt_dims,X,Y,Z);
 
-            appender->AddInput(just_from_zoo);
-            appender->GetOutput()->Update();
+            appender->AddInputData(just_from_zoo);
+            appender->Update();
 
             if (otherOutput) otherOutput->Delete();
             otherOutput = vtkUnstructuredGrid::New();
@@ -954,17 +963,21 @@ vtkVisItClipper::Execute()
     }
 
     stuff_I_cant_clip->Delete();
+    return 1;
+}
+
+
+int vtkVisItClipper::FillInputPortInformation(int vtkNotUsed(port), vtkInformation* info)
+{
+    info->Remove(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE());
+    info->Append(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
+    return 1;
 }
 
 
 void vtkVisItClipper::PrintSelf(ostream& os, vtkIndent indent)
 {
     Superclass::PrintSelf(os,indent);
-}
-
-void vtkVisItClipper::GeneralExecute(void)
-{
-    ClipDataset(GetInput(), (vtkUnstructuredGrid*)GetOutput());
 }
 
 // ****************************************************************************
@@ -983,7 +996,7 @@ void vtkVisItClipper::ClipDataset(vtkDataSet *in_ds,
                                   vtkUnstructuredGrid *out_ds)
 {
     vtkClipDataSet *clipData = vtkClipDataSet::New();
-    clipData->SetInput(in_ds);
+    clipData->SetInputData(in_ds);
     if (clipFunction)
     {
         clipData->SetClipFunction(clipFunction);

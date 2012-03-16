@@ -221,9 +221,7 @@ avtImageTiler::CreateTiledImage()
     const int nColorComponents = 3;
     vtkImageData *newImage = vtkImageData::New();
     newImage->SetDimensions(totalWidth, totalHeight, 1);
-    newImage->SetScalarTypeToUnsignedChar();
-    newImage->SetNumberOfScalarComponents(nColorComponents);
-    newImage->AllocateScalars();
+    newImage->AllocateScalars(VTK_UNSIGNED_CHAR, nColorComponents);
     unsigned char *output = (unsigned char *)newImage->GetScalarPointer();
 
     //

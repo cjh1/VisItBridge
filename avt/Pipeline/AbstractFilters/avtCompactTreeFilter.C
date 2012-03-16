@@ -303,8 +303,9 @@ avtCompactTreeFilter::Execute(void)
             if (createCleanPolyData)
             {
                 vtkCleanPolyData *cpd = vtkCleanPolyData::New();
-                cpd->SetInput((vtkPolyData *) ds);
-                cpd->SetToleranceIsAbsolute(1);
+                cpd->SetInputData((vtkPolyData *) ds);
+                cpd->SetInputConnection(pmap->polyFilter->GetOutputPort());
+				cpd->SetToleranceIsAbsolute(1);
                 cpd->SetAbsoluteTolerance(tolerance);
                 cpd->Update();
                 outTree = new avtDataTree(cpd->GetOutput(), -1);
@@ -312,7 +313,7 @@ avtCompactTreeFilter::Execute(void)
             }
             else
             {
-                ds->Update();
+                pmap->polyFilter->Update();
                 outTree = new avtDataTree(ds, -1);
             }
             ds->Delete();

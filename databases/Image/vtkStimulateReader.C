@@ -47,6 +47,8 @@
 #include <vtkByteSwap.h>
 #include <vtkPointData.h>
 #include <FileFunctions.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 #include <sys/stat.h>
 
@@ -73,7 +75,9 @@ vtkStimulateReader::~vtkStimulateReader()
 }
 
 
-void vtkStimulateReader::ExecuteInformation()
+int vtkStimulateReader::RequestInformation(vtkInformation *request,
+                                           vtkInformationVector **inputVector,
+                                           vtkInformationVector *outputVector)
 {
   char spr_name[1024];
   char sdt_name[1024];
@@ -90,7 +94,9 @@ void vtkStimulateReader::ExecuteInformation()
 
   SetDataByteOrderToLittleEndian();
 
-  this->vtkImageReader2::ExecuteInformation();
+  this->vtkImageReader2::RequestInformation(request, inputVector, outputVector);
+
+  return 1;
 }
 
 
@@ -189,34 +195,45 @@ bool vtkStimulateReader::GetFilenames(const char *one_file, char *spr_name,
 
 //    Mark C. Miller, Fri Apr 23 23:32:51 PDT 2010
 //    Added support for sdt types.
-void vtkStimulateReader::ExecuteData(vtkDataObject *output)
+int vtkStimulateReader::RequestData(vtkInformation* vtkNotUsed(request),
+                                    vtkInformationVector** vtkNotUsed(inputVector),
+                                    vtkInformationVector* outputVector)
 {
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkDataObject *output = vtkDataObject::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
   if (!OpenFile())
   {
       vtkErrorMacro(<<"Unable to open file");
-      return;
+      return 0;
   }
 
   // A lot of this work should be done by the base class.  But it doesn't
   // appear to be working/is very hard to interface to, so just do a little
   // of the heavy lifting ourselves.
-  vtkImageData *data = AllocateOutputData(output);
+
+  vtkImageData *data = this->AllocateOutputData(output, outInfo);
   int size;
+
+  int vtkType;
   switch (dataType)
   {
-    case UCHAR: data->SetScalarTypeToUnsignedChar(); size=sizeof(unsigned char); break;
-    case SHORT: data->SetScalarTypeToShort(); size=sizeof(short); break;
-    case INT: data->SetScalarTypeToInt(); size=sizeof(int); break;
-    case FLOAT: data->SetScalarTypeToFloat(); size=sizeof(float); break;
+    case UCHAR: vtkType = VTK_UNSIGNED_CHAR; size=sizeof(unsigned char); break;
+    case SHORT: vtkType = VTK_SHORT; size=sizeof(short); break;
+    case INT: vtkType = VTK_INT; size=sizeof(int); break;
+    case FLOAT: vtkType = VTK_FLOAT; size=sizeof(float); break;
   }
   data->SetDimensions(dims[0],dims[1],1);
-  data->AllocateScalars();
+  //data->AllocateScalars(vtkType, 1);
   void *ptr = data->GetScalarPointer();
   File->read((char *)ptr, dims[0]*dims[1]*size);
   if (GetSwapBytes())
   {
      vtkByteSwap::SwapVoidRange(ptr, dims[0]*dims[1], size);
   }
+
+  return 1;
 }
 
 

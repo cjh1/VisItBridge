@@ -52,6 +52,8 @@
 #include <vtkPointData.h>
 #include <vtkUnsignedCharArray.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkInformation.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 #include <avtGhostData.h>
 #include <avtMaterial.h>
@@ -512,7 +514,6 @@ avtUnstructuredDomainBoundaries::ExchangeMesh(vector<int>       domainNum,
         }
         outm->GetCellData()->AddArray(ghostCells);
         ghostCells->Delete();
-        outm->SetUpdateGhostLevel(0);
 
         // This call is in lieu of "BuildLinks", which has a memory leak.
         // This should be the non-leaking equivalent.

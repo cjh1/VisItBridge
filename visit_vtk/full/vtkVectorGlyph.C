@@ -47,6 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkCellArray.h>
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>
+#include <vtkInformation.h>
+#include <vtkInformationVector.h>
 
 #ifdef _WIN32
 #define M_PI 3.14159265358979323846
@@ -105,9 +107,15 @@ vtkVectorGlyph::vtkVectorGlyph()
 //
 // ****************************************************************************
 
-void vtkVectorGlyph::Execute(void)
+int vtkVectorGlyph::RequestData(vtkInformation *vtkNotUsed(request),
+                                vtkInformationVector **vtkNotUsed(inputVector),
+                                vtkInformationVector *outputVector)
 {
-    vtkPolyData *output = this->GetOutput();
+    // get the info object
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+
+    // get the output
+    vtkPolyData *output = vtkPolyData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     vtkPoints *pts = vtkPoints::New();
     output->SetPoints(pts);
@@ -247,6 +255,8 @@ void vtkVectorGlyph::Execute(void)
             polys->InsertNextCell(3, pt);
         }
     }
+
+    return 1;
 }
 
 

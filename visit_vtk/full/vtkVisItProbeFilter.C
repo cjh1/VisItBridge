@@ -26,7 +26,6 @@
 #include <DebugStream.h>
 
 vtkStandardNewMacro(vtkVisItProbeFilter);
-
 //----------------------------------------------------------------------------
 //  Modifications:
 //    Kathleen Bonnell,  Fri Mar 28 12:09:01 PDT 2008
@@ -48,9 +47,15 @@ vtkVisItProbeFilter::~vtkVisItProbeFilter()
 }
 
 //----------------------------------------------------------------------------
-void vtkVisItProbeFilter::SetSource(vtkDataSet *input)
+void vtkVisItProbeFilter::SetSourceData(vtkDataSet *input)
 {
-  this->SetInput(1, input);
+  this->SetInputData(1, input);
+}
+
+//----------------------------------------------------------------------------
+void vtkVisItProbeFilter::SetSourceConnection(vtkAlgorithmOutput* algOutput)
+{
+  this->SetInputConnection(1, algOutput);
 }
 
 //----------------------------------------------------------------------------
@@ -178,8 +183,6 @@ int vtkVisItProbeFilter::RequestData(
     {
     vtkImageData *out = (vtkImageData*)output;
     vtkDataArray *s = outPD->GetScalars();
-    out->SetScalarType(s->GetDataType());
-    out->SetNumberOfScalarComponents(s->GetNumberOfComponents());
     }
   if (mcs>256)
     {

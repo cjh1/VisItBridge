@@ -42,7 +42,7 @@
 #include <visit_vtk_exports.h>
 #include <FixedLengthBitField.h>
 #include <vector>
-#include "vtkDataSetToUnstructuredGridFilter.h"
+#include "vtkUnstructuredGridAlgorithm.h"
 
 class vtkImplicitFunction;
 class vtkUnstructuredGrid;
@@ -65,10 +65,10 @@ class vtkUnstructuredGrid;
 // ****************************************************************************
 
 class VISIT_VTK_API vtkVisItSplitter
-    : public vtkDataSetToUnstructuredGridFilter
+    : public vtkUnstructuredGridAlgorithm
 {
   public:
-    vtkTypeMacro(vtkVisItSplitter,vtkDataSetToUnstructuredGridFilter);
+    vtkTypeMacro(vtkVisItSplitter,vtkUnstructuredGridAlgorithm);
     void PrintSelf(ostream& os, vtkIndent indent);
 
     static vtkVisItSplitter *New();
@@ -90,7 +90,8 @@ class VISIT_VTK_API vtkVisItSplitter
     vtkVisItSplitter();
     ~vtkVisItSplitter();
 
-    void Execute();
+    int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+    int FillInputPortInformation(int, vtkInformation *);
 
     vtkIdType *CellList;
     int  CellListSize;
