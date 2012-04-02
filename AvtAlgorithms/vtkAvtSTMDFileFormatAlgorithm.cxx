@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vtkOverlappingAMR.h"
 #include "vtkHierarchicalBoxDataSet.h"
 #include "vtkAMRUtilities.h"
+#include "vtkMultiProcessController.h"
 #include "vtkMultiBlockDataSet.h"
 #include "vtkPolyData.h"
 #include "vtkRectilinearGrid.h"
@@ -382,7 +383,8 @@ int vtkAvtSTMDFileFormatAlgorithm::FillAMR(
       }
     }
 
-  vtkAMRUtilities::GenerateMetaData(amr,NULL);
+  vtkAMRUtilities::GenerateMetaData(
+      amr,vtkMultiProcessController::GetGlobalController());
   amr->GenerateVisibilityArrays();
   delete[] numDataSets;
   return 1;
