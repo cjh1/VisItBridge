@@ -6,7 +6,7 @@
 #define AVT_FVCOM_READER_H
 #include <vectortypes.h>
 #include <avtVariableCache.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 #include <map>
 #include <DebugStream.h>
 

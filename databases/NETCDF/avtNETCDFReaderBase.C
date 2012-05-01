@@ -39,7 +39,7 @@
 
 #include <cstring>
 
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 
 #include <avtDatabaseMetaData.h>
 #include <DebugStream.h>

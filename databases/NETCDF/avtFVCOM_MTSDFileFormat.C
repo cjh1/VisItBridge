@@ -20,7 +20,7 @@
 #include <NETCDFFileObject.h>
 #include <avtFVCOMReader.h>
 #include <avtMaterial.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 
 using     std::string;
 

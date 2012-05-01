@@ -58,7 +58,7 @@
 #include <vtkFloatArray.h>
 #include <vtkDoubleArray.h>
 
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 
 #include <snprintf.h>
 

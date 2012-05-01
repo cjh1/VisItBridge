@@ -38,7 +38,7 @@
 
 #include <avtLODIParticleFileFormat.h>
 #include <NETCDFFileObject.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 
 #include <avtDatabaseMetaData.h>
 #include <avtMaterial.h>

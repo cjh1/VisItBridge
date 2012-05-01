@@ -38,7 +38,7 @@
 
 #include <avtADAPTFileFormat.h>
 #include <NETCDFFileObject.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 #include <map>
 
 #include <avtDatabaseMetaData.h>

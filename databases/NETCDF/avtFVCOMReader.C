@@ -24,7 +24,7 @@
 #include <ImproperUseException.h>
 
 #include <NETCDFFileObject.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 #include <Expression.h>
 
 using     std::string;

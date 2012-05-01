@@ -38,7 +38,7 @@
 
 #include <vector>
 #include <snprintf.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 
 #include <avtBasicNETCDFFileFormat.h>
 #include <NETCDFFileObject.h>

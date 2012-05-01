@@ -20,7 +20,7 @@
 #include <InvalidVariableException.h>
 
 #include <NETCDFFileObject.h>
-#include <netcdf.h>
+#include "vtk_netcdf.h"
 
 using     std::string;
     
