@@ -18,7 +18,7 @@ vtkAvtSTMDFileFormatAlgorithm.cxx
 
 #setup the kit so we get client server bindings  
 SET(VTK_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-INCLUDE(${VTK_CMAKE_DIR}/vtkExportKit.cmake)
+INCLUDE(${ParaView_CMAKE_DIR}/VTKMono/vtkExportKit.cmake)
 VTK_EXPORT_KIT("${KIT}" "${KIT_UPCASE}" "${Kit_SRCS}")
 
 #########################################################################  
