@@ -62,6 +62,6 @@ ${VTK_INCLUDE_DIRS}
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS})
 
 PVVTK_ADD_LIBRARY(avtivp ${AVTIVP_SOURCES})
-TARGET_LINK_LIBRARIES(avtivp avtmath visitcommon visit_vtk vtkCommon vtkFiltering)
+TARGET_LINK_LIBRARIES(avtivp avtmath visitcommon visit_vtk vtkCommonCore vtkFiltersGeneral)
 
 VISIT_INSTALL_TARGETS(avtivp)

@@ -51,16 +51,16 @@ PVVTK_ADD_LIBRARY(vtkVisItAVTAlgorithms ${Kit_SRCS})
 ## NOTE: Always link to vtkParallel b/c it is needed for using vtkAMRUtilities
 ## When creating vtkOverlappingAMR datasets (especially on windows)
 IF(VISIT_PARALLEL)    
-  TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_par avtpipeline_par visit_vtk avtivp vtkParallel)    
+  TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_par avtpipeline_par visit_vtk avtivp vtkAMRCore)
 ELSE(VISIT_PARALLEL)	
-  TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk avtivp vtkParallel)
+  TARGET_LINK_LIBRARIES(vtkVisItAVTAlgorithms visitcommon avtdatabase_ser avtpipeline_ser visit_vtk avtivp vtkAMRCore)
 ENDIF(VISIT_PARALLEL)
 
 #Wrap for Python
 #-------------------------------------------------------------------------------------------------
 IF (PARAVIEW_ENABLE_PYTHON)  
   SET(Kit_PYTHON_EXTRA_SRCS)
-  SET(KIT_PYTHON_LIBS vtkVisItAVTAlgorithmsPythonD vtkIOPythonD vtkVisItAVTAlgorithmsCS)
+  SET(KIT_PYTHON_LIBS vtkVisItAVTAlgorithmsPythonD vtkIOCorePythonD vtkVisItAVTAlgorithmsCS)
   # Tell vtkWrapPython.cmake to set VTK_PYTHON_LIBRARIES for us.
   SET(VTK_WRAP_PYTHON_FIND_LIBS 1)
   SET(VTK_WRAP_INCLUDE_DIRS ${VTK_INCLUDE_DIR})
