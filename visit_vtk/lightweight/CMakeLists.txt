@@ -74,7 +74,7 @@ ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 # Add link directories needed to use our libraries and VTK.
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS})
 
-VTK_ADD_LIBRARY(lightweight_visit_vtk
+PVVTK_ADD_LIBRARY(lightweight_visit_vtk
     ${LIGHTWEIGHT_VISIT_VTK_SOURCES}
 )
 

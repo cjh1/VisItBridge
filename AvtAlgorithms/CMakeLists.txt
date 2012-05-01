@@ -46,7 +46,7 @@ ${VISIT_SOURCE_DIR}/visit_vtk/full
 ${VISIT_SOURCE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
-VTK_ADD_LIBRARY(vtkVisItAVTAlgorithms ${Kit_SRCS})
+PVVTK_ADD_LIBRARY(vtkVisItAVTAlgorithms ${Kit_SRCS})
 
 ## NOTE: Always link to vtkParallel b/c it is needed for using vtkAMRUtilities
 ## When creating vtkOverlappingAMR datasets (especially on windows)

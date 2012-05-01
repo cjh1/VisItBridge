@@ -161,7 +161,7 @@ INCLUDE(${VTK_CMAKE_DIR}/vtkExportKit.cmake)
 VTK_EXPORT_KIT("${KIT}" "${KIT_UPCASE}" "${Kit_SRCS}")
   
 #build all the readers into a single library
-vtk_add_library(vtk${KIT} ${Kit_SRCS} ${VISIT_DB_SOURCES})
+pvvtk_add_library(vtk${KIT} ${Kit_SRCS} ${VISIT_DB_SOURCES})
 
 target_link_libraries(vtk${KIT} vtkVisItAVTAlgorithms vtkNetCDF) 
 if(PARAVIEW_HDF5_LIBRARIES)
