@@ -75,6 +75,8 @@ if(VTK_USE_MPI)
   endif(MPI_EXTRA_LIBRARY)
 endif(VTK_USE_MPI)
 
+# setup to use vtkzlib
+set(ZLIB_LIB ${vtkzlib_LIBRARIES})
 
 #block out most of the warnings in visit on windows
 IF (WIN32)

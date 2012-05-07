@@ -77,7 +77,7 @@
 #include <DebugStream.h>
 
 #ifdef HAVE_ZLIB_H
-#include <zlib.h>
+#include <vtk_zlib.h>
 #include <TimingsManager.h>
 #endif
 
