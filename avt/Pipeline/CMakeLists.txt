@@ -225,7 +225,15 @@ LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} ${VTK_LIBRARY_DIRS})
 #********************************* SERIAL ************************************
 PVVTK_ADD_LIBRARY(avtpipeline_ser ${ALL_SOURCES})
 
-TARGET_LINK_LIBRARIES(avtpipeline_ser visitcommon avtmath avtdbatts lightweight_visit_vtk ${ZLIB_LIB})
+target_link_libraries(avtpipeline_ser
+  visitcommon
+  avtmath
+  avtdbatts
+  lightweight_visit_vtk
+  vtkRenderingOpenGL
+  vtkInteractionStyle
+  ${ZLIB_LIB})
+
 VISIT_INSTALL_TARGETS(avtpipeline_ser)
 
 #********************************* PARALLEL **********************************

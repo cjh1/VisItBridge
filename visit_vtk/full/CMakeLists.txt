@@ -115,6 +115,13 @@ set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
   "${VISIT_SOURCE_DIR}/parser;${tmp_include_dirs}")
 
 PVVTK_ADD_LIBRARY(visit_vtk ${VISIT_VTK_SOURCES})
-TARGET_LINK_LIBRARIES(visit_vtk lightweight_visit_vtk vtkImagingCore ${VTK_TIFF_LIBRARIES})
+
+target_link_libraries(visit_vtk
+  lightweight_visit_vtk
+  vtkIOImage
+  vtkFiltersTracers
+  vtkRenderingOpenGL
+  vtkInteractionStyle
+  ${VTK_TIFF_LIBRARIES})
 
 VISIT_INSTALL_TARGETS(visit_vtk)
